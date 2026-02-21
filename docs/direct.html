@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Utah Fabrication & Machining Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&family=Share+Tech+Mono&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/direct.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <h1>UTAH <span>FAB</span> DIRECTORY</h1>
+    </div>
+    <div class="header-controls">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="search" id="searchInput" placeholder="Search shop name, city, service…" autocomplete="off">
+      </div>
+      <select id="serviceFilter">
+        <option value="all">All Services</option>
+        <option value="3dprint">3D Printing</option>
+        <option value="aerospace">Aerospace / Defense</option>
+        <option value="cnc">CNC Machining</option>
+        <option value="heattreat">Heat Treat</option>
+        <option value="laser">Laser Cutting</option>
+        <option value="makerspace">Makerspace</option>
+        <option value="offroad">Off-Road / Auto</option>
+        <option value="ornamental">Ornamental Iron</option>
+        <option value="powder">Powder Coating</option>
+        <option value="waterjet">Waterjet</option>
+        <option value="welding">Welding / Fab</option>
+      </select>
+      <select id="regionFilter">
+        <option value="">All Regions</option>
+        <option value="cache-valley">Cache Valley</option>
+        <option value="other">Other / Rural</option>
+        <option value="salt-lake">Salt Lake Valley</option>
+        <option value="southern-utah">Southern Utah</option>
+        <option value="utah-county">Utah County</option>
+        <option value="weber-ogden">Weber / Ogden</option>
+      </select>
+      <span class="count-badge">Showing <strong id="visibleCount">0</strong> shops</span>
+    </div>
+  </div>
+</header>
+
+
+
+<div class="main">
+
+  <div class="bg-grid"></div>
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+
+  <!-- All region/category/card content is rendered dynamically from shops.json -->
+  <div id="directoryContent"></div>
+
+  <div class="no-results" id="noResults">
+    <p>No shops match your search. Try a different keyword or clear the filters.</p>
+    <a id="googleFallback" class="google-link" href="#" target="_blank" rel="noopener noreferrer">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Search Google instead
+    </a>
+  </div>
+
+  <span class="ref-tag">DWG-FAB-DIR // REV 2026</span>
+
+</div><!-- /main -->
+
+<script>
+(function () {
+  'use strict';
+
+  /* ═══════════════════════════════════════════════════
+     STATE
+  ═══════════════════════════════════════════════════ */
+  let allShops      = [];
+  let activeFilter  = 'all';
+
+  /* ═══════════════════════════════════════════════════
+     DOM REFERENCES
+  ═══════════════════════════════════════════════════ */
+  const searchInput    = document.getElementById('searchInput');
+  const serviceFilter  = document.getElementById('serviceFilter');
+  const regionFilter   = document.getElementById('regionFilter');
+  const visibleCount   = document.getElementById('visibleCount');
+  const noResults      = document.getElementById('noResults');
+  const googleFallback = document.getElementById('googleFallback');
+  const contentRoot    = document.getElementById('directoryContent');
+
+  /* ═══════════════════════════════════════════════════
+     REGION DISPLAY ORDER
+  ═══════════════════════════════════════════════════ */
+  const REGION_ORDER = [
+    'salt-lake',
+    'utah-county',
+    'weber-ogden',
+    'cache-valley',
+    'southern-utah',
+    'other'
+  ];
+
+  /* ═══════════════════════════════════════════════════
+     HELPERS
+  ═══════════════════════════════════════════════════ */
+
+  /** Escape a string for safe HTML insertion */
+  function esc(str) {
+    if (!str) return '';
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /** Normalise a shop object — handles both shops.json keys and Supabase column names */
+  function normalise(s) {
+    return {
+      id:            String(s.id),
+      name:          s.name,
+      city:          s.city,
+      size:          s.size          || s.size_desc    || '',
+      services:      s.services      || '',
+      website:       s.website       || '',
+      maps_url:      s.maps_url      || '',
+      tags:          s.tags          || [],
+      region:        s.region,
+      regionTitle:   s.regionTitle   || s.region_title  || '',
+      regionSubtitle:s.regionSubtitle|| s.region_subtitle || '',
+      category:      s.category      || 'Fabrication & Machining',
+    };
+  }
+
+  /** Turn the website field into a clickable link or a Google-search fallback */
+  function websiteLink(shop) {
+    const raw = (shop.website || '').trim();
+    if (!raw) {
+      // No contact at all — Google search fallback
+      const q = encodeURIComponent(shop.name + ' ' + shop.city + ' Utah');
+      return `<a class="card-link card-link--search" href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener noreferrer">`
+           + `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> `
+           + `Search Google</a>`;
+    }
+
+    // Try to extract a URL-like token (domain.com or https://...)
+    const urlMatch = raw.match(/(https?:\/\/[^\s|,]+|[a-z0-9][a-z0-9\-]*\.[a-z]{2,}[^\s|,]*)/i);
+    if (urlMatch) {
+      const href = urlMatch[0].startsWith('http') ? urlMatch[0] : 'https://' + urlMatch[0];
+      const display = urlMatch[0].replace(/^https?:\/\//, '').replace(/\/$/, '');
+      // If raw text has extra info beyond the URL, show the full text + link icon
+      if (raw.length > urlMatch[0].length + 5) {
+        return `<a class="card-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(display)}</a>`
+             + `<span class="card-contact-extra">${esc(raw.replace(urlMatch[0], '').replace(/^[\s|,·]+/, ''))}</span>`;
+      }
+      return `<a class="card-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(display)}</a>`;
+    }
+
+    // No URL found — show raw text + Google search icon
+    const q = encodeURIComponent(shop.name + ' ' + shop.city + ' Utah');
+    return `<span class="card-contact-extra">${esc(raw)}</span> `
+         + `<a class="card-link card-link--search" href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener noreferrer">`
+         + `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> `
+         + `Search</a>`;
+  }
+
+  /** Build a Google Maps link if maps_url is present */
+  function mapsLink(shop) {
+    const url = (shop.maps_url || '').trim();
+    if (!url) return '';
+    const href = url.startsWith('http') ? url : 'https://' + url;
+    return ` <a class="card-link card-link--maps" href="${esc(href)}" target="_blank" rel="noopener noreferrer">`
+         + `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> `
+         + `Maps</a>`;
+  }
+
+  /** Build a single card's HTML string */
+  function renderCard(shop) {
+    return `
+      <div class="card" data-tags="${esc(shop.tags.join(' '))}" data-id="${shop.id}">
+        <div class="card-top"><span class="card-name">${esc(shop.name)}</span></div>
+        <div class="card-city">${esc(shop.city)}</div>
+        <div class="card-size">${esc(shop.size)}</div>
+        <div class="card-services">${esc(shop.services)}</div>
+        <div class="card-website">${websiteLink(shop)}${mapsLink(shop)}</div>
+      </div>`;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     BUILD DOM FROM JSON
+  ═══════════════════════════════════════════════════ */
+
+  function buildDirectory(shops) {
+    // Group: region → categories (ordered Map)
+    const regionMap = new Map();
+
+    for (const shop of shops) {
+      if (!regionMap.has(shop.region)) {
+        regionMap.set(shop.region, {
+          title:      shop.regionTitle,
+          subtitle:   shop.regionSubtitle,
+          categories: new Map()
+        });
+      }
+      const rObj = regionMap.get(shop.region);
+      if (!rObj.categories.has(shop.category)) {
+        rObj.categories.set(shop.category, []);
+      }
+      rObj.categories.get(shop.category).push(shop);
+    }
+
+    const parts = [];
+
+    for (const regionSlug of REGION_ORDER) {
+      const rObj = regionMap.get(regionSlug);
+      if (!rObj) continue;
+
+      parts.push(
+        `<section class="region" data-region="${esc(regionSlug)}">`,
+        `  <div class="region-header">`,
+        `    <h2 class="region-title">${esc(rObj.title)}</h2>`,
+        `    <span class="region-subtitle">${esc(rObj.subtitle)}</span>`,
+        `  </div>`
+      );
+
+      for (const [catName, catShops] of rObj.categories) {
+        parts.push(`  <div class="category-header">${esc(catName)}</div>`);
+        parts.push(`  <div class="card-grid">`);
+        for (const shop of catShops) {
+          parts.push(renderCard(shop));
+        }
+        parts.push(`  </div>`);
+      }
+
+      parts.push(`</section>`);
+    }
+
+    contentRoot.innerHTML = parts.join('\n');
+
+    // Stagger card entrance animations
+    contentRoot.querySelectorAll('.card').forEach((card, i) => {
+      card.style.animationDelay = `${Math.min(i * 15, 600)}ms`;
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     FILTER ENGINE  (operates on JSON array → toggles DOM)
+  ═══════════════════════════════════════════════════ */
+
+  function applyFilters() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const regionVal  = regionFilter.value;
+    let count = 0;
+
+    // Determine visible shop IDs from in-memory data
+    const visibleIds = new Set();
+
+    for (const shop of allShops) {
+      // Region gate
+      if (regionVal && shop.region !== regionVal) continue;
+
+      // Service / tag gate
+      if (activeFilter !== 'all') {
+        if (!shop.tags.includes(activeFilter)) continue;
+      }
+
+      // Free-text search
+      if (searchTerm) {
+        const haystack = [
+          shop.name,
+          shop.city,
+          shop.size,
+          shop.services,
+          shop.website,
+          shop.tags.join(' ')
+        ].join(' ').toLowerCase();
+        if (!haystack.includes(searchTerm)) continue;
+      }
+
+      visibleIds.add(shop.id);
+      count++;
+    }
+
+    // Reflect in DOM
+    contentRoot.querySelectorAll('.card').forEach(card => {
+      card.classList.toggle('hidden', !visibleIds.has(card.dataset.id));
+    });
+
+    // Hide empty category headers
+    contentRoot.querySelectorAll('.category-header').forEach(hdr => {
+      const grid = hdr.nextElementSibling;
+      if (!grid) return;
+      hdr.style.display = grid.querySelectorAll('.card:not(.hidden)').length === 0 ? 'none' : '';
+    });
+
+    // Hide empty region sections
+    contentRoot.querySelectorAll('.region').forEach(section => {
+      section.style.display = section.querySelectorAll('.card:not(.hidden)').length === 0 ? 'none' : '';
+    });
+
+    visibleCount.textContent = count;
+
+    // Show / hide no-results with Google fallback
+    const hasNoResults = count === 0;
+    noResults.classList.toggle('visible', hasNoResults);
+    if (hasNoResults && searchTerm) {
+      googleFallback.href = 'https://www.google.com/search?q=' + encodeURIComponent(searchTerm + ' fabrication machining Utah');
+      googleFallback.style.display = 'inline-block';
+    } else {
+      googleFallback.style.display = 'none';
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     EVENT LISTENERS
+  ═══════════════════════════════════════════════════ */
+
+  serviceFilter.addEventListener('change', () => {
+    activeFilter = serviceFilter.value;
+    applyFilters();
+  });
+
+  searchInput.addEventListener('input', applyFilters);
+  regionFilter.addEventListener('change', applyFilters);
+
+  /* ═══════════════════════════════════════════════════
+     INIT — fetch shops.json → render → filter
+  ═══════════════════════════════════════════════════ */
+
+  /* ── Supabase config ────────────────────────────
+     Replace these with your actual Supabase project values.
+     While they're placeholders the page falls back to shops.json.
+  ──────────────────────────────────────────────── */
+  const SUPABASE_URL  = 'https://dntcmvspcwwdwnmyqfiw.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudGNtdnNwY3d3ZHdubXlxZml3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MDA5MDksImV4cCI6MjA4NzI3NjkwOX0.cgiLMn6YH0BnLshl_458nGwdjnAJaN3MZz8jT4lwfkc';
+
+  /** Region title/subtitle lookup (used when data comes from Supabase
+      which stores region as a slug FK with no denormalised title) */
+  const REGION_META = {
+    'salt-lake':     { title: 'Salt Lake Valley',                   subtitle: 'SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake' },
+    'utah-county':   { title: 'Utah County',                        subtitle: 'Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs' },
+    'weber-ogden':   { title: 'Weber / Ogden Area',                 subtitle: 'Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace & Defense Corridor' },
+    'cache-valley':  { title: 'Cache Valley',                       subtitle: 'Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University' },
+    'southern-utah': { title: 'St. George / Southern Utah',         subtitle: 'St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub & Growing Custom Scene' },
+    'other':         { title: 'Other: Statewide, Rural & Specialty', subtitle: 'Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops' },
+  };
+
+  async function loadFromSupabase() {
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const { data, error } = await sb
+      .from('fab_shops')
+      .select('*')
+      .eq('is_active', true)
+      .order('region')
+      .order('sort_order')
+      .order('name');
+    if (error) throw error;
+    // Attach region meta (title/subtitle) from lookup
+    return (data || []).map(s => {
+      const meta = REGION_META[s.region] || { title: s.region, subtitle: '' };
+      s.regionTitle    = meta.title;
+      s.regionSubtitle = meta.subtitle;
+      return normalise(s);
+    });
+  }
+
+  async function loadFromJSON() {
+    const res = await fetch('data/shops.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    return data.map(normalise);
+  }
+
+  (async () => {
+    try {
+      // Try Supabase first; fall back to static shops.json
+      const isConfigured = !SUPABASE_URL.includes('YOUR_PROJECT');
+      if (isConfigured) {
+        try {
+          allShops = await loadFromSupabase();
+        } catch (sbErr) {
+          console.warn('Supabase failed, falling back to shops.json:', sbErr);
+          allShops = await loadFromJSON();
+        }
+      } else {
+        allShops = await loadFromJSON();
+      }
+
+      buildDirectory(allShops);
+      applyFilters();
+    } catch (err) {
+      console.error('Directory load error:', err);
+      contentRoot.innerHTML =
+        '<div style="text-align:center;padding:4rem 1rem;color:var(--accent);">' +
+        '<h2>Failed to load shop data</h2>' +
+        '<p style="color:var(--text-dim);margin-top:.5rem;">Check console for details.<br>' +
+        'If testing locally without Supabase, ensure <code>data/shops.json</code> is in the same directory.</p>' +
+        '</div>';
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>

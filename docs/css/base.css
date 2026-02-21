@@ -1,0 +1,136 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   BASE.CSS — Shared foundation for entire Utah Fab project
+   Loaded FIRST on every page. Page-specific sheets override as needed.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── CSS RESET ───────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* ── DESIGN TOKENS ───────────────────────────────────────────────────── */
+:root {
+  /* Brand palette */
+  --brand-orange:      #ff6b2b;   /* Vibrant orange — portfolio accent     */
+  --brand-orange-dim:  #e8500a;   /* De-saturated — directory / admin      */
+  --brand-amber:       #f0a500;   /* Secondary warm — highlights, badges   */
+  --brand-amber-light: #ffb347;   /* Lighter amber — step titles           */
+
+  /* Backgrounds */
+  --bg-dark:           #0d1117;   /* Deep blue-black (portfolio)           */
+  --bg-deep:           #0f0f0f;   /* Near-black (directory / admin)        */
+  --bg-surface:        #181818;   /* Card / header surface                 */
+  --bg-surface-alt:    #222222;   /* Hover / alternate surface             */
+
+  /* Text */
+  --text-main:         #e8e4da;   /* Primary readable text                 */
+  --text-bright:       #f0ebe0;   /* High-emphasis headings                */
+  --text-muted:        #8a8a7a;   /* Secondary / label text                */
+  --text-dim:          #7a7672;   /* Tertiary — timestamps, hints          */
+
+  /* Borders */
+  --border-color:      rgba(255, 107, 43, 0.22);  /* Warm subtle border  */
+  --border-neutral:    #2e2e2e;   /* Neutral dark divider                  */
+
+  /* Semantic */
+  --danger:            #d63031;
+  --success:           #00b894;
+
+  /* Misc */
+  --tag-bg:            #1e1e1e;
+  --radius:            6px;
+
+  /* Fonts */
+  --font-title:  'Bebas Neue', sans-serif;
+  --font-mono:   'IBM Plex Mono', 'Share Tech Mono', monospace;
+  --font-body:   'IBM Plex Sans', 'Barlow', sans-serif;
+
+  /* Grid decoration */
+  --grid-color:  rgba(255, 107, 43, 0.07);
+}
+
+/* ── GLOBAL BASE STYLES ──────────────────────────────────────────────── */
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ── SCROLLBAR ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--border-neutral); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brand-orange-dim); }
+
+/* ── SHARED ENGINEERING DECORATIONS ──────────────────────────────────── */
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,107,43,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,107,43,0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.corner { position: absolute; width: 16px; height: 16px; pointer-events: none; z-index: 2; }
+.corner.tl { top: 16px; left: 16px; border-top: 2px solid var(--brand-orange); border-left: 2px solid var(--brand-orange); }
+.corner.tr { top: 16px; right: 16px; border-top: 2px solid var(--brand-orange); border-right: 2px solid var(--brand-orange); }
+.corner.bl { bottom: 16px; left: 16px; border-bottom: 2px solid var(--brand-orange); border-left: 2px solid var(--brand-orange); }
+.corner.br { bottom: 16px; right: 16px; border-bottom: 2px solid var(--brand-orange); border-right: 2px solid var(--brand-orange); }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--brand-orange);
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,107,43,0.25);
+}
+
+.ref-tag {
+  position: absolute; bottom: 18px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(255,107,43,0.3);
+  letter-spacing: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ── UTILITY CLASSES ─────────────────────────────────────────────────── */
+.hidden  { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); border: 0;
+}

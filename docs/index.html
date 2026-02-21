@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>Andrew Losee | Mechanical Drafting & CAD Design – Salt Lake City, UT</title>
+  <meta name="description" content="Offering CAD design, reverse engineering, and blueprint creation in Salt Lake City, UT. Serving machine shops, product developers, and makers.">
+  <meta name="keywords" content="CAD design, Fusion 360, reverse engineering, blueprint, machinist, fabrication, Salt Lake City, Utah">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Andrew Losee | Mechanical Drafting & CAD Design">
+  <meta property="og:description" content="Sketches, broken parts, existing parts">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yoursite.com">
+  <meta property="og:image" content="https://yoursite.com/og-preview.png">
+
+  <!-- Crosshair favicon (inline SVG, no extra file needed) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230d1117'/><circle cx='16' cy='16' r='10' fill='none' stroke='%23ff6b2b' stroke-width='1.5'/><line x1='16' y1='2' x2='16' y2='30' stroke='%23ff6b2b' stroke-width='1'/><line x1='2' y1='16' x2='30' y2='16' stroke='%23ff6b2b' stroke-width='1'/><circle cx='16' cy='16' r='2' fill='%23ff6b2b'/></svg>">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&family=Share+Tech+Mono&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ── LIGHTBOX ── -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-label="Portfolio image viewer">
+    <button class="lightbox-close" onclick="closeLightbox()">[ CLOSE ]</button>
+    <img id="lightbox-img" src="" alt="">
+    <div class="lightbox-label" id="lightbox-label"></div>
+  </div>
+
+  <!-- ── PAGE WRAPPER ── -->
+  <div class="page-wrap">
+
+
+    <div class="flyer">
+      <!-- Background decoration -->
+      <div class="bg-grid"></div>
+      <div class="accent-bar"></div>
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+
+      <!-- ── HEADER ── -->
+      <header class="header">
+        <div class="name-block">
+          <h1>Andrew<br><span>Losee</span></h1>
+          <div class="tagline">CAD Design</div>
+        </div>
+        <div class="header-contact">
+          <h4>Get In Touch</h4>
+          <form id="contactForm" class="contact-form" novalidate>
+            <div class="cf-row">
+              <input type="email" id="cfEmail" class="cf-input" placeholder="your@email.com" required autocomplete="email">
+            </div>
+            <div class="cf-row">
+              <textarea id="cfMessage" class="cf-input cf-textarea" placeholder="Describe your project…" rows="3" required maxlength="1000"></textarea>
+            </div>
+            <div class="cf-row cf-row--split">
+              <label class="cf-file-label" id="cfFileLabel">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                <span id="cfFileName">Attach photo</span>
+                <input type="file" id="cfFile" accept="image/*" hidden>
+              </label>
+              <button type="submit" class="cf-submit" id="cfSubmitBtn">SEND</button>
+            </div>
+            <div class="cf-feedback" id="cfFeedback"></div>
+          </form>
+          <div class="header-location">SALT LAKE<br>CITY, UT</div>
+        </div>
+      </header>
+
+      <!-- ── PROCESS ── -->
+      <section class="process-portfolio-section">
+        <div class="section-label">Process</div>
+        <div class="timeline">
+          <article class="timeline-step">
+            <div class="timeline-media thumb" onclick="openLightbox(this)" data-label="INTAKE · Rusty Driveshaft">
+              <img src="assets/rusty driveshaft.png" alt="Rusty driveshaft on a workbench">
+              <div class="thumb-overlay">[ VIEW ]</div>
+            </div>
+            <div class="timeline-content">
+              <div class="step-num">01</div>
+              <div class="step-title">You Bring It</div>
+              <div class="step-desc">Napkin sketch, broken part, or existing component.</div>
+              <div class="step-caption">Example: measurements + reference photos for reverse engineering.</div>
+            </div>
+          </article>
+
+          <article class="timeline-step">
+            <div class="timeline-media thumb" onclick="openLightbox(this)" data-label="MODEL · Render">
+              <img src="assets/Render.png" alt="CAD render of a driveshaft">
+              <div class="thumb-overlay">[ VIEW ]</div>
+            </div>
+            <div class="timeline-content">
+              <div class="step-num">02</div>
+              <div class="step-title">I Model It</div>
+              <div class="step-desc">Parametric DFM for CNC milling/turning and sla/fdm 3D printing.</div>
+              <div class="step-caption">Example: digital clone, assemblies, joints.</div>
+            </div>
+          </article>
+
+          <article class="timeline-step">
+            <div class="timeline-media thumb" onclick="openLightbox(this)" data-label="OUTPUT · Blueprint">
+              <img src="assets/Driveshaft blueprint.png" alt="Blueprint drawing of the driveshaft">
+              <div class="thumb-overlay">[ VIEW ]</div>
+            </div>
+            <div class="timeline-content">
+              <div class="step-num">03</div>
+              <div class="step-title">You Cut It</div>
+              <div class="step-desc">Upload-ready files for online fab houses, plus technical drawings for the local <a href="direct.html" class="inline-link">Utah Fab Directory</a>.</div>
+              <div class="step-caption">Example: clean STEP + drawing package with notes.</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── CAPABILITIES & DELIVERABLES ── 
+      <section class="skills-section">
+        <div class="section-label">Capabilities &amp; Deliverables</div>
+        <div class="skills-list">
+          <div class="skill-pill">Production-Ready 3D Models (STEP/IGES/STL)</div>
+          <div class="skill-pill">Assembly &amp; Multi-Body STEP Export</div>
+          <div class="skill-pill">GD&amp;T Callouts</div>
+          <div class="skill-pill">DFM: CNC Milling/Turning</div>
+          <div class="skill-pill">DFM: Sheet Metal</div>
+          <div class="skill-pill">DFM: 3D Printing</div>
+          <div class="skill-pill">Software: Fusion 360, SolidWorks</div>
+          <div class="skill-pill">Ferrous and non ferrous</div>
+        </div> -->
+      </section>
+
+      <!-- ── FOOTER / CONTACT ── -->
+      <footer class="footer"></footer>
+
+    </div><!-- end .flyer -->
+  </div><!-- end .page-wrap -->
+
+  <!-- Supabase JS client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- Script loads last so DOM is ready -->
+  <script src="js/script.js"></script>
+
+</body>
+</html>
