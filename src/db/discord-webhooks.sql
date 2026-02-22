@@ -209,17 +209,21 @@ CREATE POLICY "Public read contact photos"
 ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS maps_url TEXT NOT NULL DEFAULT '';
 ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS status  TEXT NOT NULL DEFAULT 'pending';
 
+-- Explicitly drop the known CHECK constraints by name (safe if they don't exist)
+ALTER TABLE directory_requests DROP CONSTRAINT IF EXISTS directory_requests_city_check;
+ALTER TABLE directory_requests DROP CONSTRAINT IF EXISTS directory_requests_region_check;
+
 -- Relax old city/region NOT NULL and CHECK constraints (columns may not exist on fresh installs)
 DO $$
 DECLARE
   _con RECORD;
 BEGIN
-  -- Drop all CHECK constraints that reference 'city' or 'region' columns
+  -- Drop any remaining CHECK constraints that reference 'city' or 'region'
   FOR _con IN
     SELECT conname
     FROM pg_constraint
     WHERE conrelid = 'directory_requests'::regclass
-      AND contype = 'c'  -- CHECK constraints
+      AND contype = 'c'
       AND (pg_get_constraintdef(oid) ~* '\bcity\b' OR pg_get_constraintdef(oid) ~* '\bregion\b')
   LOOP
     EXECUTE format('ALTER TABLE directory_requests DROP CONSTRAINT %I', _con.conname);
