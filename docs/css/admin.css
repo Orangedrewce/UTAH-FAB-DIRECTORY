@@ -639,6 +639,40 @@ body.modal-open {
   gap: .4rem;
   flex-shrink: 0;
 }
+.requests-card-region-row {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  margin-top: .25rem;
+  font-size: .72rem;
+  color: var(--text-muted);
+}
+.requests-region-select {
+  font-size: .72rem;
+  font-family: var(--font-mono);
+  padding: .15em .4em;
+  border: 1px solid var(--border-neutral);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  cursor: pointer;
+  max-width: 200px;
+}
+.requests-region-select:focus {
+  border-color: var(--brand-orange-dim);
+  outline: none;
+}
+.requests-card-city {
+  display: inline-block;
+  font-weight: 400;
+  font-size: .68rem;
+  color: var(--text-muted);
+  background: rgba(255,255,255,.06);
+  padding: .1em .45em;
+  border-radius: 4px;
+  margin-left: .35em;
+  vertical-align: middle;
+}
 .requests-empty {
   text-align: center;
   padding: 1.5rem;

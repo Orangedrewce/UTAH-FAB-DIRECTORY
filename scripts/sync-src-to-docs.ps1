@@ -16,7 +16,7 @@ git checkout dev
 
 # 4) Save changes
 git add -A
-git commit -m "JOIN THE DIRECTORY."
+git commit -m "fk sql."
 
 # 5) Publish to live site
 git push 
