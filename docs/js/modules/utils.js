@@ -1,3 +1,52 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════
+ * MODULE: utils.js — Shared Utility / Helper Functions
+ * ═══════════════════════════════════════════════════════════════════════
+ *
+ * PURPOSE:
+ *   Pure, reusable helper functions shared across the admin dashboard,
+ *   public directory, and portfolio pages.  None of these functions
+ *   touch the DOM directly (except by returning HTML strings); they are
+ *   safe to call from any context.
+ *
+ * EXPORTS:
+ *   • esc(str)            – Escapes a string for safe insertion into
+ *                           HTML (prevents XSS).  Used everywhere HTML
+ *                           is built from user data.
+ *   • parseMapsUrl(url)   – Extracts { city, region, label } from a
+ *                           Google Maps URL by parsing the embedded
+ *                           coordinates and /place/ path segment.
+ *                           Uses REGION_BOUNDS from constants.js to
+ *                           determine which Utah region the coordinates
+ *                           fall within.
+ *   • websiteLink(shop)   – Given a shop object, returns an HTML string
+ *                           for the shop's contact/website link.  Uses
+ *                           a priority cascade:
+ *                             1. Email → mailto: link
+ *                             2. URL   → <a href> link
+ *                             3. Phone → tel: link
+ *                             4. Fallback → raw text + Google Search
+ *                           Any leftover text after extraction is shown
+ *                           beside the link as a secondary contact note.
+ *   • normaliseShop(s)    – Normalises a raw shop object (from either
+ *                           shops.json or Supabase) into a consistent
+ *                           shape with guaranteed string `id`, default
+ *                           values, and unified key names.
+ *
+ * HOW TO ADD FEATURES / MODIFY:
+ *   • NEW CONTACT TYPE — To support a new contact format (e.g. Instagram
+ *     handle), add a new regex/match block inside `websiteLink()` before
+ *     the fallback section (step 4).
+ *   • NEW REGION — If you add a new geographic region, add its bounding
+ *     box to REGION_BOUNDS in constants.js; `parseMapsUrl` will pick
+ *     it up automatically.
+ *   • NEW SHOP FIELD — Add a default value in `normaliseShop()` so
+ *     every consumer sees a consistent property.
+ *   • NEW HELPER — Export a new function from this file and import it
+ *     where needed.  Keep functions pure (no side-effects).
+ * ═══════════════════════════════════════════════════════════════════════
+ */
+
 import { REGION_BOUNDS } from "./constants.js";
 
 /** Escape a string for safe HTML insertion */
@@ -81,7 +130,9 @@ export function websiteLink(shop) {
       .trim();
     const link = `<a class="card-link" href="mailto:${esc(email)}">${esc(email)}</a>`;
     if (remaining) {
-      return link + ` <span class="card-contact-extra">${esc(remaining)}</span>`;
+      return (
+        link + ` <span class="card-contact-extra">${esc(remaining)}</span>`
+      );
     }
     return link;
   }
@@ -101,7 +152,9 @@ export function websiteLink(shop) {
       .trim();
     const link = `<a class="card-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(display)}</a>`;
     if (remaining) {
-      return link + ` <span class="card-contact-extra">${esc(remaining)}</span>`;
+      return (
+        link + ` <span class="card-contact-extra">${esc(remaining)}</span>`
+      );
     }
     return link;
   }
@@ -119,7 +172,9 @@ export function websiteLink(shop) {
       .replace(/^[\s|,·]+|[\s|,·]+$/g, "")
       .trim();
     if (remaining) {
-      return link + ` <span class="card-contact-extra">${esc(remaining)}</span>`;
+      return (
+        link + ` <span class="card-contact-extra">${esc(remaining)}</span>`
+      );
     }
     return link;
   }

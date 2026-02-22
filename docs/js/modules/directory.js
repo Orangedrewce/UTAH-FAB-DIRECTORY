@@ -1,3 +1,64 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════
+ * MODULE: directory.js — Public Directory Page Controller
+ * ═══════════════════════════════════════════════════════════════════════
+ *
+ * PURPOSE:
+ *   Drives the public-facing Utah Fab Directory page.  Loads shop data,
+ *   renders the card grid grouped by region → category, and exposes
+ *   search / filter controls.  Also handles the "Join the Directory"
+ *   submission form.
+ *
+ * DATA FLOW:
+ *   1. On page load, the IIFE at the bottom tries to fetch shops from
+ *      Supabase via `fetchShops(true)` (active shops only).
+ *   2. If Supabase fails (offline, CORS, etc.), it falls back to the
+ *      local static file `data/shops.json` via `fetchJSONShops()`.
+ *   3. `buildDirectory(shops)` groups the array by region (in the order
+ *      defined by REGION_ORDER), then by category, and injects the HTML
+ *      into `#directoryContent`.  Card entrance animations are staggered.
+ *   4. `applyFilters()` runs on every user interaction (search input,
+ *      service/tag dropdown, region dropdown) and toggles `.hidden` on
+ *      each card, hiding empty category headers and region sections.
+ *
+ * KEY SECTIONS:
+ *   • STATE          — `allShops` (full dataset) and `activeFilter`
+ *                      (currently selected service tag, default "all").
+ *   • DOM REFERENCES — Cached element references for performance.
+ *   • HELPERS        — `mapsLink()` builds a Google Maps link icon;
+ *                      `renderCard()` builds one card's HTML.
+ *   • BUILD DOM      — `buildDirectory()` constructs the entire card
+ *                      grid from the shop array.
+ *   • FILTER ENGINE  — `applyFilters()` shows/hides cards and sections
+ *                      based on the current search, region, and tag.
+ *   • JOIN FORM      — Handles the "Request to join the directory"
+ *                      form submission, inserting a row into the
+ *                      `directory_requests` Supabase table.  Includes
+ *                      detailed error handling for common Supabase
+ *                      error codes (duplicate, null constraint, RLS,
+ *                      missing table, network errors, JWT expiry).
+ *
+ * HOW TO ADD FEATURES / MODIFY:
+ *   • NEW CARD FIELD — Add the field to `renderCard()`, then make sure
+ *     the field exists in the normalised shop object (update
+ *     `normaliseShop()` in utils.js and the shop's column in Supabase).
+ *   • NEW FILTER — Add an `<input>` or `<select>` to the HTML, cache
+ *     its reference up top, read its value inside `applyFilters()`,
+ *     and add an event listener at the bottom that calls
+ *     `applyFilters()`.
+ *   • CATEGORY SORT ORDER — Currently categories render in insertion
+ *     order.  To sort alphabetically, call
+ *     `[...rObj.categories.entries()].sort((a,b) => a[0].localeCompare(b[0]))`
+ *     inside `buildDirectory()` before iterating.
+ *   • PAGINATION / VIRTUAL SCROLL — Replace the `contentRoot.innerHTML`
+ *     approach with an incremental rendering strategy if the shop count
+ *     grows beyond ~500.
+ *   • NEW JOIN-FORM FIELD — Add the input to the HTML, read its value
+ *     inside the submit handler's `payload` object, and add the
+ *     matching column to the `directory_requests` table in Supabase.
+ * ═══════════════════════════════════════════════════════════════════════
+ */
+
 import { supabase as _sb } from "./supabase.js";
 import { REGION_ORDER } from "./constants.js";
 import { esc, websiteLink } from "./utils.js";

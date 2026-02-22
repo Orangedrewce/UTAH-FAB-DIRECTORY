@@ -1,7 +1,72 @@
-/* ═══════════════════════════════════════════════════════════════════════
-   ADMIN DASHBOARD  — admin.js
-   Supabase-backed CRUD for the Utah Fab Directory
-   ═══════════════════════════════════════════════════════════════════════ */
+/**
+ * ═══════════════════════════════════════════════════════════════════════
+ * MODULE: admin.js — Admin Dashboard Controller
+ * ═══════════════════════════════════════════════════════════════════════
+ *
+ * PURPOSE:
+ *   Full CRUD admin interface for managing the Utah Fab Directory.
+ *   Behind a Supabase email/password auth gate; once logged in the admin
+ *   can search, filter, add, edit, delete, and bulk-toggle shops, as
+ *   well as approve or reject community-submitted "Join the Directory"
+ *   requests.
+ *
+ * ARCHITECTURE:
+ *   • Imports the shared Supabase client, constants, utils, and API
+ *     helpers — no Supabase query strings are hard-coded here.
+ *   • All DOM references are cached once at module load via the `$()`
+ *     shorthand.
+ *   • The table body, tag picker, and requests list are rendered by
+ *     building HTML strings and assigning to `.innerHTML` for
+ *     performance.  Event delegation on parent elements handles clicks.
+ *
+ * KEY SECTIONS (in source order):
+ *   1. AUTH — `checkSession()`, login form handler, logout handler,
+ *      `showDashboard(user)`.  Uses Supabase Auth with
+ *      `signInWithPassword`.  Also listens for `onAuthStateChange`
+ *      to handle token refresh / external sign-out.
+ *   2. DATA LOADING — `loadRegions()`, `loadShops()`, `loadRequests()`.
+ *      Populates global arrays (`REGIONS`, `allShops`, `pendingRequests`)
+ *      and fills filter dropdowns.
+ *   3. FILTERING — `applyFilters()` runs on every search/filter change
+ *      and rebuilds the visible `filtered` array from `allShops`.
+ *   4. TABLE RENDERING — `renderRow()` builds one <tr>, `renderTable()`
+ *      assembles all rows with Active / Inactive section headers.
+ *   5. BULK SELECTION — Select-all checkbox with tri-state
+ *      (checked / indeterminate / unchecked), bulk-toggle active status.
+ *   6. MODAL (Add / Edit) — Tag picker, form population, open/close,
+ *      keyboard Escape support.
+ *   7. SAVE — INSERT or UPDATE to `fab_shops` via Supabase, with
+ *      user-friendly error messages for unique-constraint and
+ *      foreign-key violations.
+ *   8. DELETE — Soft confirmation → hard delete from `fab_shops`.
+ *   9. REQUESTS PANEL — Collapsible panel listing pending
+ *      `directory_requests`.  Each card has a region dropdown, Approve,
+ *      and Reject button.  Approving inserts a new `fab_shops` row and
+ *      marks the request as "approved"; rejecting marks it "dismissed".
+ *  10. DEEP-LINK — `handleApproveDeepLink()` reads `?approve_id=<uuid>`
+ *      from the URL (sent via Discord webhook), opens the requests panel,
+ *      and highlights the matching card.
+ *  11. LAYOUT — `syncLayoutHeights()` measures header/toolbar and sets
+ *      CSS custom properties for sticky positioning.
+ *  12. INIT — Calls `checkSession()` and registers `onAuthStateChange`.
+ *
+ * HOW TO ADD FEATURES / MODIFY:
+ *   • NEW TABLE COLUMN — Add the field to the modal form HTML in
+ *     admin.html, cache its DOM ref (const fXxx = $("#fXxx")), read /
+ *     write it in `openEditModal()` and the save handler's `payload`.
+ *   • NEW FILTER — Add the <select>/<input> to admin.html, cache the
+ *     ref, read its value in `applyFilters()`, and attach an event
+ *     listener that calls `applyFilters()`.
+ *   • NEW BULK ACTION — Add a button inside #bulkActions, attach a
+ *     click handler that iterates `selectedIds`, performs the Supabase
+ *     update, and calls `loadShops()` + `selectedIds.clear()`.
+ *   • NEW REQUEST FIELD — Add the column to the `directory_requests`
+ *     table, display it in `renderRequestsList()`, and include it in
+ *     the `newShop` object inside `handleRequestAction("approve", …)`.
+ *   • ROLE-BASED ACCESS — After login, query a `roles` or `profiles`
+ *     table and conditionally hide UI elements.
+ * ═══════════════════════════════════════════════════════════════════════
+ */
 
 import { supabase as _supabase } from "./supabase.js";
 import { ALL_TAGS, CATEGORIES, REGION_BOUNDS } from "./constants.js";

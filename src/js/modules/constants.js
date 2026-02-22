@@ -1,3 +1,46 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════
+ * MODULE: constants.js — Shared Application Constants
+ * ═══════════════════════════════════════════════════════════════════════
+ *
+ * PURPOSE:
+ *   Single source of truth for every hard-coded list used across the
+ *   admin dashboard, public directory, and API layer.  Keeping these
+ *   values in one file prevents drift between pages.
+ *
+ * EXPORTS:
+ *   • ALL_TAGS        – String[] of every service/capability tag a shop
+ *                       can have (e.g. "cnc", "welding", "laser").
+ *                       Used by the tag-picker in both admin and the
+ *                       "Join the Directory" form.
+ *   • CATEGORIES      – String[] of display names for shop categories
+ *                       shown in the admin modal's <datalist>.
+ *   • REGION_BOUNDS   – Array of { slug, label, latMin, latMax, lngMin,
+ *                       lngMax } objects.  Used by `parseMapsUrl()` in
+ *                       utils.js to auto-detect which geographic region
+ *                       a Google Maps URL falls in.
+ *   • REGION_META     – Object keyed by region slug, mapping each region
+ *                       to a human-readable { title, subtitle } pair for
+ *                       display in region headers on the public directory.
+ *   • REGION_ORDER    – String[] defining the display order of regions
+ *                       on the public directory page.
+ *
+ * HOW TO ADD FEATURES / MODIFY:
+ *   • NEW TAG — Append a string to ALL_TAGS.  The admin tag-picker and
+ *     "Join" form tag-picker will automatically include it.
+ *   • NEW CATEGORY — Append a string to CATEGORIES.  The <datalist> in
+ *     the admin edit modal will show it as a suggestion.
+ *   • NEW REGION — Do all four:
+ *       1. Add a bounding-box entry to REGION_BOUNDS.
+ *       2. Add a { title, subtitle } entry to REGION_META.
+ *       3. Insert the slug into REGION_ORDER at the desired position.
+ *       4. Insert a matching row in the Supabase `regions` table so
+ *          the admin region filter picks it up.
+ *   • RENAME A REGION — Update the slug everywhere it appears in this
+ *     file, then update the Supabase `regions` row to match.
+ * ═══════════════════════════════════════════════════════════════════════
+ */
+
 export const ALL_TAGS = [
   "3dprint",
   "aerospace",

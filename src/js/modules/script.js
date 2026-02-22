@@ -1,3 +1,51 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════
+ * MODULE: script.js — Portfolio Page Logic (Lightbox + Contact Form)
+ * ═══════════════════════════════════════════════════════════════════════
+ *
+ * PURPOSE:
+ *   Powers the portfolio / landing page with two independent features:
+ *     1. An image lightbox overlay
+ *     2. A contact form that uploads an optional photo to Supabase
+ *        Storage and inserts a message row into the `contact_messages`
+ *        table.
+ *
+ * FEATURE 1 — LIGHTBOX:
+ *   • `openLightbox(element)` — Called from inline `onclick` handlers in
+ *     the HTML.  Reads the child <img>'s `src` and the element's
+ *     `data-label` attribute, then shows the #lightbox overlay.
+ *   • `closeLightbox()` — Hides the overlay, clears the image source.
+ *   • Both functions are attached to `window` so inline HTML event
+ *     handlers can call them.
+ *   • Pressing Escape while the lightbox is open closes it.
+ *
+ * FEATURE 2 — CONTACT FORM:
+ *   • On submit, validates the email (basic regex) and message length
+ *     (max 1 000 characters).
+ *   • If a photo file is attached, validates its type (JPEG, PNG, GIF,
+ *     WEBP) and size (max 5 MB), then uploads it to the Supabase
+ *     "contact-photos" storage bucket.  A unique filename is generated
+ *     with a timestamp + UUID.
+ *   • Inserts { email, message, photo_url } into the `contact_messages`
+ *     table.
+ *   • Shows success / error feedback via the #cfFeedback element.
+ *   • `initContactForm()` is called at module load; it no-ops silently
+ *     if the form element doesn't exist (i.e. on non-portfolio pages).
+ *
+ * HOW TO ADD FEATURES / MODIFY:
+ *   • ADDITIONAL FILE TYPES — Add MIME → extension entries to the
+ *     `ALLOWED_TYPES` map inside `initContactForm()`.
+ *   • LARGER UPLOADS — Increase `MAX_FILE_SIZE` (in bytes).
+ *   • NEW FORM FIELDS — Add the field to the HTML, read its value
+ *     inside the submit handler, and include it in the insert payload.
+ *     Make sure the matching column exists in the `contact_messages`
+ *     Supabase table.
+ *   • LIGHTBOX NAVIGATION (prev/next) — Track all portfolio items in
+ *     an array, store the current index, and add prev/next button
+ *     handlers that update `lightboxImg.src`.
+ * ═══════════════════════════════════════════════════════════════════════
+ */
+
 import { supabase as sb } from "./supabase.js";
 
 const lightbox = document.getElementById("lightbox");
