@@ -28,12 +28,14 @@ ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Anon insert contact" ON contact_messages;
 CREATE POLICY "Anon insert contact"
   ON contact_messages FOR INSERT
+  TO anon
   WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admin read contact" ON contact_messages;
 CREATE POLICY "Admin read contact"
   ON contact_messages FOR SELECT
-  USING (auth.role() = 'authenticated');
+  TO authenticated
+  USING (true);
 
 -- 2c. Discord notification — contact form
 CREATE OR REPLACE FUNCTION notify_discord_contact()
@@ -78,7 +80,7 @@ BEGIN
   --    Move to a Supabase Vault secret or environment variable in production.
   PERFORM net.http_post(
     url     := 'https://discord.com/api/webhooks/1474899689680928981/SJduDzevWXaj47df2aaDefLDUjabqu-YT6_RSNW4Uhqn7-LcaincWgp-UCfXhFgdV-cy',
-    body    := _payload::text,
+    body    := _payload,
     headers := jsonb_build_object('Content-Type', 'application/json')
   );
 
@@ -98,7 +100,64 @@ CREATE TRIGGER on_contact_insert
 -- DIRECTORY REQUESTS
 -- ============================================================================
 
--- 3a. Directory requests table
+-- ── MIGRATION: fix old table schema BEFORE trying to create ─────────────
+-- This runs first so the table is in a good state before anything else.
+-- Safe to run repeatedly; safe if table doesn't exist yet.
+DO $$
+DECLARE _con RECORD;
+BEGIN
+  -- Only migrate if the table already exists
+  IF EXISTS (SELECT 1 FROM information_schema.tables
+             WHERE table_schema = 'public' AND table_name = 'directory_requests') THEN
+
+    -- Add new columns (no-op if already present)
+    BEGIN
+      ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS maps_url TEXT NOT NULL DEFAULT '';
+    EXCEPTION WHEN OTHERS THEN NULL;
+    END;
+    BEGIN
+      ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'pending';
+    EXCEPTION WHEN OTHERS THEN NULL;
+    END;
+
+    -- Drop known CHECK constraints on city/region by name
+    BEGIN ALTER TABLE directory_requests DROP CONSTRAINT IF EXISTS directory_requests_city_check;
+    EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN ALTER TABLE directory_requests DROP CONSTRAINT IF EXISTS directory_requests_region_check;
+    EXCEPTION WHEN OTHERS THEN NULL; END;
+
+    -- Drop any other CHECK constraints referencing city or region
+    FOR _con IN
+      SELECT conname FROM pg_constraint
+      WHERE conrelid = 'directory_requests'::regclass
+        AND contype = 'c'
+        AND (pg_get_constraintdef(oid) ~* '\bcity\b'
+          OR pg_get_constraintdef(oid) ~* '\bregion\b')
+    LOOP
+      EXECUTE format('ALTER TABLE directory_requests DROP CONSTRAINT %I', _con.conname);
+    END LOOP;
+
+    -- Relax NOT NULL on city/region if those columns exist
+    IF EXISTS (SELECT 1 FROM information_schema.columns
+               WHERE table_name = 'directory_requests' AND column_name = 'city') THEN
+      ALTER TABLE directory_requests ALTER COLUMN city DROP NOT NULL;
+      ALTER TABLE directory_requests ALTER COLUMN city SET DEFAULT '';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM information_schema.columns
+               WHERE table_name = 'directory_requests' AND column_name = 'region') THEN
+      ALTER TABLE directory_requests ALTER COLUMN region DROP NOT NULL;
+      ALTER TABLE directory_requests ALTER COLUMN region SET DEFAULT '';
+    END IF;
+
+    RAISE NOTICE 'directory_requests migration complete';
+  ELSE
+    RAISE NOTICE 'directory_requests does not exist yet — will be created fresh';
+  END IF;
+END
+$$;
+
+-- 3a. Directory requests table (fresh installs only; IF NOT EXISTS skips if migrated above)
 CREATE TABLE IF NOT EXISTS directory_requests (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   shop_name   TEXT NOT NULL CHECK (char_length(shop_name) BETWEEN 1 AND 200),
@@ -115,18 +174,21 @@ ALTER TABLE directory_requests ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Anon insert directory request" ON directory_requests;
 CREATE POLICY "Anon insert directory request"
   ON directory_requests FOR INSERT
+  TO anon
   WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admin read directory requests" ON directory_requests;
 CREATE POLICY "Admin read directory requests"
   ON directory_requests FOR SELECT
-  USING (auth.role() = 'authenticated');
+  TO authenticated
+  USING (true);
 
 DROP POLICY IF EXISTS "Admin update directory requests" ON directory_requests;
 CREATE POLICY "Admin update directory requests"
   ON directory_requests FOR UPDATE
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
 
 -- 3c. Discord notification — directory request (with Approve deep-link)
 CREATE OR REPLACE FUNCTION notify_discord_directory_request()
@@ -163,7 +225,7 @@ BEGIN
   --    Move to a Supabase Vault secret or environment variable in production.
   PERFORM net.http_post(
     url     := 'https://discord.com/api/webhooks/1474899689680928981/SJduDzevWXaj47df2aaDefLDUjabqu-YT6_RSNW4Uhqn7-LcaincWgp-UCfXhFgdV-cy',
-    body    := _payload::text,
+    body    := _payload,
     headers := jsonb_build_object('Content-Type', 'application/json')
   );
 
@@ -190,6 +252,7 @@ ON CONFLICT (id) DO NOTHING;
 DROP POLICY IF EXISTS "Anon upload contact photos" ON storage.objects;
 CREATE POLICY "Anon upload contact photos"
   ON storage.objects FOR INSERT
+  TO anon
   WITH CHECK (
     bucket_id = 'contact-photos'
     AND (COALESCE(metadata->>'mimetype', '') ~* '^image/(jpeg|png|gif|webp)$')
@@ -199,54 +262,7 @@ CREATE POLICY "Anon upload contact photos"
 DROP POLICY IF EXISTS "Public read contact photos" ON storage.objects;
 CREATE POLICY "Public read contact photos"
   ON storage.objects FOR SELECT
+  TO public
   USING (bucket_id = 'contact-photos');
-
--- ============================================================================
--- MIGRATION HELPERS — safe on both fresh and existing installs
--- ============================================================================
-
--- Add new columns if they don't exist yet
-ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS maps_url TEXT NOT NULL DEFAULT '';
-ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS status  TEXT NOT NULL DEFAULT 'pending';
-
--- Explicitly drop the known CHECK constraints by name (safe if they don't exist)
-ALTER TABLE directory_requests DROP CONSTRAINT IF EXISTS directory_requests_city_check;
-ALTER TABLE directory_requests DROP CONSTRAINT IF EXISTS directory_requests_region_check;
-
--- Relax old city/region NOT NULL and CHECK constraints (columns may not exist on fresh installs)
-DO $$
-DECLARE
-  _con RECORD;
-BEGIN
-  -- Drop any remaining CHECK constraints that reference 'city' or 'region'
-  FOR _con IN
-    SELECT conname
-    FROM pg_constraint
-    WHERE conrelid = 'directory_requests'::regclass
-      AND contype = 'c'
-      AND (pg_get_constraintdef(oid) ~* '\bcity\b' OR pg_get_constraintdef(oid) ~* '\bregion\b')
-  LOOP
-    EXECUTE format('ALTER TABLE directory_requests DROP CONSTRAINT %I', _con.conname);
-  END LOOP;
-
-  -- Drop NOT NULL and set defaults for city (if column exists)
-  IF EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'directory_requests' AND column_name = 'city'
-  ) THEN
-    ALTER TABLE directory_requests ALTER COLUMN city DROP NOT NULL;
-    ALTER TABLE directory_requests ALTER COLUMN city SET DEFAULT '';
-  END IF;
-
-  -- Drop NOT NULL and set defaults for region (if column exists)
-  IF EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'directory_requests' AND column_name = 'region'
-  ) THEN
-    ALTER TABLE directory_requests ALTER COLUMN region DROP NOT NULL;
-    ALTER TABLE directory_requests ALTER COLUMN region SET DEFAULT '';
-  END IF;
-END
-$$;
 
 -- Done!

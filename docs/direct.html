@@ -485,19 +485,24 @@
         console.error('Join request failed:', err);
 
         let msg = 'Something went wrong. Please try again.';
+        const code = err?.code || '';
         const em = (err && (err.message || err.details || err.hint)) || '';
 
-        if (err?.code === '23505' || em.includes('duplicate') || em.includes('unique'))
+        if (code === '23505' || em.includes('duplicate') || em.includes('unique'))
           msg = 'A request for this shop has already been submitted.';
-        else if (err?.code === '23502' || em.includes('not-null') || em.includes('null value'))
+        else if (code === '23502' || em.includes('not-null') || em.includes('null value'))
           msg = 'Please fill in all required fields.';
-        else if (err?.code === '42501' || em.includes('permission') || em.includes('policy'))
+        else if (code === '42501' || em.includes('row-level security'))
           msg = 'Permission denied — the database is not accepting requests right now.';
-        else if (err?.code === '42P01' || em.includes('does not exist'))
-          msg = 'The request form is not set up yet. Please contact the admin.';
+        else if (code === '42P01')
+          msg = 'The request form is not set up yet (table missing). Please contact the admin.';
+        else if (code === '42703' || (em.includes('column') && em.includes('does not exist')))
+          msg = 'The form schema is outdated — please contact the admin to run the latest migration.';
+        else if (code.startsWith('42') || em.includes('check constraint'))
+          msg = 'Database schema error — please contact the admin. (' + (em || code) + ')';
         else if (em.includes('Failed to fetch') || em.includes('NetworkError') || em.includes('network'))
           msg = 'Network error — check your internet connection and try again.';
-        else if (err?.code === 'PGRST301' || em.includes('JWT'))
+        else if (code === 'PGRST301' || em.includes('JWT'))
           msg = 'Session expired — please refresh the page and try again.';
         else if (em)
           msg = 'Error: ' + em;

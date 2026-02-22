@@ -41,12 +41,13 @@ const CATEGORIES = [
 let REGIONS = [];
 
 // ── Utah region bounding boxes (lat/lng ranges) ────────────────────────
+// Slugs MUST match the `regions` table in Supabase (FK constraint on fab_shops)
 const REGION_BOUNDS = [
-  { slug: 'cache-box-elder',  label: 'Cache / Box Elder',        latMin: 41.4, latMax: 42.05, lngMin: -112.5, lngMax: -111.5 },
-  { slug: 'davis-weber',      label: 'Davis / Weber',            latMin: 40.85, latMax: 41.4,  lngMin: -112.2, lngMax: -111.7 },
-  { slug: 'salt-lake-metro',  label: 'Salt Lake Metro',          latMin: 40.5,  latMax: 40.85, lngMin: -112.15, lngMax: -111.7 },
-  { slug: 'utah-county',      label: 'Utah County',              latMin: 39.9,  latMax: 40.5,  lngMin: -112.0, lngMax: -111.3 },
-  { slug: 'iron-washington',  label: 'Iron / Washington',        latMin: 37.0,  latMax: 37.9,  lngMin: -114.0, lngMax: -113.0 },
+  { slug: 'cache-valley',  label: 'Cache Valley',              latMin: 41.4, latMax: 42.05, lngMin: -112.5, lngMax: -111.5 },
+  { slug: 'weber-ogden',   label: 'Weber / Ogden Area',        latMin: 40.85, latMax: 41.4,  lngMin: -112.2, lngMax: -111.7 },
+  { slug: 'salt-lake',     label: 'Salt Lake Valley',           latMin: 40.5,  latMax: 40.85, lngMin: -112.15, lngMax: -111.7 },
+  { slug: 'utah-county',   label: 'Utah County',               latMin: 39.9,  latMax: 40.5,  lngMin: -112.0, lngMax: -111.3 },
+  { slug: 'southern-utah', label: 'St. George / Southern Utah', latMin: 37.0,  latMax: 37.9,  lngMin: -114.0, lngMax: -113.0 },
 ];
 
 /**
