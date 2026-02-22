@@ -79,7 +79,7 @@ body {
     width: 100%;
     background: var(--bg-deep);
     border: 1px solid var(--border-neutral);
-    border-radius: 3px;
+    border-radius: var(--radius);
     color: var(--text-bright);
     font-family: var(--font-mono);
     font-size: 0.82rem;
@@ -119,7 +119,7 @@ body {
     color: var(--brand-orange-dim);
     text-decoration: none;
     border: 1px solid var(--brand-orange-dim);
-    border-radius: 3px;
+    border-radius: var(--radius);
     padding: 8px 18px;
     transition: background 0.2s, color 0.2s;
   }
@@ -193,7 +193,7 @@ body {
     color: var(--text-dim);
     background: var(--bg-surface);
     border: 1px solid var(--border-neutral);
-    border-radius: 2px;
+    border-radius: var(--radius);
     padding: 2px 8px;
   }
 
@@ -371,7 +371,7 @@ body {
   .tag {
     background: var(--tag-bg);
     border: 1px solid var(--border-neutral);
-    border-radius: 2px;
+    border-radius: var(--radius);
     color: var(--text-dim);
     font-family: var(--font-mono);
     font-size: 0.58rem;
@@ -421,30 +421,32 @@ body {
     color: var(--text-dim);
     margin-bottom: 1.5rem;
   }
-  .join-row {
+
+  /* ── Admin-style form layout (shared with modal) ── */
+  .join-form .form-row {
     display: flex;
     gap: .75rem;
     flex-wrap: wrap;
   }
-  .join-field {
+  .join-form .form-group {
     display: flex;
     flex-direction: column;
-    flex: 1 1 0;
-    min-width: 200px;
     margin-bottom: .75rem;
   }
-  .join-field--full { flex-basis: 100%; }
-  .join-field label {
+  .join-form .flex-1 { flex: 1 1 0; min-width: 0; }
+  .join-form .flex-2 { flex: 2 1 0; min-width: 0; }
+
+  .join-form .form-group label {
     font-family: var(--font-mono);
-    font-size: .7rem;
+    font-size: .72rem;
     text-transform: uppercase;
     letter-spacing: .05em;
     color: var(--text-muted);
     margin-bottom: .3rem;
   }
-  .join-field input,
-  .join-field select,
-  .join-field textarea {
+  .join-form .form-group input,
+  .join-form .form-group select,
+  .join-form .form-group textarea {
     background: var(--bg-deep);
     border: 1px solid var(--border-neutral);
     border-radius: var(--radius);
@@ -453,57 +455,62 @@ body {
     font-size: .85rem;
     padding: .5rem .65rem;
   }
-  .join-field input:focus,
-  .join-field select:focus,
-  .join-field textarea:focus {
+  .join-form .form-group input:focus,
+  .join-form .form-group select:focus,
+  .join-form .form-group textarea:focus {
     border-color: var(--brand-orange-dim);
-    outline: 2px solid var(--brand-orange-dim);
-    outline-offset: 2px;
+    outline: none;
   }
-  .join-field textarea { resize: vertical; }
+  .join-form .form-group textarea { resize: vertical; }
 
-  /* Services checkbox grid */
-  .join-services-grid {
+  /* Tag picker (matches admin tag-chip style) */
+  .join-form .tag-picker {
     display: flex;
     flex-wrap: wrap;
-    gap: .4rem;
+    gap: .35rem;
   }
-  .svc-chip {
+  .join-form .tag-chip {
     display: inline-flex;
     align-items: center;
+    gap: .25rem;
+    padding: .25rem .55rem;
+    border: 1px solid var(--border-neutral);
+    border-radius: var(--radius);
+    font-size: .78rem;
     cursor: pointer;
     user-select: none;
+    transition: background .12s, border-color .12s;
+    background: var(--bg-surface-alt);
+    color: var(--text-muted);
   }
-  .svc-chip input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  .svc-chip span {
-    display: inline-block;
-    padding: .3em .7em;
-    border-radius: 999px;
-    border: 1px solid var(--border, rgba(255,255,255,.12));
-    background: rgba(255,255,255,.04);
-    color: var(--text-dim, #aaa);
-    font-size: .78rem;
-    transition: all .15s ease;
-  }
-  .svc-chip:hover span {
-    border-color: var(--accent, #FF6B2B);
-    color: var(--text-main, #ddd);
-  }
-  .svc-chip input:checked + span {
-    background: var(--accent, #FF6B2B);
-    border-color: var(--accent, #FF6B2B);
+  .join-form .tag-chip:hover { border-color: var(--text-muted); }
+  .join-form .tag-chip.selected {
+    background: var(--brand-orange-dim);
+    border-color: var(--brand-orange-dim);
     color: #fff;
-    font-weight: 600;
   }
-  .svc-chip input:focus-visible + span {
-    outline: 2px solid var(--accent, #FF6B2B);
-    outline-offset: 2px;
+
+  /* Buttons (admin-style) */
+  .join-form .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .55rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: .8rem;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    text-decoration: none;
   }
+  .join-form .btn-primary {
+    background: var(--brand-orange-dim);
+    color: #fff;
+    border-color: var(--brand-orange-dim);
+  }
+  .join-form .btn-primary:hover { background: #c84009; }
+  .join-form .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
 
   .join-actions {
     display: flex;
@@ -511,21 +518,6 @@ body {
     gap: 1rem;
     margin-top: .5rem;
   }
-  .join-btn {
-    display: inline-flex;
-    align-items: center;
-    padding: .6rem 1.4rem;
-    background: var(--brand-orange-dim);
-    color: #fff;
-    border: 1px solid var(--brand-orange-dim);
-    border-radius: var(--radius);
-    font-family: var(--font-mono);
-    font-size: .82rem;
-    cursor: pointer;
-    transition: background .15s;
-  }
-  .join-btn:hover { background: #c84009; }
-  .join-btn:disabled { opacity: .5; cursor: not-allowed; }
   .join-feedback {
     font-family: var(--font-mono);
     font-size: .78rem;
@@ -535,7 +527,7 @@ body {
 
   @media (max-width: 700px) {
     .join-section { padding: 1.5rem 1rem; margin-top: 2rem; }
-    .join-row { flex-direction: column; gap: 0; }
+    .join-form .form-row { flex-direction: column; gap: 0; }
   }
 
   /* ── RESPONSIVE ── */

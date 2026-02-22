@@ -125,6 +125,18 @@ BEGIN
       ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'pending';
     EXCEPTION WHEN OTHERS THEN NULL;
     END;
+    BEGIN
+      ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS city TEXT NOT NULL DEFAULT '';
+    EXCEPTION WHEN OTHERS THEN NULL;
+    END;
+    BEGIN
+      ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS region TEXT NOT NULL DEFAULT '';
+    EXCEPTION WHEN OTHERS THEN NULL;
+    END;
+    BEGIN
+      ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS tags TEXT[] DEFAULT '{}';
+    EXCEPTION WHEN OTHERS THEN NULL;
+    END;
 
     -- Drop known CHECK constraints on city/region by name
     BEGIN ALTER TABLE directory_requests DROP CONSTRAINT IF EXISTS directory_requests_city_check;
@@ -167,9 +179,12 @@ $$;
 CREATE TABLE IF NOT EXISTS directory_requests (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   shop_name   TEXT NOT NULL CHECK (char_length(shop_name) BETWEEN 1 AND 200),
+  city        TEXT NOT NULL DEFAULT '',
+  region      TEXT NOT NULL DEFAULT '',
   maps_url    TEXT NOT NULL DEFAULT '' CHECK (char_length(maps_url) <= 2000),
   contact     TEXT NOT NULL CHECK (char_length(contact) BETWEEN 1 AND 500),
   services    TEXT NOT NULL DEFAULT '' CHECK (char_length(services) <= 5000),
+  tags        TEXT[] DEFAULT '{}',
   status      TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','dismissed')),
   created_at  TIMESTAMPTZ DEFAULT now()
 );

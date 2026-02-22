@@ -83,50 +83,73 @@
       <p class="join-sub">Own a fab shop, machine shop, or maker space in Utah? Request a free listing.</p>
 
       <form id="joinForm" class="join-form" autocomplete="off">
-        <div class="join-row">
-          <div class="join-field">
+
+        <div class="form-row">
+          <div class="form-group flex-2">
             <label for="jShopName">Shop Name *</label>
             <input type="text" id="jShopName" required maxlength="200" placeholder="e.g. Acme Fabrication">
           </div>
-          <div class="join-field">
-            <label for="jMapsUrl">Google Maps Profile URL *</label>
-            <input type="text" id="jMapsUrl" required maxlength="1000" placeholder="https://maps.app.goo.gl/… or https://maps.google.com/…">
+          <div class="form-group flex-1">
+            <label for="jCity">City *</label>
+            <input type="text" id="jCity" required maxlength="100" placeholder="e.g. Salt Lake City">
           </div>
         </div>
 
-        <div class="join-row">
-          <div class="join-field">
-            <label for="jContact">Contact Link / Email *</label>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="jRegion">Region *</label>
+            <select id="jRegion" required>
+              <option value="">Select region…</option>
+              <option value="salt-lake">Salt Lake Valley</option>
+              <option value="utah-county">Utah County</option>
+              <option value="weber-ogden">Weber / Ogden Area</option>
+              <option value="cache-valley">Cache Valley</option>
+              <option value="southern-utah">St. George / Southern Utah</option>
+              <option value="other">Other: Statewide, Rural &amp; Specialty</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="jContact">Website / Contact *</label>
             <input type="text" id="jContact" required maxlength="500" placeholder="website.com or email@example.com">
           </div>
-          <div class="join-field join-field--full">
-            <label>Services Offered <span style="font-weight:400;color:var(--text-dim);">(select all that apply)</span></label>
-            <div class="join-services-grid" id="jServicesGrid">
-              <label class="svc-chip"><input type="checkbox" name="svc" value="cnc"><span>CNC Machining</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="laser"><span>Laser Cutting</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="welding"><span>Welding</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="plasma"><span>Plasma Cutting</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="waterjet"><span>Waterjet</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="3dprint"><span>3D Printing</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="sheetmetal"><span>Sheet Metal</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="powder"><span>Powder Coating</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="anodize"><span>Anodizing</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="plating"><span>Plating</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="heattreat"><span>Heat Treating</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="structural"><span>Structural</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="prototype"><span>Prototyping</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="assembly"><span>Assembly</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="ornamental"><span>Ornamental</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="offroad"><span>Off-Road / 4x4</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="aerospace"><span>Aerospace</span></label>
-              <label class="svc-chip"><input type="checkbox" name="svc" value="makerspace"><span>Makerspace</span></label>
-            </div>
-            <input type="text" id="jServicesOther" maxlength="500" placeholder="Other services not listed above…" style="margin-top:.5rem;">
+        </div>
+
+        <div class="form-group">
+          <label for="jMapsUrl">Google Maps Profile URL</label>
+          <input type="url" id="jMapsUrl" maxlength="1000" placeholder="https://maps.app.goo.gl/… or https://maps.google.com/…">
+        </div>
+
+        <div class="form-group">
+          <label for="jServices">Services</label>
+          <textarea id="jServices" rows="3" maxlength="1000" placeholder="CNC milling, laser cutting, welding…"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Tags <span style="font-weight:400;color:var(--text-dim);">(select all that apply)</span></label>
+          <div class="tag-picker" id="jTagPicker">
+            <span class="tag-chip" data-tag="cnc">CNC</span>
+            <span class="tag-chip" data-tag="laser">Laser</span>
+            <span class="tag-chip" data-tag="welding">Welding</span>
+            <span class="tag-chip" data-tag="plasma">Plasma</span>
+            <span class="tag-chip" data-tag="waterjet">Waterjet</span>
+            <span class="tag-chip" data-tag="3dprint">3D Print</span>
+            <span class="tag-chip" data-tag="sheetmetal">Sheet Metal</span>
+            <span class="tag-chip" data-tag="powder">Powder Coat</span>
+            <span class="tag-chip" data-tag="anodize">Anodize</span>
+            <span class="tag-chip" data-tag="plating">Plating</span>
+            <span class="tag-chip" data-tag="heattreat">Heat Treat</span>
+            <span class="tag-chip" data-tag="structural">Structural</span>
+            <span class="tag-chip" data-tag="prototype">Prototype</span>
+            <span class="tag-chip" data-tag="assembly">Assembly</span>
+            <span class="tag-chip" data-tag="ornamental">Ornamental</span>
+            <span class="tag-chip" data-tag="offroad">Off-Road</span>
+            <span class="tag-chip" data-tag="aerospace">Aerospace</span>
+            <span class="tag-chip" data-tag="makerspace">Makerspace</span>
           </div>
         </div>
 
         <div class="join-actions">
-          <button type="submit" class="join-btn" id="joinSubmitBtn">Submit Request</button>
+          <button type="submit" class="btn btn-primary" id="joinSubmitBtn">Submit Request</button>
           <span class="join-feedback" id="joinFeedback"></span>
         </div>
       </form>
@@ -211,20 +234,45 @@
            + `Search Google</a>`;
     }
 
-    // Try to extract a URL-like token (domain.com or https://...)
-    const urlMatch = raw.match(/(https?:\/\/[^\s|,]+|[a-z0-9][a-z0-9\-]*\.[a-z]{2,}[^\s|,]*)/i);
-    if (urlMatch) {
-      const href = urlMatch[0].startsWith('http') ? urlMatch[0] : 'https://' + urlMatch[0];
-      const display = urlMatch[0].replace(/^https?:\/\//, '').replace(/\/$/, '');
-      // If raw text has extra info beyond the URL, show the full text + link icon
-      if (raw.length > urlMatch[0].length + 5) {
-        return `<a class="card-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(display)}</a>`
-             + `<span class="card-contact-extra">${esc(raw.replace(urlMatch[0], '').replace(/^[\s|,·]+/, ''))}</span>`;
+    // 1. Try to extract an Email
+    const emailMatch = raw.match(/([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/i);
+    if (emailMatch) {
+      const email = emailMatch[0];
+      const remaining = raw.replace(email, '').replace(/^[\s|,·]+|[\s|,·]+$/g, '').trim();
+      const link = `<a class="card-link" href="mailto:${esc(email)}">${esc(email)}</a>`;
+      if (remaining) {
+        return link + ` <span class="card-contact-extra">${esc(remaining)}</span>`;
       }
-      return `<a class="card-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(display)}</a>`;
+      return link;
     }
 
-    // No URL found — show raw text + Google search icon
+    // 2. Try to extract a URL
+    const urlMatch = raw.match(/(https?:\/\/[^\s|,]+|[a-zA-Z0-9][a-zA-Z0-9\-]*\.[a-zA-Z]{2,}[^\s|,]*)/i);
+    if (urlMatch) {
+      const href = urlMatch[0].startsWith('http') ? urlMatch[0] : 'https://' + urlMatch[0];
+      const display = urlMatch[0].replace(/^https?:\/\//i, '').replace(/\/$/, '');
+      const remaining = raw.replace(urlMatch[0], '').replace(/^[\s|,·]+|[\s|,·]+$/g, '').trim();
+      const link = `<a class="card-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(display)}</a>`;
+      if (remaining) {
+        return link + ` <span class="card-contact-extra">${esc(remaining)}</span>`;
+      }
+      return link;
+    }
+
+    // 3. Try to extract a Phone number
+    const phoneMatch = raw.match(/(\+?1?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/);
+    if (phoneMatch) {
+      const phone = phoneMatch[0];
+      const tel = phone.replace(/[^\d+]/g, ''); // Keep numbers and '+'
+      const link = `<a class="card-link" href="tel:${esc(tel)}">${esc(phone.trim())}</a>`;
+      const remaining = raw.replace(phone, '').replace(/^[\s|,·]+|[\s|,·]+$/g, '').trim();
+      if (remaining) {
+        return link + ` <span class="card-contact-extra">${esc(remaining)}</span>`;
+      }
+      return link;
+    }
+
+    // 4. Default fallback: show raw text + Google search
     const q = encodeURIComponent(shop.name + ' ' + shop.city + ' Utah');
     return `<span class="card-contact-extra">${esc(raw)}</span> `
          + `<a class="card-link card-link--search" href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener noreferrer">`
@@ -472,8 +520,17 @@
   })();
 
   /* ═══════════════════════════════════════════════════
-     JOIN THE DIRECTORY — Form submission
+     JOIN THE DIRECTORY — Tag picker + Form submission
   ═══════════════════════════════════════════════════ */
+  // Tag chip click → toggle selected
+  const jTagPicker = document.getElementById('jTagPicker');
+  if (jTagPicker) {
+    jTagPicker.addEventListener('click', (e) => {
+      const chip = e.target.closest('.tag-chip');
+      if (chip) chip.classList.toggle('selected');
+    });
+  }
+
   const joinForm      = document.getElementById('joinForm');
   const joinSubmitBtn = document.getElementById('joinSubmitBtn');
   const joinFeedback  = document.getElementById('joinFeedback');
@@ -486,15 +543,16 @@
       joinFeedback.textContent = '';
       joinFeedback.className = 'join-feedback';
 
-      const checked = [...document.querySelectorAll('#jServicesGrid input:checked')].map(cb => cb.value);
-      const otherSvc = document.getElementById('jServicesOther').value.trim();
-      if (otherSvc) checked.push(otherSvc);
+      const selectedTags = [...document.querySelectorAll('#jTagPicker .tag-chip.selected')].map(el => el.dataset.tag);
 
       const payload = {
         shop_name: document.getElementById('jShopName').value.trim(),
+        city:      document.getElementById('jCity').value.trim(),
+        region:    document.getElementById('jRegion').value,
         maps_url:  document.getElementById('jMapsUrl').value.trim(),
         contact:   document.getElementById('jContact').value.trim(),
-        services:  checked.join(', '),
+        services:  document.getElementById('jServices').value.trim(),
+        tags:      selectedTags,
       };
 
       try {
@@ -505,6 +563,8 @@
         joinFeedback.textContent = 'Request submitted — we\'ll review it shortly!';
         joinFeedback.classList.add('success');
         joinForm.reset();
+        // Clear tag selections
+        jTagPicker.querySelectorAll('.tag-chip.selected').forEach(c => c.classList.remove('selected'));
       } catch (err) {
         console.error('Join request failed:', err);
 

@@ -181,7 +181,7 @@ body {
   font-size: var(--fs-lg);
   letter-spacing: 2px;
   padding: 6px 14px;
-  border-radius: 2px;
+  border-radius: var(--radius);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -572,7 +572,7 @@ body {
   width: 100%;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 107, 43, 0.25);
-  border-radius: 2px;
+  border-radius: var(--radius);
   color: var(--light);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
@@ -610,7 +610,7 @@ body {
   cursor: pointer;
   padding: 6px 10px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 2px;
+  border-radius: var(--radius);
   transition:
     border-color 0.2s,
     color 0.2s;
@@ -636,7 +636,7 @@ body {
   background: var(--orange);
   color: var(--iron);
   border: none;
-  border-radius: 2px;
+  border-radius: var(--radius);
   padding: 8px 20px;
   cursor: pointer;
   text-transform: uppercase;
