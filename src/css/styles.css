@@ -72,6 +72,12 @@ body {
   padding: 48px 52px 44px;
 }
 
+/* Lift all non-decorative children above .bg-grid (z-index: 0) in one rule */
+.flyer > *:not(.bg-grid):not(.accent-bar):not(.corner) {
+  position: relative;
+  z-index: 1;
+}
+
 /* ── BACKGROUND & DECORATION ── */
 /* bg-grid: base.css provides defaults; portfolio uses --grid-color */
 .bg-grid {
@@ -127,11 +133,15 @@ body {
   padding: 6px 14px;
   cursor: pointer;
   text-transform: uppercase;
-  transition: all 0.2s;
+  transition: color 0.2s, border-color 0.2s;
 }
 #mode-toggle:hover {
   border-color: var(--orange);
   color: var(--orange);
+}
+#mode-toggle:focus {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
 }
 
 /* ── HEADER ── */
@@ -143,7 +153,6 @@ body {
   padding-bottom: 24px;
   margin-bottom: 36px;
   position: relative;
-  z-index: 1;
 }
 
 .name-block h1 {
@@ -211,7 +220,6 @@ body {
 .process-portfolio-section {
   margin-bottom: 36px;
   position: relative;
-  z-index: 1;
 }
 
 .timeline {
@@ -296,7 +304,6 @@ body {
 .services-section {
   margin-bottom: 36px;
   position: relative;
-  z-index: 1;
 }
 
 .services-grid {
@@ -420,6 +427,10 @@ body {
   border: 1px solid var(--orange);
   padding: 8px 20px;
 }
+.lightbox-close:focus {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
 .lightbox-label {
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
@@ -431,7 +442,6 @@ body {
 .markets-section {
   margin-bottom: 36px;
   position: relative;
-  z-index: 1;
 }
 .markets-row {
   display: flex;
@@ -458,7 +468,6 @@ body {
 .skills-section {
   margin-bottom: 36px;
   position: relative;
-  z-index: 1;
 }
 .skills-list {
   display: flex;
@@ -486,7 +495,6 @@ body {
   flex-wrap: wrap;
   gap: 20px;
   position: relative;
-  z-index: 1;
 }
 
 .contact-block h4 {
@@ -536,6 +544,10 @@ body {
 }
 .btn-print:hover {
   opacity: 0.85;
+}
+.btn-print:focus {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
 }
 
 /* ── CONTACT FORM ── */

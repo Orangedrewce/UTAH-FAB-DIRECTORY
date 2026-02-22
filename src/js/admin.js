@@ -4,9 +4,13 @@
    ═══════════════════════════════════════════════════════════════════════ */
 
 // ── Supabase config ─────────────────────────────────────────────────────
-// ** REPLACE these with your actual Supabase project values **
 const SUPABASE_URL  = 'https://dntcmvspcwwdwnmyqfiw.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudGNtdnNwY3d3ZHdubXlxZml3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MDA5MDksImV4cCI6MjA4NzI3NjkwOX0.cgiLMn6YH0BnLshl_458nGwdjnAJaN3MZz8jT4lwfkc';
+
+if (typeof window.supabase === 'undefined') {
+  document.body.innerHTML = '<p style="color:#d63031;text-align:center;margin-top:4rem;">Supabase SDK failed to load. Check your network or script order.</p>';
+  throw new Error('Supabase SDK not available');
+}
 
 const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
@@ -17,12 +21,29 @@ const ALL_TAGS = [
   'anodize','plating','assembly','prototype','structural','sheetmetal'
 ];
 
+// ── Canonical categories (single source of truth for datalist + validation) ──
+const CATEGORIES = [
+  'Fabrication & Machining',
+  'Welding & Metalwork',
+  'Specialty Automotive',
+  'Specialty Automotive & Off-Road',
+  'Industrial Finishing: Anodizing, Plating & Heat Treating',
+  'Powder Coating & Finishing',
+  'Digital Fabrication & Community Spaces',
+  'Statewide / Multi-Region Fabrication',
+  'Rural Hubs: Moab / Rock Crawling',
+  'Rural Hubs: Uinta Basin / Carbon County / Central Utah',
+  'Specialty',
+  'Finishing & Community',
+];
+
 // ── Canonical regions (loaded from DB, fallback hardcoded) ─────────────
 let REGIONS = [];
 
 // ── State ───────────────────────────────────────────────────────────────
 let allShops  = [];   // full dataset from fab_shops
 let filtered  = [];   // after search/filter applied
+let _dashboardLoading = false;  // guard against double init
 
 // ── DOM refs ────────────────────────────────────────────────────────────
 const $ = (sel) => document.querySelector(sel);
@@ -75,8 +96,8 @@ async function checkSession() {
   if (session) {
     showDashboard(session.user);
   } else {
-    authGate.style.display = '';
-    adminDash.style.display = 'none';
+    authGate.classList.remove('hidden');
+    adminDash.classList.add('hidden');
   }
 }
 
@@ -97,16 +118,32 @@ logoutBtn.addEventListener('click', async () => {
   await _supabase.auth.signOut();
   allShops = [];
   shopTableBody.innerHTML = '';
-  authGate.style.display = '';
-  adminDash.style.display = 'none';
+  authGate.classList.remove('hidden');
+  adminDash.classList.add('hidden');
 });
 
 async function showDashboard(user) {
-  authGate.style.display = 'none';
-  adminDash.style.display = '';
+  // Guard against concurrent calls from onAuthStateChange + checkSession
+  if (_dashboardLoading) return;
+  _dashboardLoading = true;
+
+  authGate.classList.add('hidden');
+  adminDash.classList.remove('hidden');
   adminEmailEl.textContent = user.email;
+  populateCategoryList();
   await loadRegions();
   await loadShops();
+  // Measure real header/toolbar heights now that dashboard is visible
+  syncLayoutHeights();
+
+  _dashboardLoading = false;
+}
+
+/** Populate the category datalist from the JS-defined CATEGORIES array */
+function populateCategoryList() {
+  const dl = document.getElementById('categoryList');
+  if (!dl) return;
+  dl.innerHTML = CATEGORIES.map(c => `<option value="${esc(c)}">`).join('');
 }
 
 
@@ -120,7 +157,7 @@ async function loadRegions() {
     .select('*')
     .order('sort_order');
 
-  if (!error && data) {
+  if (!error && data && data.length > 0) {
     REGIONS = data;
   } else {
     // Fallback
@@ -134,17 +171,21 @@ async function loadRegions() {
     ];
   }
 
-  // Populate toolbar region filter
-  adminRegionFilt.innerHTML = '<option value="">All Regions</option>';
+  // Populate toolbar region filter (build string, assign once)
+  let regionFilterHtml = '<option value="">All Regions</option>';
   REGIONS.forEach(r => {
-    adminRegionFilt.innerHTML += `<option value="${r.slug}">${r.title}</option>`;
+    const label = r.title || r.name || r.slug;
+    regionFilterHtml += `<option value="${r.slug}">${esc(label)}</option>`;
   });
+  adminRegionFilt.innerHTML = regionFilterHtml;
 
-  // Populate modal region select
-  fRegion.innerHTML = '';
+  // Populate modal region select (build string, assign once)
+  let regionSelectHtml = '';
   REGIONS.forEach(r => {
-    fRegion.innerHTML += `<option value="${r.slug}">${r.title}</option>`;
+    const label = r.title || r.name || r.slug;
+    regionSelectHtml += `<option value="${r.slug}">${esc(label)}</option>`;
   });
+  fRegion.innerHTML = regionSelectHtml;
 }
 
 async function loadShops() {
@@ -163,14 +204,15 @@ async function loadShops() {
     allShops = data || [];
   }
 
-  // Populate tag filter dropdown with tags that exist in data
+  // Populate tag filter dropdown with tags that exist in data (build string, assign once)
   const usedTags = new Set();
   allShops.forEach(s => (s.tags || []).forEach(t => usedTags.add(t)));
   const sortedTags = [...usedTags].sort();
-  adminTagFilt.innerHTML = '<option value="">All Tags</option>';
+  let tagFilterHtml = '<option value="">All Tags</option>';
   sortedTags.forEach(t => {
-    adminTagFilt.innerHTML += `<option value="${t}">${t}</option>`;
+    tagFilterHtml += `<option value="${esc(t)}">${esc(t)}</option>`;
   });
+  adminTagFilt.innerHTML = tagFilterHtml;
 
   applyFilters();
 }
@@ -191,7 +233,7 @@ function applyFilters() {
     if (region && s.region !== region) return false;
     if (tag && !(s.tags || []).includes(tag)) return false;
     if (q) {
-      const haystack = [s.name, s.city, s.category, s.services, ...(s.tags||[])].join(' ').toLowerCase();
+      const haystack = [s.name || '', s.city || '', s.category || '', s.services || '', ...(s.tags||[])].join(' ').toLowerCase();
       if (!haystack.includes(q)) return false;
     }
     return true;
@@ -214,14 +256,14 @@ function renderTable() {
   adminCountEl.textContent = filtered.length;
   if (filtered.length === 0) {
     shopTableBody.innerHTML = '';
-    tableEmpty.style.display = '';
+    tableEmpty.classList.remove('hidden');
     return;
   }
-  tableEmpty.style.display = 'none';
+  tableEmpty.classList.add('hidden');
 
   shopTableBody.innerHTML = filtered.map(s => {
     const regionLabel = (REGIONS.find(r => r.slug === s.region) || {}).title || s.region;
-    const tagHtml = (s.tags || []).map(t => `<span class="tag-pill">${t}</span>`).join('');
+    const tagHtml = (s.tags || []).map(t => `<span class="tag-pill">${esc(t)}</span>`).join('');
     const activeClass = s.is_active ? '' : ' inactive';
 
     return `<tr class="${activeClass}" data-id="${s.id}">
@@ -237,11 +279,14 @@ function renderTable() {
     </tr>`;
   }).join('');
 
-  // Attach edit listeners
-  shopTableBody.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', () => openEditModal(btn.dataset.id));
-  });
+  // Event delegation — single listener on parent instead of per-button
 }
+
+// Delegate edit-button clicks on the table body (attached once, survives re-renders)
+shopTableBody.addEventListener('click', (e) => {
+  const btn = e.target.closest('.edit-btn');
+  if (btn) openEditModal(btn.dataset.id);
+});
 
 function esc(str) {
   if (!str) return '';
@@ -274,7 +319,7 @@ addShopBtn.addEventListener('click', () => openAddModal());
 
 function openAddModal() {
   modalTitle.textContent = 'Add Shop';
-  deleteBtn.style.display = 'none';
+  deleteBtn.classList.add('hidden');
   fId.value = '';
   fName.value = '';
   fCity.value = '';
@@ -290,11 +335,11 @@ function openAddModal() {
 }
 
 function openEditModal(id) {
-  const shop = allShops.find(s => s.id === id);
+  const shop = allShops.find(s => String(s.id) === String(id));
   if (!shop) return;
 
   modalTitle.textContent = 'Edit Shop';
-  deleteBtn.style.display = '';
+  deleteBtn.classList.remove('hidden');
   fId.value         = shop.id;
   fName.value       = shop.name || '';
   fCity.value       = shop.city || '';
@@ -310,13 +355,13 @@ function openEditModal(id) {
 }
 
 function openModal() {
-  modalBackdrop.style.display = '';
-  document.body.style.overflow = 'hidden';
+  modalBackdrop.classList.remove('hidden');
+  document.body.classList.add('modal-open');
 }
 
 function closeModal() {
-  modalBackdrop.style.display = 'none';
-  document.body.style.overflow = '';
+  modalBackdrop.classList.add('hidden');
+  document.body.classList.remove('modal-open');
 }
 
 modalCloseBtn.addEventListener('click', closeModal);
@@ -325,7 +370,7 @@ modalBackdrop.addEventListener('click', (e) => {
   if (e.target === modalBackdrop) closeModal();
 });
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && modalBackdrop.style.display !== 'none') closeModal();
+  if (e.key === 'Escape' && !modalBackdrop.classList.contains('hidden')) closeModal();
 });
 
 
@@ -335,6 +380,22 @@ document.addEventListener('keydown', (e) => {
 
 shopForm.addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  // Validate maps_url if provided
+  const mapsUrlRaw = fMapsUrl.value.trim();
+  if (mapsUrlRaw) {
+    try {
+      const mapsUrlObj = new URL(mapsUrlRaw);
+      if (!['http:', 'https:'].includes(mapsUrlObj.protocol)) {
+        alert('Maps URL must start with http:// or https://');
+        return;
+      }
+    } catch {
+      alert('Maps URL is not a valid URL.');
+      return;
+    }
+  }
+
   saveBtn.disabled = true;
   saveBtn.textContent = 'Saving…';
 
@@ -346,7 +407,7 @@ shopForm.addEventListener('submit', async (e) => {
     size_desc:    fSize.value.trim(),
     services:     fServices.value.trim(),
     website:      fWebsite.value.trim(),
-    maps_url:     fMapsUrl.value.trim(),
+    maps_url:     mapsUrlRaw,
     tags:         getSelectedTags(),
     is_active:    fIsActive.checked,
   };
@@ -384,13 +445,15 @@ deleteBtn.addEventListener('click', async () => {
   if (!editId) return;
   if (!confirm('Delete this shop permanently?')) return;
 
+  const DELETE_LABEL = 'Delete';
+
   deleteBtn.disabled = true;
   deleteBtn.textContent = 'Deleting…';
 
   const { error } = await _supabase.from('fab_shops').delete().eq('id', editId);
 
   deleteBtn.disabled = false;
-  deleteBtn.textContent = 'Delete';
+  deleteBtn.textContent = DELETE_LABEL;
 
   if (error) {
     alert('Delete failed: ' + error.message);
@@ -403,7 +466,40 @@ deleteBtn.addEventListener('click', async () => {
 
 
 /* ═══════════════════════════════════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════════════════════════════════ */
+   INIT — Reactive auth + layout measurement
+═════════════════════════════════════════════════════════════════════ */
 
+/** Measure real header height and set toolbar top + table-scroll max-height dynamically */
+function syncLayoutHeights() {
+  const header = document.querySelector('.admin-header');
+  const toolbar = document.querySelector('.toolbar');
+  const tableScroll = document.querySelector('.table-scroll');
+  if (!header || !toolbar) return;
+
+  const headerH = header.offsetHeight;
+  const toolbarH = toolbar.offsetHeight;
+  toolbar.style.top = headerH + 'px';
+  if (tableScroll) {
+    tableScroll.style.maxHeight = `calc(100vh - ${headerH + toolbarH}px)`;
+    tableScroll.style.maxHeight = `calc(100dvh - ${headerH + toolbarH}px)`;
+  }
+}
+
+// Listen for auth state changes reactively
+_supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_OUT' || !session) {
+    allShops = [];
+    shopTableBody.innerHTML = '';
+    authGate.classList.remove('hidden');
+    adminDash.classList.add('hidden');
+    _dashboardLoading = false;
+  } else if (session) {
+    showDashboard(session.user);
+  }
+});
+
+// Also check on load (handles page refresh with existing session)
 checkSession();
+
+// Sync layout heights after dashboard renders and on resize
+window.addEventListener('resize', syncLayoutHeights);

@@ -64,6 +64,16 @@ document.addEventListener("keydown", (event) => {
   const feedback = document.getElementById("cfFeedback");
 
   if (!form) return; // Not on the portfolio page
+  if (!cfFile || !cfFileName || !cfFileLabel || !feedback || !submitBtn) return;
+
+  // Constants
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+  const ALLOWED_TYPES = {
+    'image/jpeg': 'jpg',
+    'image/png':  'png',
+    'image/gif':  'gif',
+    'image/webp': 'webp',
+  };
 
   // Show selected file name
   cfFile.addEventListener("change", () => {
@@ -77,8 +87,10 @@ document.addEventListener("keydown", (event) => {
   });
 
   function showFeedback(msg, type) {
+    if (!feedback) return;
     feedback.textContent = msg;
-    feedback.className = "cf-feedback " + type;
+    feedback.classList.remove('error', 'success');
+    if (type) feedback.classList.add(type);
   }
 
   form.addEventListener("submit", async (e) => {
@@ -105,14 +117,27 @@ document.addEventListener("keydown", (event) => {
     submitBtn.textContent = "SENDING…";
     showFeedback("", "");
 
-    let photoUrl = "";
+    let photoUrl = null;
 
     try {
-      // Upload photo if present
+      // Validate & upload photo if present
       if (cfFile.files.length > 0) {
         const file = cfFile.files[0];
-        const ext = file.name.split(".").pop();
-        const path = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+        if (file.size > MAX_FILE_SIZE) {
+          showFeedback('FILE TOO LARGE (MAX 5 MB)', 'error');
+          return;
+        }
+        if (!(file.type in ALLOWED_TYPES)) {
+          showFeedback('ONLY JPEG, PNG, GIF, WEBP ALLOWED', 'error');
+          return;
+        }
+
+        const ext = ALLOWED_TYPES[file.type];
+        const uniqueId = typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : Math.random().toString(36).slice(2, 10);
+        const path = `${Date.now()}_${uniqueId}.${ext}`;
 
         const { data: uploadData, error: uploadErr } = await sb.storage
           .from("contact-photos")
@@ -133,7 +158,7 @@ document.addEventListener("keydown", (event) => {
         {
           email,
           message,
-          photo_url: photoUrl,
+          photo_url: photoUrl || null,
         },
       ]);
 

@@ -18,7 +18,9 @@
     <h1>UTAH <span>FAB</span> ADMIN</h1>
     <p class="auth-sub">Sign in to manage the directory</p>
     <form id="loginForm" autocomplete="on">
+      <label for="authEmail" class="sr-only">Email</label>
       <input type="email" id="authEmail" placeholder="Email" required>
+      <label for="authPassword" class="sr-only">Password</label>
       <input type="password" id="authPassword" placeholder="Password" required>
       <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
       <p class="auth-error" id="authError"></p>
@@ -29,7 +31,7 @@
 <!-- ═══════════════════════════════════════════════════
      ADMIN DASHBOARD — hidden until authenticated
 ═══════════════════════════════════════════════════ -->
-<div id="adminDash" class="admin-dash" style="display:none;">
+<div id="adminDash" class="admin-dash hidden">
 
   <div class="bg-grid"></div>
   <div class="corner tl"></div>
@@ -42,7 +44,7 @@
     <div class="admin-header-inner">
       <h1>UTAH <span>FAB</span> ADMIN</h1>
       <div class="admin-header-right">
-        <a href="direct.html" class="btn btn-outline btn-sm" target="_blank">View Public Directory</a>
+        <a href="direct.html" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">View Public Directory</a>
         <span id="adminEmail" class="admin-email"></span>
         <button id="logoutBtn" class="btn btn-outline btn-sm">Sign Out</button>
       </div>
@@ -73,23 +75,25 @@
 
   <!-- Data table -->
   <div class="table-wrap">
+    <div class="table-scroll">
     <table class="shop-table" id="shopTable">
       <thead>
         <tr>
-          <th class="col-status">Active</th>
-          <th class="col-name">Name</th>
-          <th class="col-city">City</th>
-          <th class="col-region">Region</th>
-          <th class="col-category">Category</th>
-          <th class="col-tags">Tags</th>
-          <th class="col-actions">Actions</th>
+          <th scope="col" class="col-status">Active</th>
+          <th scope="col" class="col-name">Name</th>
+          <th scope="col" class="col-city">City</th>
+          <th scope="col" class="col-region">Region</th>
+          <th scope="col" class="col-category">Category</th>
+          <th scope="col" class="col-tags">Tags</th>
+          <th scope="col" class="col-actions">Actions</th>
         </tr>
       </thead>
       <tbody id="shopTableBody">
         <!-- Rows rendered by JS -->
       </tbody>
     </table>
-    <div class="table-empty" id="tableEmpty" style="display:none;">No shops found.</div>
+    <div class="table-empty hidden" id="tableEmpty">No shops found.</div>
+    </div><!-- /table-scroll -->
   </div>
 
 </div><!-- /adminDash -->
@@ -97,13 +101,13 @@
 <!-- ═══════════════════════════════════════════════════
      SHOP EDIT MODAL
 ═══════════════════════════════════════════════════ -->
-<div class="modal-backdrop" id="modalBackdrop" style="display:none;">
+<div class="modal-backdrop hidden" id="modalBackdrop">
   <div class="modal" id="shopModal">
     <div class="modal-header">
       <h2 id="modalTitle">Add Shop</h2>
       <button class="modal-close" id="modalCloseBtn">&times;</button>
     </div>
-    <form id="shopForm" class="modal-body">
+    <form id="shopForm" class="modal-body" autocomplete="off">
 
       <div class="form-row">
         <div class="form-group flex-2">
@@ -124,20 +128,7 @@
         <div class="form-group flex-1">
           <label for="fCategory">Category</label>
           <input type="text" id="fCategory" list="categoryList" value="Fabrication & Machining">
-          <datalist id="categoryList">
-            <option value="Fabrication & Machining">
-            <option value="Welding & Metalwork">
-            <option value="Specialty Automotive">
-            <option value="Specialty Automotive & Off-Road">
-            <option value="Industrial Finishing: Anodizing, Plating & Heat Treating">
-            <option value="Powder Coating & Finishing">
-            <option value="Digital Fabrication & Community Spaces">
-            <option value="Statewide / Multi-Region Fabrication">
-            <option value="Rural Hubs: Moab / Rock Crawling">
-            <option value="Rural Hubs: Uinta Basin / Carbon County / Central Utah">
-            <option value="Specialty">
-            <option value="Finishing & Community">
-          </datalist>
+          <datalist id="categoryList"><!-- Populated by JS --></datalist>
         </div>
       </div>
 
@@ -178,7 +169,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-outline" id="modalCancelBtn">Cancel</button>
-        <button type="button" class="btn btn-danger" id="deleteBtn" style="display:none;">Delete</button>
+        <button type="button" class="btn btn-danger hidden" id="deleteBtn">Delete</button>
         <button type="submit" class="btn btn-primary" id="saveBtn">Save Shop</button>
       </div>
     </form>
@@ -186,7 +177,7 @@
 </div>
 
 <!-- Supabase JS client (CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/admin.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="js/admin.js"></script>
 </body>
 </html>

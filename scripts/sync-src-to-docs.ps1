@@ -6,10 +6,26 @@
   Cleans docs/, then copies everything from src/ EXCEPT the db/ folder
   (SQL schemas and migration scripts are dev-only).
 
-  Run from the repository root:
-    ./scripts/sync-src-to-docs.ps1
+  # 1) Work in dev
+git checkout dev
 
-  This script is IDEMPOTENT -- safe to re-run at any time.
+# 2) Edit files in src/
+
+# 3) Sync src -> docs
+./scripts/sync-src-to-docs.ps1
+
+# 4) Save changes
+git add -A
+git commit -m "css, git setup"
+
+# 5) Publish to live site
+git push origin dev:main
+
+
+# 6) Pull main back to dev (keeps things in sync)
+git fetch
+git pull origin main #oh fuck go back git push origin dev:main --force# 1) Work in dev
+git checkout dev
 #>
 
 $ErrorActionPreference = 'Stop'

@@ -6,15 +6,15 @@
 /* ── PAGE-SPECIFIC OVERRIDES ── */
 /* Page-specific uses base tokens directly */
 
-  body {
-    background: var(--bg-deep);
-    color: var(--text-main);
-    font-family: var(--font-body);
-  }
+body {
+  background: var(--bg-deep);
+  color: var(--text-main);
+  font-family: var(--font-body);
+}
 
   /* ── HEADER ── */
   header {
-    background: var(--surface);
+    background: var(--bg-surface);
     border-bottom: 2px solid var(--brand-orange-dim);
     padding: 0;
     position: sticky;
@@ -63,6 +63,7 @@
 
   .search-wrap {
     flex: 1;
+    min-width: 0;  /* prevent flex overflow on narrow viewports */
     position: relative;
   }
 
@@ -87,11 +88,17 @@
     transition: border-color 0.2s;
   }
 
-  input[type="search"]:focus { border-color: var(--brand-orange-dim); }
+  input[type="search"]:focus {
+    border-color: var(--brand-orange-dim);
+    outline: 2px solid var(--brand-orange-dim);
+    outline-offset: 2px;
+  }
   input[type="search"]::placeholder { color: var(--text-dim); }
+  /* suppress Chrome/Edge native search clear button */
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration { display: none; }
 
-  /* Base select styles now in base.css */
-  select:focus { border-color: var(--brand-orange-dim); }
+  /* Base select styles now in base.css — focus rule handled there */
 
   .count-badge {
     font-family: var(--font-mono);
@@ -124,15 +131,25 @@
   /* ── MAIN LAYOUT ── */
   .main {
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
     max-width: 1440px;
     margin: 0 auto;
     padding: 32px 32px 64px;
   }
 
-  .main > *:not(.bg-grid):not(.corner):not(.ref-tag) {
+  /* Lift content above .bg-grid without creating stacking contexts on every child */
+  .main > .bg-grid  { z-index: 0; }
+  .main > .corner   { z-index: 2; }
+  #directoryContent,
+  .no-results,
+  .region {
     position: relative;
     z-index: 1;
+  }
+
+  /* Future-proof: prevent sticky header from hiding anchor targets */
+  :target {
+    scroll-margin-top: 100px;
   }
 
   /* ── REGION SECTION ── */
@@ -306,7 +323,7 @@
     font-family: var(--font-mono);
     font-size: 0.65rem;
     color: var(--text-dim);
-    word-break: break-all;
+    overflow-wrap: anywhere;
     display: flex;
     align-items: center;
     flex-wrap: wrap;

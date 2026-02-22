@@ -5,6 +5,7 @@
 
 /* ── PAGE-SPECIFIC OVERRIDES ── */
 /* Page-specific uses base tokens directly */
+/* .hidden utility lives in base.css */
 
 body {
   font-family: var(--font-body);
@@ -15,11 +16,20 @@ body {
 /* ── Dashboard wrapper (holds corner decorations) ── */
 .admin-dash {
   position: relative;
-  overflow: hidden;
   min-height: 100vh;
+  min-height: 100dvh;
+  /* overflow must stay visible — hidden/auto here disables position:sticky
+     on .admin-header and .toolbar (CSS spec: sticky is killed when any
+     ancestor between the element and its scroll container has overflow != visible) */
 }
 
-.admin-dash > *:not(.bg-grid):not(.corner) {
+/* Lift content above .bg-grid without creating stacking contexts on every child */
+.admin-dash > .bg-grid  { z-index: 0; }
+.admin-dash > .corner   { z-index: 2; }
+.admin-header,
+.toolbar,
+.table-wrap,
+.modal-backdrop {
   position: relative;
   z-index: 1;
 }
@@ -30,6 +40,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  min-height: 100dvh;
   padding: 2rem;
 }
 .auth-box {
@@ -49,7 +60,7 @@ body {
 }
 .auth-box h1 span { color: var(--brand-orange-dim); }
 .auth-sub {
-  color: var(--text2);
+  color: var(--text-muted);
   font-size: .85rem;
   margin-bottom: 1.5rem;
 }
@@ -137,7 +148,7 @@ body {
 .admin-email {
   font-family: var(--font-mono);
   font-size: .75rem;
-  color: var(--text2);
+  color: var(--text-muted);
 }
 
 /* ── Toolbar ─────────────────────── */
@@ -145,6 +156,10 @@ body {
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-neutral);
   padding: .6rem 0;
+  position: sticky;
+  /* top is set dynamically by JS to match actual header height */
+  top: 0;
+  z-index: 50;
 }
 .toolbar-inner {
   max-width: 1440px;
@@ -177,16 +192,34 @@ body {
   padding: .45rem .7rem;
   width: 220px;
 }
-.admin-search:focus { border-color: var(--brand-orange-dim); outline: none; }
+.admin-search:focus {
+  border-color: var(--brand-orange-dim);
+  outline: 2px solid var(--brand-orange-dim);
+  outline-offset: 2px;
+}
 
-.toolbar select:focus { border-color: var(--brand-orange-dim); outline: none; }
+/* Match toolbar selects to admin-search styling */
+.toolbar select {
+  background: var(--bg-deep);
+  border: 1px solid var(--border-neutral);
+  border-radius: var(--radius);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  padding: .45rem .7rem;
+}
+.toolbar select:focus {
+  border-color: var(--brand-orange-dim);
+  outline: 2px solid var(--brand-orange-dim);
+  outline-offset: 2px;
+}
 
 .toggle-label {
   display: inline-flex;
   align-items: center;
   gap: .35rem;
   font-size: .8rem;
-  color: var(--text2);
+  color: var(--text-muted);
   cursor: pointer;
   user-select: none;
 }
@@ -199,7 +232,7 @@ body {
 .admin-count {
   font-family: var(--font-mono);
   font-size: .8rem;
-  color: var(--text2);
+  color: var(--text-muted);
 }
 
 /* ── Data table ──────────────────── */
@@ -207,7 +240,15 @@ body {
   max-width: 1440px;
   margin: 0 auto;
   padding: 1rem 1.5rem 3rem;
+  /* overflow must stay visible here so sticky th binds to .table-scroll, not viewport */
+}
+
+.table-scroll {
   overflow-x: auto;
+  overflow-y: auto;
+  /* Height set dynamically by JS to account for actual header + toolbar height */
+  max-height: calc(100vh - 120px);
+  max-height: calc(100dvh - 120px);
 }
 .shop-table {
   width: 100%;
@@ -226,7 +267,8 @@ body {
   border-bottom: 2px solid var(--border-neutral);
   white-space: nowrap;
   position: sticky;
-  top: 52px; /* Set to header height to prevent hiding under main header */
+  top: 0; /* relative to .table-scroll, which is now the scroll container */
+  z-index: 2;
   background: var(--bg-surface);
 }
 .shop-table td {
@@ -274,8 +316,15 @@ body {
 .table-empty {
   text-align: center;
   padding: 3rem 1rem;
-  color: var(--text2);
+  color: var(--text-muted);
   font-size: .9rem;
+}
+
+/* ── Body lock when modal is open (prevents iOS scroll-behind) ── */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
 }
 
 /* ── Modal ───────────────────────── */
@@ -313,12 +362,12 @@ body {
 .modal-close {
   background: none;
   border: none;
-  color: var(--text2);
+  color: var(--text-muted);
   font-size: 1.5rem;
   cursor: pointer;
   line-height: 1;
 }
-.modal-close:hover { color: var(--text); }
+.modal-close:hover { color: var(--text-bright); }
 
 .modal-body {
   padding: 1.25rem;
@@ -341,7 +390,7 @@ body {
   font-size: .72rem;
   text-transform: uppercase;
   letter-spacing: .05em;
-  color: var(--text2);
+  color: var(--text-muted);
   margin-bottom: .3rem;
 }
 .form-group input,
@@ -399,7 +448,10 @@ body {
   border-top: 1px solid var(--border-neutral);
   margin-top: .5rem;
 }
-.modal-footer .btn-danger { margin-right: auto; }
+.modal-footer .btn-danger {
+  order: -1;
+  margin-right: auto;
+}
 
 /* ── Responsive ──────────────────── */
 @media (max-width: 800px) {

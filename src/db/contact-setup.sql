@@ -9,9 +9,9 @@ CREATE EXTENSION IF NOT EXISTS pg_net WITH SCHEMA extensions;
 -- 2. Contact messages table
 CREATE TABLE IF NOT EXISTS contact_messages (
   id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email      TEXT NOT NULL,
-  message    TEXT NOT NULL DEFAULT '',
-  photo_url  TEXT DEFAULT '',
+  email      TEXT NOT NULL CHECK (email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$'),
+  message    TEXT NOT NULL DEFAULT '' CHECK (char_length(message) <= 5000),
+  photo_url  TEXT DEFAULT NULL,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -67,6 +67,8 @@ BEGIN
     'embeds', jsonb_build_array(_embed)
   );
 
+  -- ⚠️  SECURITY: This webhook URL is a secret — do NOT commit to public repos.
+  --    Move to a Supabase Vault secret or environment variable in production.
   PERFORM net.http_post(
     url     := 'https://discord.com/api/webhooks/1474899689680928981/SJduDzevWXaj47df2aaDefLDUjabqu-YT6_RSNW4Uhqn7-LcaincWgp-UCfXhFgdV-cy',
     body    := _payload,
@@ -98,7 +100,14 @@ ON CONFLICT (id) DO NOTHING;
 DROP POLICY IF EXISTS "Anon upload contact photos" ON storage.objects;
 CREATE POLICY "Anon upload contact photos"
   ON storage.objects FOR INSERT
-  WITH CHECK (bucket_id = 'contact-photos');
+  WITH CHECK (
+    bucket_id = 'contact-photos'
+    AND (octet_length(decode(
+           COALESCE(metadata->>'size', '0'), 'escape'
+         )) IS NOT NULL)                           -- metadata must exist
+    AND (COALESCE(metadata->>'mimetype', '') ~* '^image/(jpeg|png|gif|webp)$')
+    AND (COALESCE((metadata->>'size')::BIGINT, 0) <= 5242880)  -- 5 MB cap
+  );
 
 DROP POLICY IF EXISTS "Public read contact photos" ON storage.objects;
 CREATE POLICY "Public read contact photos"
