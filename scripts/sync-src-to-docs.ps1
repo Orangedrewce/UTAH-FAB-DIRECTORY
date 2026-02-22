@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "your message here"
+  git commit -m "modules refactor"
 
   # 5) Publish to live site
   git push origin dev
