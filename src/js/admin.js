@@ -185,8 +185,10 @@ async function handleApproveDeepLink() {
       alert('Request not found. It may have been deleted.');
       return;
     }
-    if (data.status !== 'pending') {
-      alert(`This request has already been ${data.status}.`);
+    // Treat missing status column (undefined/null) as 'pending'
+    const status = data.status || 'pending';
+    if (status !== 'pending') {
+      alert(`This request has already been ${status}.`);
       return;
     }
     req = data;
