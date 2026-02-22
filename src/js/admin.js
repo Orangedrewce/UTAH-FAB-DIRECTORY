@@ -43,6 +43,7 @@ let REGIONS = [];
 // ── State ───────────────────────────────────────────────────────────────
 let allShops  = [];   // full dataset from fab_shops
 let filtered  = [];   // after search/filter applied
+let selectedIds = new Set();  // bulk-selection state
 let _dashboardLoading = false;  // guard against double init
 
 // ── DOM refs ────────────────────────────────────────────────────────────
@@ -63,6 +64,10 @@ const adminCountEl     = $('#adminCount');
 const addShopBtn       = $('#addShopBtn');
 const shopTableBody    = $('#shopTableBody');
 const tableEmpty       = $('#tableEmpty');
+const selectAllCb      = $('#selectAll');
+const bulkActions      = $('#bulkActions');
+const bulkCountEl      = $('#bulkCount');
+const bulkToggleBtn    = $('#bulkToggleBtn');
 
 // Modal
 const modalBackdrop = $('#modalBackdrop');
@@ -252,6 +257,27 @@ showInactive.addEventListener('change', applyFilters);
    TABLE RENDERING
 ═══════════════════════════════════════════════════════════════════════ */
 
+/** Render a single shop as a <tr> string */
+function renderRow(s) {
+  const regionLabel = (REGIONS.find(r => r.slug === s.region) || {}).title || s.region;
+  const tagHtml = (s.tags || []).map(t => `<span class="tag-pill">${esc(t)}</span>`).join('');
+  const activeClass = s.is_active ? '' : ' inactive';
+  const checked = selectedIds.has(s.id) ? ' checked' : '';
+
+  return `<tr class="${activeClass}" data-id="${s.id}">
+    <td class="col-select"><input type="checkbox" class="row-select" data-id="${s.id}"${checked} aria-label="Select ${esc(s.name)}"></td>
+    <td class="col-status"><span class="status-dot${s.is_active ? '' : ' off'}"></span></td>
+    <td class="col-name">${esc(s.name)}</td>
+    <td class="col-city">${esc(s.city)}</td>
+    <td class="col-region">${esc(regionLabel)}</td>
+    <td class="col-category">${esc(s.category)}</td>
+    <td class="col-tags">${tagHtml}</td>
+    <td class="col-actions">
+      <button class="btn btn-outline btn-sm edit-btn" data-id="${s.id}">Edit</button>
+    </td>
+  </tr>`;
+}
+
 function renderTable() {
   adminCountEl.textContent = filtered.length;
   if (filtered.length === 0) {
@@ -261,31 +287,120 @@ function renderTable() {
   }
   tableEmpty.classList.add('hidden');
 
-  shopTableBody.innerHTML = filtered.map(s => {
-    const regionLabel = (REGIONS.find(r => r.slug === s.region) || {}).title || s.region;
-    const tagHtml = (s.tags || []).map(t => `<span class="tag-pill">${esc(t)}</span>`).join('');
-    const activeClass = s.is_active ? '' : ' inactive';
+  const activeShops   = filtered.filter(s => s.is_active);
+  const inactiveShops = filtered.filter(s => !s.is_active);
+  const COL_COUNT = 8; // must match <thead> column count
 
-    return `<tr class="${activeClass}" data-id="${s.id}">
-      <td class="col-status"><span class="status-dot${s.is_active ? '' : ' off'}"></span></td>
-      <td class="col-name">${esc(s.name)}</td>
-      <td class="col-city">${esc(s.city)}</td>
-      <td class="col-region">${esc(regionLabel)}</td>
-      <td class="col-category">${esc(s.category)}</td>
-      <td class="col-tags">${tagHtml}</td>
-      <td class="col-actions">
-        <button class="btn btn-outline btn-sm edit-btn" data-id="${s.id}">Edit</button>
-      </td>
-    </tr>`;
-  }).join('');
+  let html = '';
 
-  // Event delegation — single listener on parent instead of per-button
+  if (activeShops.length) {
+    html += `<tr class="section-header"><td colspan="${COL_COUNT}"><span class="status-dot"></span> Active <span class="section-count">${activeShops.length}</span></td></tr>`;
+    html += activeShops.map(renderRow).join('');
+  }
+
+  if (inactiveShops.length) {
+    html += `<tr class="section-header section-inactive"><td colspan="${COL_COUNT}"><span class="status-dot off"></span> Inactive <span class="section-count">${inactiveShops.length}</span></td></tr>`;
+    html += inactiveShops.map(renderRow).join('');
+  }
+
+  shopTableBody.innerHTML = html;
+  syncSelectAllState();
 }
 
-// Delegate edit-button clicks on the table body (attached once, survives re-renders)
+// Delegate clicks on the table body (attached once, survives re-renders)
 shopTableBody.addEventListener('click', (e) => {
   const btn = e.target.closest('.edit-btn');
-  if (btn) openEditModal(btn.dataset.id);
+  if (btn) { openEditModal(btn.dataset.id); return; }
+
+  // Row checkbox toggling
+  const cb = e.target.closest('.row-select');
+  if (cb) {
+    const id = cb.dataset.id;
+    if (cb.checked) { selectedIds.add(id); } else { selectedIds.delete(id); }
+    syncSelectAllState();
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════════════════
+   BULK SELECTION
+═══════════════════════════════════════════════════════════════════════ */
+
+/** Sync the Select All checkbox and bulk-action bar to current selection state */
+function syncSelectAllState() {
+  const rowCbs = shopTableBody.querySelectorAll('.row-select');
+  const checkedCount = selectedIds.size;
+
+  // Select-all tri-state
+  if (rowCbs.length && checkedCount === rowCbs.length) {
+    selectAllCb.checked = true;
+    selectAllCb.indeterminate = false;
+  } else if (checkedCount > 0) {
+    selectAllCb.checked = false;
+    selectAllCb.indeterminate = true;
+  } else {
+    selectAllCb.checked = false;
+    selectAllCb.indeterminate = false;
+  }
+
+  // Show/hide bulk actions bar
+  if (checkedCount > 0) {
+    bulkActions.classList.remove('hidden');
+    bulkCountEl.textContent = `${checkedCount} selected`;
+  } else {
+    bulkActions.classList.add('hidden');
+  }
+}
+
+selectAllCb.addEventListener('change', () => {
+  const rowCbs = shopTableBody.querySelectorAll('.row-select');
+  if (selectAllCb.checked) {
+    rowCbs.forEach(cb => { cb.checked = true; selectedIds.add(cb.dataset.id); });
+  } else {
+    rowCbs.forEach(cb => { cb.checked = false; selectedIds.delete(cb.dataset.id); });
+  }
+  syncSelectAllState();
+});
+
+bulkToggleBtn.addEventListener('click', async () => {
+  if (selectedIds.size === 0) return;
+
+  const ids = [...selectedIds];
+  const label = `Toggle active status for ${ids.length} shop${ids.length > 1 ? 's' : ''}?`;
+  if (!confirm(label)) return;
+
+  bulkToggleBtn.disabled = true;
+  bulkToggleBtn.textContent = 'Updating…';
+
+  // Determine new state per shop: flip each shop's current is_active
+  const updates = ids.map(id => {
+    const shop = allShops.find(s => String(s.id) === String(id));
+    return { id, is_active: shop ? !shop.is_active : true };
+  });
+
+  // Batch into activate / deactivate groups for two efficient queries
+  const toActivate   = updates.filter(u => u.is_active).map(u => u.id);
+  const toDeactivate = updates.filter(u => !u.is_active).map(u => u.id);
+
+  let error = null;
+  if (toActivate.length) {
+    const res = await _supabase.from('fab_shops').update({ is_active: true }).in('id', toActivate);
+    if (res.error) error = res.error;
+  }
+  if (!error && toDeactivate.length) {
+    const res = await _supabase.from('fab_shops').update({ is_active: false }).in('id', toDeactivate);
+    if (res.error) error = res.error;
+  }
+
+  bulkToggleBtn.disabled = false;
+  bulkToggleBtn.textContent = 'Toggle Active Status';
+
+  if (error) {
+    alert('Bulk update failed: ' + error.message);
+    return;
+  }
+
+  selectedIds.clear();
+  await loadShops();
 });
 
 function esc(str) {

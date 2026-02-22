@@ -67,6 +67,10 @@
         </label>
       </div>
       <div class="toolbar-right">
+        <div class="bulk-actions hidden" id="bulkActions">
+          <span class="bulk-count" id="bulkCount">0 selected</span>
+          <button type="button" class="btn btn-outline btn-sm" id="bulkToggleBtn">Toggle Active Status</button>
+        </div>
         <span class="admin-count"><strong id="adminCount">0</strong> shops</span>
         <button class="btn btn-primary" id="addShopBtn">+ Add Shop</button>
       </div>
@@ -79,6 +83,7 @@
     <table class="shop-table" id="shopTable">
       <thead>
         <tr>
+          <th scope="col" class="col-select"><input type="checkbox" id="selectAll" aria-label="Select all shops"></th>
           <th scope="col" class="col-status">Active</th>
           <th scope="col" class="col-name">Name</th>
           <th scope="col" class="col-city">City</th>

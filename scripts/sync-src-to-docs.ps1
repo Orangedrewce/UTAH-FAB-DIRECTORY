@@ -16,7 +16,7 @@ git checkout dev
 
 # 4) Save changes
 git add -A
-git commit -m "css, git setup"
+git commit -m "sql text fix, css, html and js bug fixes"
 
 # 5) Publish to live site
 git push origin dev:main

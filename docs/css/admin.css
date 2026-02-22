@@ -235,6 +235,23 @@ body {
   color: var(--text-muted);
 }
 
+/* ── Bulk actions ─────────────────── */
+.bulk-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .3rem .65rem;
+  border: 1px solid var(--brand-orange-dim);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--brand-orange-dim) 8%, transparent);
+}
+.bulk-count {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  color: var(--brand-orange-dim);
+  white-space: nowrap;
+}
+
 /* ── Data table ──────────────────── */
 .table-wrap {
   max-width: 1440px;
@@ -279,6 +296,49 @@ body {
 .shop-table tbody tr { transition: background .1s; }
 .shop-table tbody tr:hover { background: var(--bg-surface); }
 .shop-table tbody tr.inactive { opacity: .45; }
+
+/* ── Section header rows (Active / Inactive groups) ── */
+.shop-table tbody tr.section-header {
+  background: var(--bg-deep);
+  pointer-events: none;          /* not selectable / hoverable */
+}
+.shop-table tbody tr.section-header td {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-muted);
+  padding: .65rem .6rem;
+  border-bottom: 2px solid var(--border-neutral);
+}
+.shop-table tbody tr.section-header .status-dot {
+  vertical-align: middle;
+  margin-right: .35rem;
+}
+.section-count {
+  font-weight: 400;
+  color: var(--text2);
+  margin-left: .25rem;
+}
+.section-count::before { content: '('; }
+.section-count::after  { content: ')'; }
+.shop-table tbody tr.section-header:hover {
+  background: var(--bg-deep);    /* override default row hover */
+}
+
+/* ── Bulk selection column ──────── */
+.col-select {
+  width: 36px;
+  text-align: center;
+}
+.col-select input[type="checkbox"] {
+  accent-color: var(--brand-orange-dim);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  vertical-align: middle;
+}
 
 .col-status { width: 55px; text-align: center; }
 .col-name { min-width: 180px; }
