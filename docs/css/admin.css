@@ -597,6 +597,16 @@ body.modal-open {
   background: var(--bg-deep);
   border: 1px solid var(--border-neutral);
   border-radius: var(--radius);
+  transition: border-color .3s, box-shadow .3s;
+}
+.requests-card--highlight {
+  border-color: var(--brand-orange-dim);
+  box-shadow: 0 0 0 2px rgba(255,107,43,.35);
+  animation: card-pulse 1.5s ease-in-out 2;
+}
+@keyframes card-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(255,107,43,.35); }
+  50%      { box-shadow: 0 0 0 6px rgba(255,107,43,.15); }
 }
 .requests-card-info {
   flex: 1;

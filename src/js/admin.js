@@ -283,8 +283,9 @@ async function showDashboard(user) {
 }
 
 /**
- * If the URL contains ?approve_id=<uuid>, auto-trigger the approve flow
- * for that request. Cleans up the URL afterwards.
+ * If the URL contains ?approve_id=<uuid>, open the requests panel
+ * and highlight the matching card so the admin can review, pick a region,
+ * and click Approve manually.
  */
 async function handleApproveDeepLink() {
   const params = new URLSearchParams(window.location.search);
@@ -296,10 +297,9 @@ async function handleApproveDeepLink() {
   clean.searchParams.delete("approve_id");
   history.replaceState(null, "", clean);
 
-  // Find the request in already-loaded pending list
+  // Check if the request exists and is still pending
   let req = pendingRequests.find((r) => r.id === approveId);
 
-  // If not in the pending list, fetch it directly (may already be processed)
   if (!req) {
     const { data, error } = await _supabase
       .from("directory_requests")
@@ -311,88 +311,26 @@ async function handleApproveDeepLink() {
       alert("Request not found. It may have been deleted.");
       return;
     }
-    // Treat missing status column (undefined/null) as 'pending'
     const status = data.status || "pending";
     if (status !== "pending") {
       alert(`This request has already been ${status}.`);
       return;
     }
-    req = data;
   }
 
-  // Open the requests panel so the user sees the action
+  // Open the requests panel
   if (!requestsPanel.classList.contains("open")) {
     requestsPanel.classList.add("open");
     requestsBody.classList.remove("hidden");
   }
 
-  // Scroll the matching card into view
+  // Scroll to and highlight the matching card
   const card = requestsList.querySelector(`[data-request-id="${approveId}"]`);
-  if (card) card.scrollIntoView({ behavior: "smooth", block: "center" });
-
-  // Read region from the dropdown if visible, otherwise auto-detect
-  const regionSelect = requestsList.querySelector(`select[data-request-id="${approveId}"]`);
-  const mapsInfo = parseMapsUrl(req.maps_url);
-  const chosenRegion = regionSelect ? regionSelect.value : validRegion(mapsInfo.region);
-  const regionLabel = regionSelect ? regionSelect.options[regionSelect.selectedIndex].text : mapsInfo.label;
-  const regionHint = regionLabel
-    ? ` (region: ${regionLabel}${mapsInfo.city ? ", " + mapsInfo.city : ""})`
-    : "";
-  if (!confirm(`Approve listing request for "${req.shop_name}"?${regionHint}`))
-    return;
-
-  // Insert into fab_shops (inactive by default so admin can enrich before publishing)
-  const shopPayload = {
-    name: req.shop_name,
-    city: mapsInfo.city,
-    region: chosenRegion,
-    services: req.services || "",
-    website: req.contact || "",
-    maps_url: req.maps_url || "",
-    category: "Fabrication & Machining",
-    tags: [],
-    is_active: false,
-  };
-
-  const { error: insertErr } = await _supabase
-    .from("fab_shops")
-    .insert([shopPayload]);
-  if (insertErr) {
-    // Handle duplicate name+region constraint
-    if (
-      insertErr.code === "23505" ||
-      insertErr.message.includes("uq_fab_shops_name_region")
-    ) {
-      if (
-        !confirm(
-          `A shop named "${req.shop_name}" already exists in this region. Mark this request as approved anyway?`,
-        )
-      ) {
-        return;
-      }
-      // Skip insert — just mark as approved below
-    } else {
-      let msg = insertErr.message;
-      if (insertErr.code === "23503") {
-        msg =
-          "Invalid region selected. Please ensure your database regions table is seeded with the correct slugs.";
-      }
-      alert("Failed to create shop: " + msg);
-      return;
-    }
+  if (card) {
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("requests-card--highlight");
+    setTimeout(() => card.classList.remove("requests-card--highlight"), 3000);
   }
-
-  // Mark request as approved
-  const { error: updateErr } = await _supabase
-    .from("directory_requests")
-    .update({ status: "approved" })
-    .eq("id", approveId);
-
-  if (updateErr) console.error("Failed to update request status:", updateErr);
-
-  // Refresh both panels
-  await Promise.all([loadShops(), loadRequests()]);
-  alert(`"${req.shop_name}" approved and added to the shop list (inactive).`);
 }
 
 /** Populate the category datalist from the JS-defined CATEGORIES array */
