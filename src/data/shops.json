@@ -1,0 +1,3447 @@
+﻿[
+    {
+        "id":  1,
+        "name":  "Laser Concepts Inc.",
+        "city":  "West Jordan",
+        "size":  "Mid-size independent",
+        "services":  "Fiber laser cutting, CNC sheet metal bending, MIG/TIG welding, robotic welding, CNC milling, hardware insertion, 3D modeling/CAD",
+        "website":  "laserconceptsinc.com",
+        "tags":  [
+                     "laser",
+                     "cnc",
+                     "welding",
+                     "powder",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  2,
+        "name":  "Utah Steel",
+        "city":  "Salt Lake Valley (Wasatch Front)",
+        "size":  "Mid-to-large — est. 2006",
+        "services":  "20kW Eagle fiber laser cutting (up to 1.5\"), plasma cutting (400A, up to 3\"), CNC machining, welding, press brakes, turret punching, bending, finishing",
+        "website":  "utahsteel.com",
+        "tags":  [
+                     "laser",
+                     "cnc",
+                     "waterjet",
+                     "plasma",
+                     "welding"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  3,
+        "name":  "Critical Laser",
+        "city":  "Salt Lake / Wasatch Front",
+        "size":  "Independent shop",
+        "services":  "Laser cutting, waterjet cutting, CNC press brake forming, pemming, MIG/TIG welding, powder coating, anodizing, specialty finishes — full in-house process",
+        "website":  "criticallaser.com",
+        "tags":  [
+                     "laser",
+                     "waterjet",
+                     "cnc",
+                     "welding",
+                     "powder",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  4,
+        "name":  "H\u0026R Precision",
+        "city":  "West Valley City",
+        "size":  "Small independent — 20+ years",
+        "services":  "CNC machining, manual machining, de-burring; specializes in defense and aerospace components",
+        "website":  "MFG.com listing",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  5,
+        "name":  "Centric Precision Machining (CPM)",
+        "city":  "Salt Lake / Wasatch Front",
+        "size":  "Small-to-mid independent, aerospace-certified",
+        "services":  "High-precision CNC machining, low-volume production; exotic alloys: A286, Nitronic, Inconel, MP35N, Ti6Al4V",
+        "website":  "centricmachining.com",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  6,
+        "name":  "Qualified Rapid Products (QRP)",
+        "city":  "West Jordan",
+        "size":  "Small certified business",
+        "services":  "Metal 3D printing (additive manufacturing), production parts, prototyping, consulting",
+        "website":  "MFG.com listing",
+        "tags":  [
+                     "3dprint"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  7,
+        "name":  "Jawstec",
+        "city":  "Salt Lake City / Orem",
+        "size":  "Mid-size digital fabrication",
+        "services":  "FDM, SLA, SLS, MJF 3D printing; metal 3D printing; CNC milling; sheet metal fabrication; instant online quoting",
+        "website":  "jawstec.com",
+        "tags":  [
+                     "3dprint",
+                     "cnc",
+                     "laser"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  8,
+        "name":  "Symetrx Machine, LLC",
+        "city":  "Ogden (also serves SL Valley)",
+        "size":  "Full-service independent — 35+ years",
+        "services":  "Precision CNC turning, EDM (wire and die-sink), precision CNC milling, Swiss/screw machining, prototyping; all metals including exotics",
+        "website":  "MFG.com listing",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  9,
+        "name":  "AeroMed Precision",
+        "city":  "Salt Lake Valley",
+        "size":  "Specialized small shop",
+        "services":  "Aerospace parts for aircraft, spacecraft, submarines, guidance systems; precision CNC machining",
+        "website":  "MFG.com listing",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  10,
+        "name":  "University of Utah Health Sciences Machine Shop",
+        "city":  "Salt Lake City (University of Utah)",
+        "size":  "Institutional / university facility",
+        "services":  "CNC milling/lathe, 3D printing (FDM \u0026 resin), laser cutting/engraving, metal fab and welding, CAD/reverse engineering; Aconity MIDI metal DMLS printing via U of U Core",
+        "website":  "cores.utah.edu/machine-shop",
+        "tags":  [
+                     "cnc",
+                     "3dprint",
+                     "laser",
+                     "makerspace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  11,
+        "name":  "Wasatch Tool \u0026 Die, Inc.",
+        "city":  "West Salt Lake City (1130 Swaner Rd)",
+        "size":  "Small-to-mid — est. 1973, ISO 9001",
+        "services":  "Tool \u0026 die, heavy equipment parts, oil/gas pipeline components, aerospace; 8,000 sq ft shop",
+        "website":  "wasatchtool.com",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  12,
+        "name":  "The CNC Pros",
+        "city":  "West Valley City (3329 W 2555 S)",
+        "size":  "Small independent — est. 2012, veteran-owned",
+        "services":  "CNC milling, turning, 5-axis machining, prototypes, tool \u0026 die, aerospace parts; in-house firearm accessories",
+        "website":  "thecncpros.com",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  13,
+        "name":  "Dynamic Machining, Inc.",
+        "city":  "South Salt Lake",
+        "size":  "Small independent — est. 2018",
+        "services":  "Precision CNC machining, prototyping, quick-turn job shop work",
+        "website":  "https://www.dynamach.com",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  14,
+        "name":  "Zollinger Machine",
+        "city":  "Salt Lake City (1950 S 900 W)",
+        "size":  "Small family/job shop",
+        "services":  "Precision machining, job shop fabrication, Babbitt centrifugal casting, production runs",
+        "website":  "Search: Zollinger Machine SLC",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  15,
+        "name":  "A \u0026 M Tool and Cutter Grinding",
+        "city":  "Midvale / Salt Lake Valley (also Provo \u0026 Logan locations)",
+        "size":  "Small family-owned — est. 1978, 45+ years",
+        "services":  "CNC milling, CNC turning, Swiss-style screw machining, tool grinding and sharpening; restores OEM-level accuracy to cutting tools; tight-tolerance medical parts; agricultural reverse engineering (Logan)",
+        "website":  "amtoolandcuttergrinding.com",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  16,
+        "name":  "Cypress Metals",
+        "city":  "Salt Lake City",
+        "size":  "Mid-size established",
+        "services":  "CNC laser cutting, press brake forming, custom fences and handrails, metal roofing panels, machine shop services (milling, lathing)",
+        "website":  "Search: Cypress Metals Salt Lake City",
+        "tags":  [
+                     "laser",
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  17,
+        "name":  "Owens Industries (SLC branch)",
+        "city":  "Salt Lake City",
+        "size":  "Large operation — national firm with SLC presence",
+        "services":  "Ultra-precision 5-axis CNC milling, wire and plunge EDM, micro-machining; defense, aerospace, medical, optics, tool/die; ISO/AS certified",
+        "website":  "owensindustries.com",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  18,
+        "name":  "Motorhead Machine",
+        "city":  "West Valley City (2366 S Redwood Rd)",
+        "size":  "Small locally owned — 30+ years",
+        "services":  "Automotive machining (engine, performance parts), general machine work",
+        "website":  "Facebook / Yelp: Motorhead Machine WVC",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  19,
+        "name":  "RAM Tool, Inc.",
+        "city":  "Salt Lake Valley",
+        "size":  "Established precision shop",
+        "services":  "Precision CNC machining; prototypes and production; serves Utah and surrounding region",
+        "website":  "ramtoolinc.com",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  20,
+        "name":  "Lightning Forge",
+        "city":  "Salt Lake Valley",
+        "size":  "Small family-owned blacksmith — 35+ years",
+        "services":  "Custom ornamental ironwork, hot forging, blacksmithing, stair rails, fireplaces, light fixtures, fences, decorative art pieces; MIG, TIG, bolting, riveting, collaring, wrapping",
+        "website":  "lightning-forge.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  21,
+        "name":  "Studio Ironworks LLC",
+        "city":  "Salt Lake Valley",
+        "size":  "Small independent custom shop",
+        "services":  "Architectural and ornamental ironwork (commercial/residential), MIG, MIG aluminum, TIG stainless, TIG aluminum; CAD design; in-house spray booth; blacksmithing patinas and steel finishes",
+        "website":  "studioironworksllc.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  22,
+        "name":  "TEFCO of Utah",
+        "city":  "Ogden (also serves SL Valley)",
+        "size":  "Independent — est. 1942, 80+ years",
+        "services":  "Custom ornamental iron: railings, gates, security doors, staircases, planters; powder coating; sandblasting/shot blasting; welding and metal fabrication",
+        "website":  "tefcofab.com",
+        "tags":  [
+                     "welding",
+                     "ornamental",
+                     "powder"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  23,
+        "name":  "KVM Welding",
+        "city":  "Salt Lake City",
+        "size":  "Owner-operated micro shop",
+        "services":  "Custom welding and fabrication for art, car restoration, bicycle frame repair, handrails, general custom metalwork; shop and mobile service",
+        "website":  "@kvmwelding (Instagram) | 801-915-9186",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  24,
+        "name":  "Sugar Metal Customs",
+        "city":  "Salt Lake City (916 W South Temple)",
+        "size":  "Small independent — founder-led",
+        "services":  "Custom metal art and fabrication (thrones, furniture, decor, art installations), MIG/TIG welding, hands-on welding workshops, private events and commissioned pieces",
+        "website":  "sugarmetalcustoms.com | @sugarmetalcustoms",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  25,
+        "name":  "Ry Fabrication \u0026 Welding",
+        "city":  "North Salt Lake / SLC area (170 N Redwood Rd)",
+        "size":  "Small independent",
+        "services":  "Custom metal fabrication, MIG/TIG/stick welding, structural and repair work (trailers, bumpers, custom builds); mobile welding available",
+        "website":  "Facebook: Ry Fabrication \u0026 Welding",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  26,
+        "name":  "TT Custom Fab",
+        "city":  "Centerville",
+        "size":  "Small independent",
+        "services":  "Custom metalwork, artistic fabrication, structural metal",
+        "website":  "Search: TT Custom Fab Centerville Utah",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  27,
+        "name":  "Jack\u0027s Ornamental Iron",
+        "city":  "Salt Lake City",
+        "size":  "Small independent",
+        "services":  "Custom ornamental iron fabrication, railings, gates, fences, architectural metalwork",
+        "website":  "jacksornamentaliron.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  28,
+        "name":  "Red Mountain Ironworks",
+        "city":  "Salt Lake Valley / Lehi area",
+        "size":  "Small artisan shop",
+        "services":  "Hand-forged ornamental iron, custom gates, railings, furniture, architectural iron, artistic metal pieces",
+        "website":  "redmountainiron.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  29,
+        "name":  "salt made co.",
+        "city":  "Salt Lake City",
+        "size":  "Small independent — design-forward",
+        "services":  "Design and fabrication of metal home furnishings, custom interior/exterior metal accents, architectural metalwork",
+        "website":  "Search: salt made co. SLC",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  30,
+        "name":  "Aspen Metals",
+        "city":  "Salt Lake City",
+        "size":  "Small independent",
+        "services":  "Interior/exterior custom railing systems, contemporary architectural metal finish work",
+        "website":  "Search: Aspen Metals SLC",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  31,
+        "name":  "Modern Aspect",
+        "city":  "Bountiful",
+        "size":  "Small independent",
+        "services":  "Custom steel planter boxes, exterior metal accents, architectural metal for residential projects",
+        "website":  "https://www.postandporch.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  32,
+        "name":  "Christiansen Fabrication",
+        "city":  "Salt Lake City",
+        "size":  "Small independent",
+        "services":  "Custom ironwork and metal fabrication (residential and commercial)",
+        "website":  "Search: Christiansen Fabrication SLC",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  33,
+        "name":  "American Eagle Welding Inc.",
+        "city":  "North Salt Lake",
+        "size":  "Owner-operated — 50+ years experience",
+        "services":  "Custom architectural railings, gates, fences, stairs, spiral staircases, ornamental iron",
+        "website":  "https://www.americaneaglewelding.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  34,
+        "name":  "BC MetalWorks Utah",
+        "city":  "Tremonton/Elwood (serves SLC/Ogden corridor)",
+        "size":  "Family-owned — 30+ years",
+        "services":  "Custom steel/iron gates, fences, railings, ornamental metal (residential and commercial); end-to-end installation",
+        "website":  "https://metalworksbc.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  35,
+        "name":  "Titan Forge",
+        "city":  "Springville (also Utah County)",
+        "size":  "Small independent",
+        "services":  "Custom steelwork, structural and ornamental metal fab, CNC plasma cutting, MIG/TIG welding, metal furniture, sculptures, signage",
+        "website":  "utahwelder.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  36,
+        "name":  "FireFoxx Automotive (Metal Fab)",
+        "city":  "Salt Lake City",
+        "size":  "Small-to-mid shop — 10+ years",
+        "services":  "TIG/MIG welding for custom exhaust, brackets, rust repair, full restorations; general engine work; ASE-certified technicians",
+        "website":  "firefoxxautomotive.com",
+        "tags":  [
+                     "welding",
+                     "offroad"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  37,
+        "name":  "Mat\u0027s Rods \u0026 Restorations",
+        "city":  "Salt Lake Valley",
+        "size":  "Large — 35,000 sq ft, largest custom shop in Utah",
+        "services":  "Full hot rod building, classic car modification, restoration, custom motorcycles, frame-off builds, engine building, custom fabrication, paint",
+        "website":  "matsrodsandrestorations.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  38,
+        "name":  "Landers Fabrication",
+        "city":  "Salt Lake Valley",
+        "size":  "Small-to-mid independent",
+        "services":  "Hot rods, rat rods, resto-mods, race cars, off-road, roll cages, chassis mods, sheet metal, tube bending, LS/LT conversions, custom headers, exhaust, suspension, all welding types, wiring, data loggers",
+        "website":  "landersfabrication.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  39,
+        "name":  "Kindig-It Design",
+        "city":  "Millcreek / Salt Lake City (164 E Hill Ave)",
+        "size":  "Large dedicated facility — ~27,000 sq ft",
+        "services":  "High-end custom car building, resto-mods, hot rods, full in-house metal fab, body/paint, suspension, interiors, mechanical",
+        "website":  "kindigit.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  40,
+        "name":  "Ekins Garage",
+        "city":  "West Jordan",
+        "size":  "Small independent",
+        "services":  "Full tear-down resto-mods, hot rods, metalwork, custom suspension fab; strips to bare frame for ground-up builds",
+        "website":  "ekinsgarage.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  41,
+        "name":  "JDM Body and Paint",
+        "city":  "Murray",
+        "size":  "Small independent",
+        "services":  "Custom car builds, hot rods, street rods, classic muscle, body/paint, performance upgrades",
+        "website":  "jdmbodyandpaint.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  42,
+        "name":  "Impulse Offroad",
+        "city":  "Murray",
+        "size":  "Small community-based — 30+ years",
+        "services":  "Custom fab, 4x4 suspension, overland gear, alignments, off-road builds",
+        "website":  "impulseoffroad.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  43,
+        "name":  "Salty Gears Off Road",
+        "city":  "South Salt Lake",
+        "size":  "Small independent",
+        "services":  "Custom design and fabrication, suspension, wheel/tire, off-road builds",
+        "website":  "https://www.saltygearsoffroad.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  44,
+        "name":  "Jensen Bros. Off Road",
+        "city":  "Salt Lake City",
+        "size":  "Small independent specialist",
+        "services":  "Off-road shock tuning and valving, ORI Struts, suspension fluid dynamics, spring-rate calibration for solid-axle and independent suspension",
+        "website":  "https://jensenbrosoffroad.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  45,
+        "name":  "Misfit Garage Utah",
+        "city":  "Salt Lake City",
+        "size":  "Small independent",
+        "services":  "UTV roll cages, custom windshields, tire racks, accessory fab for RZR Pro R and CFMoto",
+        "website":  "misfitgarageutah.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  46,
+        "name":  "Sandworks Off-Road",
+        "city":  "Salt Lake City area",
+        "size":  "Small independent — industry leader in UTV cages",
+        "services":  "Heavy-duty UTV roll cage fabrication, off-road accessories, custom fab",
+        "website":  "sandworks-utv.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  47,
+        "name":  "Sexton Offroad",
+        "city":  "Salt Lake City",
+        "size":  "Small independent specialty shop",
+        "services":  "Classic Bronco restoration, custom 4x4 builds, frame-off restorations; in-house paint and body for 4x4 resto-mods",
+        "website":  "sextonoffroad.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  48,
+        "name":  "Coonyz Customz",
+        "city":  "Sandy",
+        "size":  "Small independent",
+        "services":  "Custom motorcycles (big wheel baggers, gangster softails), extreme motorcycle audio, custom paint and airbrushing",
+        "website":  "coonyzcustomz.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  49,
+        "name":  "Chapel Motorcycle Shop",
+        "city":  "Salt Lake City",
+        "size":  "Small independent full-service moto shop",
+        "services":  "Custom motorcycle builds, dyno tuning (Utah Dyno Tuning in-house), structural fabrication, general service",
+        "website":  "chapelmoto.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  50,
+        "name":  "Salt City Builds",
+        "city":  "Salt Lake City",
+        "size":  "Small independent — vintage specialist",
+        "services":  "Vintage motorcycle repair, custom restorations, custom metal shaping for classic two-wheelers",
+        "website":  "saltcitybuilds.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  51,
+        "name":  "Taylor-Made Custom Exhaust",
+        "city":  "Bluffdale",
+        "size":  "Small independent — 30+ years",
+        "services":  "Performance exhaust fabrication using mandrel benders; custom tube routing, top-quality materials; enthusiast-driven builds",
+        "website":  "taylor-madecustomexhaust.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  52,
+        "name":  "Wasatch Customs",
+        "city":  "Layton (Weber/Davis County border)",
+        "size":  "Specialty shop — medium",
+        "services":  "Vehicle restoration, custom body kits, hot rods and muscle cars (specialty: 1960s-70s classics)",
+        "website":  "wasatchcustoms.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  53,
+        "name":  "Warfighter Fabrication",
+        "city":  "Salt Lake Valley",
+        "size":  "Small independent — veteran-owned",
+        "services":  "Custom metal fabrication, structural builds, off-road and specialty fab",
+        "website":  "warfighterfabrication.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  54,
+        "name":  "Blanchard Metals Processing",
+        "city":  "Salt Lake City",
+        "size":  "Mid-size — NADCAP Accredited, ISO 9001/AS9100D",
+        "services":  "Heat treating, cryogenic deep freezing, gas nitriding, martempering, anodizing; 50+ microprocessor-controlled ovens",
+        "website":  "bmproc.com",
+        "tags":  [
+                     "heattreat",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Industrial Finishing: Anodizing, Plating \u0026 Heat Treating",
+        "maps_url":  ""
+    },
+    {
+        "id":  55,
+        "name":  "Pioneer Metal Finishing",
+        "city":  "Salt Lake City",
+        "size":  "Large — NADCAP Accredited",
+        "services":  "Type II/III hardcoat anodize, powder coating, heat treating; one-stop aerospace/defense finishing; high-mix complexity capability",
+        "website":  "pioneermetal.com",
+        "tags":  [
+                     "powder",
+                     "heattreat",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Industrial Finishing: Anodizing, Plating \u0026 Heat Treating",
+        "maps_url":  ""
+    },
+    {
+        "id":  56,
+        "name":  "Quality Plating",
+        "city":  "Salt Lake City — est. 1957",
+        "size":  "Independent specialty plater — 65+ years",
+        "services":  "Hard anodizing, military-spec plating; unsealed hard anodize for maximum Rockwell hardness (military specifications)",
+        "website":  "qualityplating.com",
+        "tags":  [
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Industrial Finishing: Anodizing, Plating \u0026 Heat Treating",
+        "maps_url":  ""
+    },
+    {
+        "id":  57,
+        "name":  "Advanced Metal Finishing Inc. (AMFI)",
+        "city":  "North Salt Lake",
+        "size":  "Small independent — 31+ years",
+        "services":  "Plating, anodizing, powder coating; complete coating coverage for commercial clients",
+        "website":  "advmetal.com",
+        "tags":  [
+                     "powder",
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Industrial Finishing: Anodizing, Plating \u0026 Heat Treating",
+        "maps_url":  ""
+    },
+    {
+        "id":  58,
+        "name":  "Anodizing \u0026 Metal Coatings",
+        "city":  "Salt Lake City — est. 1986",
+        "size":  "Independent specialty shop",
+        "services":  "Aluminum finishing, anodizing; robust oxide layer formation for durability and corrosion resistance",
+        "website":  "anodizingmetalcoatings.com",
+        "tags":  [
+                     "aerospace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Industrial Finishing: Anodizing, Plating \u0026 Heat Treating",
+        "maps_url":  ""
+    },
+    {
+        "id":  59,
+        "name":  "Industrial Heat Treat",
+        "city":  "Salt Lake City",
+        "size":  "Independent heat treat specialist",
+        "services":  "Metal heat treating, hardening; focused on process equipment industry; rapid turnaround for local machine shops",
+        "website":  "industrialheattreat.com",
+        "tags":  [
+                     "heattreat"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Industrial Finishing: Anodizing, Plating \u0026 Heat Treating",
+        "maps_url":  ""
+    },
+    {
+        "id":  60,
+        "name":  "Full Blown Coatings",
+        "city":  "Salt Lake City / Taylorsville area",
+        "size":  "Small independent",
+        "services":  "Powder coating, sandblasting; rigorous pre-treatment for automotive and commercial work",
+        "website":  "fullblowncoatings.com",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Industrial Finishing: Anodizing, Plating \u0026 Heat Treating",
+        "maps_url":  ""
+    },
+    {
+        "id":  61,
+        "name":  "Utah Powder Werks",
+        "city":  "Kaysville (527 Market St Unit A)",
+        "size":  "Small independent — family-owned",
+        "services":  "Powder coating, media blasting, metal prep (edge rounding, weld crack repair, dent filling); multi-coat processes; masking of machined surfaces",
+        "website":  "utahpowderwerks.com",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Industrial Finishing: Anodizing, Plating \u0026 Heat Treating",
+        "maps_url":  ""
+    },
+    {
+        "id":  62,
+        "name":  "Salt City Metal Coatings",
+        "city":  "Salt Lake Valley",
+        "size":  "Independent coating specialist",
+        "services":  "Powder coating; protective coatings for harsh environments; environmentally friendly, corrosion/impact resistant finishes",
+        "website":  "saltcitymetalcoatings.com",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Industrial Finishing: Anodizing, Plating \u0026 Heat Treating",
+        "maps_url":  ""
+    },
+    {
+        "id":  63,
+        "name":  "Advanced Powder Coating",
+        "city":  "Salt Lake Valley",
+        "size":  "Independent shop",
+        "services":  "Powder coating, chemical pre-treatments, on-site sandblasting; large color selection",
+        "website":  "https://www.advpowdercoat.com",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Industrial Finishing: Anodizing, Plating \u0026 Heat Treating",
+        "maps_url":  ""
+    },
+    {
+        "id":  64,
+        "name":  "Make Salt Lake",
+        "city":  "Salt Lake City (downtown)",
+        "size":  "Non-profit community makerspace — 400+ members",
+        "services":  "CNC routing (Tormach for metal), laser cutting/engraving (two large-bed units), metal shop (MIG/TIG/oxy-acetylene welding, plasma cutter), manual machining (Bridgeport), 3D printing, woodshop, electronics bench, prototype lab; classes and certifications",
+        "website":  "makesaltlake.org | @makesaltlake",
+        "tags":  [
+                     "makerspace",
+                     "laser",
+                     "3dprint",
+                     "welding",
+                     "cnc"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Digital Fabrication \u0026 Community Spaces",
+        "maps_url":  ""
+    },
+    {
+        "id":  65,
+        "name":  "801 Labs",
+        "city":  "Salt Lake City (353 E 200 S)",
+        "size":  "Community hackerspace (IT/security/electronics focus)",
+        "services":  "Electronics, IT, information security; workshops, presentations, project collaboration; 3D printers",
+        "website":  "801labs.org",
+        "tags":  [
+                     "makerspace"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Digital Fabrication \u0026 Community Spaces",
+        "maps_url":  ""
+    },
+    {
+        "id":  66,
+        "name":  "Utah STEM Action Center Innovation Hub",
+        "city":  "Salt Lake City",
+        "size":  "State-run makerspace / fab lab",
+        "services":  "2,000 sq ft innovation hub; CNC, 3D printing, laser engraving, electronics; part of U-MAKE statewide network of 8 makerspaces",
+        "website":  "stem.utah.gov/hub",
+        "tags":  [
+                     "makerspace",
+                     "laser",
+                     "3dprint",
+                     "cnc"
+                 ],
+        "region":  "salt-lake",
+        "regionTitle":  "Salt Lake Valley",
+        "regionSubtitle":  "SLC · West Valley · Murray · Sandy · West Jordan · Draper · Midvale · Taylorsville · Bountiful · North Salt Lake",
+        "category":  "Digital Fabrication \u0026 Community Spaces",
+        "maps_url":  ""
+    },
+    {
+        "id":  67,
+        "name":  "Orion Machining",
+        "city":  "Lindon",
+        "size":  "Small independent — est. 2007",
+        "services":  "5-axis CNC machining, prototypes, full production runs; drag racing, food processing, mining, medical industries",
+        "website":  "https://www.orion-machining-utah.com",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  68,
+        "name":  "Utah Valley University Machine Shop",
+        "city":  "Orem",
+        "size":  "University facility — open to public",
+        "services":  "CNC machining (Fusion 360 based), fabrication/welding, plasma cutting, band saws, heat treat, casting (limited); available for student training and external projects",
+        "website":  "uvu.edu/cet/machineshop",
+        "tags":  [
+                     "cnc",
+                     "welding",
+                     "makerspace",
+                     "heattreat"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  69,
+        "name":  "Superior Powder Coating \u0026 Manufacturing",
+        "city":  "Pleasant Grove",
+        "size":  "Mid-size independent with in-house design/fab",
+        "services":  "Powder coating, sandblasting, coating removal, light assembly, warehousing, welding, custom railing design and manufacture, architectural metalwork",
+        "website":  "superiorpowdercoatingutah.com",
+        "tags":  [
+                     "powder",
+                     "welding"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  70,
+        "name":  "Christensen Industries",
+        "city":  "Utah County / Wasatch Front",
+        "size":  "Mid-size contract manufacturer",
+        "services":  "Precision sheet metal fabrication; metal finishing: plating, passivation, painting, powder coating; turnkey manufacturing solutions",
+        "website":  "https://www.christensenindustries.com",
+        "tags":  [
+                     "aerospace",
+                     "cnc",
+                     "powder"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  71,
+        "name":  "Jawstec (Orem)",
+        "city":  "Orem",
+        "size":  "Mid-size digital fabrication",
+        "services":  "Metal 3D printing, FDM/SLA/SLS printing, CNC milling, sheet metal fab; instant online quoting; serves Cedar City, Moab, Richfield",
+        "website":  "jawstec.com",
+        "tags":  [
+                     "3dprint",
+                     "cnc",
+                     "laser"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  72,
+        "name":  "TMR Customs",
+        "city":  "Utah County",
+        "size":  "Small manufacturer — est. 2008, family-founded",
+        "services":  "CNC machined off-road fab components (roll cage clamps, tube clamps, recovery mounts, steering clamps); TIG rod holders; welding cart accessories; in-house CNC and testing",
+        "website":  "tmrcustoms.com",
+        "tags":  [
+                     "cnc",
+                     "offroad"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  73,
+        "name":  "Central Utah Tool",
+        "city":  "Provo (775 S University Ave)",
+        "size":  "Small family-owned",
+        "services":  "CNC machining, EDM (Electrical Discharge Machining), stamping, Swiss machining; cuts complex internal geometries in hardened tool steels",
+        "website":  "MFG.com: Central Utah Tool, Provo",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  74,
+        "name":  "OSH Cut",
+        "city":  "Lindon",
+        "size":  "Tech-forward online service",
+        "services":  "Online laser and plasma cutting; clients upload CAD designs for fast turnaround; Utah-based operation",
+        "website":  "oshcut.com",
+        "tags":  [
+                     "laser",
+                     "cnc"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  75,
+        "name":  "Intermountain Precision Cutting",
+        "city":  "Lindon / Orem",
+        "size":  "Larger industrial shop",
+        "services":  "High-volume CNC laser and plasma cutting; automated 5-axis fiber lasers; production-run sheet metal, close-tolerance components; aerospace, medical, HVAC",
+        "website":  "Search: Intermountain Precision Cutting Lindon UT",
+        "tags":  [
+                     "laser",
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  76,
+        "name":  "Steel Connections, Inc.",
+        "city":  "Payson",
+        "size":  "Small community shop",
+        "services":  "Structural steel and plate fabrication, CNC plasma cutting, steel erection for metal buildings, roofing, ornamental steel",
+        "website":  "Search: Steel Connections Payson Utah",
+        "tags":  [
+                     "welding",
+                     "cnc"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  77,
+        "name":  "Mission Iron Works",
+        "city":  "Spanish Fork — est. 2013",
+        "size":  "Medium construction contractor",
+        "services":  "Structural welding and heavy fabrication; steel framing, supports, corrugated metal decking for churches, gyms, warehouses",
+        "website":  "https://www.missionironworks.com",
+        "tags":  [
+                     "welding",
+                     "cnc"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  78,
+        "name":  "A \u0026 M Tool and Cutter Grinding (Provo)",
+        "city":  "Provo",
+        "size":  "Small family-owned — est. 1978",
+        "services":  "CNC milling, tool and cutter grinding, precision tool restoration; serving local manufacturing for 45+ years",
+        "website":  "amtoolandcuttergrinding.com",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  79,
+        "name":  "High Country Metal Works",
+        "city":  "Provo / Springville",
+        "size":  "Small independent",
+        "services":  "Custom metal fabrication, architectural and structural metalwork, custom railings and staircases; climate-resilient materials and finishes",
+        "website":  "highcountrymetalworks.com",
+        "tags":  [
+                     "welding",
+                     "ornamental",
+                     "cnc"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  80,
+        "name":  "KC Iron Work",
+        "city":  "Lindon",
+        "size":  "Small independent — certified craftsmen",
+        "services":  "Custom ironwork, structural and ornamental iron, high-end fabrication",
+        "website":  "https://kcironwork.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  81,
+        "name":  "Exstreme Fab",
+        "city":  "Utah County",
+        "size":  "Small independent",
+        "services":  "Chassis fabrication, beadlock conversions, custom off-road fab",
+        "website":  "exstremefab.com",
+        "tags":  [
+                     "offroad",
+                     "welding",
+                     "cnc"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  82,
+        "name":  "Metal Arts Foundry",
+        "city":  "Lehi",
+        "size":  "Small independent — artistic specialty",
+        "services":  "Bronze sculpture casting, artistic metal foundry work; bridges industrial metal melting with fine arts",
+        "website":  "mtlarts.com",
+        "tags":  [
+                     "3dprint"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  83,
+        "name":  "TRA Snow and Sun",
+        "city":  "American Fork — est. 1996",
+        "size":  "Established independent",
+        "services":  "Custom powder coating with continuous chain conveyor system for high-volume commercial runs; wide color selection",
+        "website":  "trasnowandsun.com",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  84,
+        "name":  "Utah Overland",
+        "city":  "Utah County",
+        "size":  "Small independent off-road fab shop",
+        "services":  "Custom off-road fabrication, overland builds, suspension, bumpers, skid plates, armor; off-road vehicle customization",
+        "website":  "utahoverland.co",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  85,
+        "name":  "Turbo Lab Racing",
+        "city":  "Orem",
+        "size":  "Small independent performance shop",
+        "services":  "Roll cage fabrication (chromoly/DOM, in-house mandrel bender), custom turbo kits, dyno tuning, full performance builds",
+        "website":  "turbolabracing.com",
+        "tags":  [
+                     "offroad",
+                     "welding",
+                     "cnc"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  86,
+        "name":  "Ultimate 4X4 \u0026 Accessories",
+        "city":  "Orem",
+        "size":  "Small independent — 25+ years",
+        "services":  "Off-road suspension, custom 4x4 work, accessories; trail preparation builds",
+        "website":  "https://ultimate4x4utah.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  87,
+        "name":  "Streamline Custom Designs",
+        "city":  "Utah County",
+        "size":  "Small specialty shop",
+        "services":  "Custom car design, resto-mods, performance builds; specializes in modern twists on classic American vehicles",
+        "website":  "streamlinecustomdesigns.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Specialty Automotive",
+        "maps_url":  ""
+    },
+    {
+        "id":  88,
+        "name":  "Utah STEM Action Center (U-MAKE Network)",
+        "city":  "Multiple Utah County locations",
+        "size":  "Statewide network of 8 makerspaces",
+        "services":  "3D printing, laser cutting, CNC tools, electronics, collaborative maker education",
+        "website":  "stem.utah.gov | extension.usu.edu/utah/stem/maker",
+        "tags":  [
+                     "makerspace",
+                     "laser",
+                     "3dprint",
+                     "cnc"
+                 ],
+        "region":  "utah-county",
+        "regionTitle":  "Utah County",
+        "regionSubtitle":  "Provo · Orem · Lehi · American Fork · Lindon · Springville · Spanish Fork · Payson · Salem · Saratoga Springs",
+        "category":  "Digital Fabrication \u0026 Community Spaces",
+        "maps_url":  ""
+    },
+    {
+        "id":  89,
+        "name":  "JD Machine",
+        "city":  "Ogden",
+        "size":  "Large family-owned — est. 1979, multi-generational",
+        "services":  "Precision CNC milling (4 and 5-axis), CNC turning, sheet metal fabrication, assembly/testing, logistics; aerospace, defense, nuclear, medical, energy, mining, communication",
+        "website":  "jdmachine.com | 2744 N Parkland Blvd, Ogden | 801-782-4394",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  90,
+        "name":  "Distinctive Manufacturing Group",
+        "city":  "Ogden",
+        "size":  "Mid-size precision/fabrication shop",
+        "services":  "CNC milling and turning, metal fabrication (weldments up to 40,000 lbs), aerospace machining, Hill AFB subcontracting, bioscience, defense, mining; titanium and Inconel capable",
+        "website":  "distinctivemfg.co",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  91,
+        "name":  "Sharp Tool Manufacturing",
+        "city":  "Ogden",
+        "size":  "Mid-size precision shop",
+        "services":  "CNC milling, CNC turning, CNC machining and fabrication; aerospace, automotive, commercial industries",
+        "website":  "sharptoolmfg.com",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  92,
+        "name":  "Symetrx Machine LLC",
+        "city":  "Ogden",
+        "size":  "Full-service independent — 35+ years",
+        "services":  "Precision CNC turning, wire EDM, die-sink EDM, precision CNC milling, Swiss/screw machining, prototyping; all metals including exotics",
+        "website":  "MFG.com listing",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  93,
+        "name":  "Husky Machining",
+        "city":  "Ogden",
+        "size":  "Small family-owned",
+        "services":  "5-axis CNC milling, CNC turning, CMM inspection; aerospace, industrial, automotive",
+        "website":  "MFG.com listing",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  94,
+        "name":  "Kings Peak Manufacturing",
+        "city":  "Ogden",
+        "size":  "Certified small business",
+        "services":  "Precision CNC machining; aerospace and defense sectors near Hill AFB",
+        "website":  "MFG.com listing",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  95,
+        "name":  "The Machine Connection",
+        "city":  "Northern Utah / Ogden area",
+        "size":  "Mid-size precision shop",
+        "services":  "3, 4, and 5-axis CNC milling; CNC turning (2, 3, multi-axis); CNC laser cutting; on-demand parts, production runs, tooling, prototyping",
+        "website":  "themachineconnection.com",
+        "tags":  [
+                     "cnc",
+                     "laser"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  96,
+        "name":  "Petersen Inc.",
+        "city":  "Ogden",
+        "size":  "Large operation",
+        "services":  "Massive-scale precision machining, multi-axis CNC, horizontal boring mills capable of machining components up to 15 feet in diameter; nuclear, defense, and commercial aviation",
+        "website":  "peterseninc.com",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  97,
+        "name":  "Richards Sheet Metal",
+        "city":  "Ogden — est. 1928, 90,000 sq ft",
+        "size":  "Large full-service plant — nearly 100-year institution",
+        "services":  "Tube and plate laser cutting, CNC punching and stamping, CNC bending, welding (including orbital), architectural metal; mining, waste, food, government, industrial clients",
+        "website":  "https://www.richards-fab.com",
+        "tags":  [
+                     "laser",
+                     "welding",
+                     "cnc"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  98,
+        "name":  "Applied Tools Products",
+        "city":  "Roy",
+        "size":  "Small independent",
+        "services":  "General machining, tool products; tier-3 aerospace supply chain support near Hill AFB",
+        "website":  "Search: Applied Tools Products Roy Utah",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  99,
+        "name":  "Baugh Repair \u0026 Machine, Inc.",
+        "city":  "Roy",
+        "size":  "Small independent",
+        "services":  "Machine repair and localized machining; keeps surrounding industrial floors operational",
+        "website":  "http://baughmachine.com",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  100,
+        "name":  "Berry Enterprises",
+        "city":  "Roy",
+        "size":  "Family-run independent",
+        "services":  "Fabrication, general machining; custom and overflow work",
+        "website":  "Search: Berry Enterprises Roy Utah",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  101,
+        "name":  "Pledger Tool \u0026 Cutter Grind",
+        "city":  "Roy",
+        "size":  "Small specialist shop",
+        "services":  "Tool grinding, cutter restoration; restores dull end-mills and lathe inserts for surrounding CNC operations",
+        "website":  "Search: Pledger Tool \u0026 Cutter Grind Roy Utah",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  102,
+        "name":  "High Desert Heat Treating",
+        "city":  "Ogden",
+        "size":  "Small independent",
+        "services":  "Quenching, tempering, gas nitriding, carburizing; fast turnaround for local machine shops",
+        "website":  "highdesertheattreating.com",
+        "tags":  [
+                     "heattreat"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  103,
+        "name":  "Huxley Design",
+        "city":  "Kaysville",
+        "size":  "Full-service mid-size shop",
+        "services":  "Full metal fabrication, laser cutting, press brake forming, welding, powder coating; architectural, industrial, and residential projects end-to-end",
+        "website":  "huxleydesign.com",
+        "tags":  [
+                     "laser",
+                     "welding",
+                     "powder",
+                     "cnc"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  104,
+        "name":  "TEFCO of Utah (Primary Location)",
+        "city":  "Ogden",
+        "size":  "Established independent — est. 1942",
+        "services":  "Custom ornamental iron: railings, gates, security doors, staircases, planters; powder coating; sandblasting; welding and metal fabrication",
+        "website":  "tefcofab.com",
+        "tags":  [
+                     "welding",
+                     "ornamental",
+                     "powder"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  105,
+        "name":  "Intermountain Lift",
+        "city":  "Weber / Ogden area",
+        "size":  "Family-owned steel fabrication — est. 1969",
+        "services":  "Tube and pipe laser cutting, blasting, painting, rolling, bending, welding, powder coating; full steel fabrication",
+        "website":  "https://intermountainlift.com",
+        "tags":  [
+                     "welding",
+                     "laser",
+                     "cnc"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  106,
+        "name":  "Tactical Welding LLC",
+        "city":  "Ogden (serves northern Utah)",
+        "size":  "Family-owned industrial welding contractor",
+        "services":  "Structural steel erection, custom steel installations (schools, shopping centers, industrial), pipe welding; wide service area across northern Utah",
+        "website":  "https://tacticalwelding.com",
+        "tags":  [
+                     "welding"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  107,
+        "name":  "Terrace Muffler \u0026 Auto Repair",
+        "city":  "Ogden",
+        "size":  "Small independent",
+        "services":  "Custom performance exhaust, muffler repair, automotive diagnostics",
+        "website":  "terracemuffler.net",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  108,
+        "name":  "Powder Coatings of Utah",
+        "city":  "Ogden — 2951 S Pennsylvania Ave",
+        "size":  "Mid-size regional — est. 2002",
+        "services":  "Powder coating, industrial liquid painting, sandblasting, packaging and logistics services",
+        "website":  "Search: Powder Coatings of Utah Ogden",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Powder Coating \u0026 Finishing",
+        "maps_url":  ""
+    },
+    {
+        "id":  109,
+        "name":  "Williamson Ocean",
+        "city":  "Ogden and Provo",
+        "size":  "Mid-size coating company",
+        "services":  "Powder coating, metal resurfacing, industrial coatings, fiberglass/FRP coatings, trailer and fabrication coatings",
+        "website":  "https://williamsonocean.com",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Powder Coating \u0026 Finishing",
+        "maps_url":  ""
+    },
+    {
+        "id":  110,
+        "name":  "Weber County Library MakerSpace",
+        "city":  "Ogden / multiple Weber County branches",
+        "size":  "Public library facility — free community access",
+        "services":  "CNC cutting, CO2 laser engraving (FSL Muse 2D; SVG/DXF files), 3D printing (Makerbot), 12-color SWF embroidery machine; digital fabrication tools; free/low-cost to patrons",
+        "website":  "weberpl.lib.ut.us/makerspaces",
+        "tags":  [
+                     "makerspace",
+                     "laser",
+                     "3dprint",
+                     "cnc"
+                 ],
+        "region":  "weber-ogden",
+        "regionTitle":  "Weber / Ogden Area",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "category":  "Digital Fabrication \u0026 Community Spaces",
+        "maps_url":  ""
+    },
+    {
+        "id":  111,
+        "name":  "Mountain View Machine \u0026 Welding",
+        "city":  "Logan — 2485 S 1350th W",
+        "size":  "Small independent full-service — grew from 2-machine garage",
+        "services":  "CNC milling, CNC lathes, welding, wire EDM, CMM inspection, waterjet cutting, prototyping, heat treatment",
+        "website":  "mvmwinc.com",
+        "tags":  [
+                     "cnc",
+                     "welding",
+                     "waterjet",
+                     "heattreat"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  112,
+        "name":  "A \u0026 M Tool and Cutter Grinding (Logan)",
+        "city":  "Logan",
+        "size":  "Small family-owned — est. 1978",
+        "services":  "CNC milling, tool and cutter grinding, reverse engineering of agricultural parts; replicates obsolete parts for legacy farm machinery using modern CNC precision",
+        "website":  "amtoolandcuttergrinding.com",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  113,
+        "name":  "Dutro Custom Fab",
+        "city":  "Logan — est. 1945",
+        "size":  "Independent — 80-year institution",
+        "services":  "Metal fabrication, engineering and design, custom structural and decorative metalwork",
+        "website":  "dutrocustomfab.com",
+        "tags":  [
+                     "welding",
+                     "cnc"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  114,
+        "name":  "Arnold Quality Metal Works",
+        "city":  "Logan",
+        "size":  "Small independent",
+        "services":  "Commercial structural steel, ornamental metal, custom handrails to heavy structural components; has fabricated parts ranging from handrails to space shuttle rocket components",
+        "website":  "arnoldquality.com",
+        "tags":  [
+                     "cnc",
+                     "welding",
+                     "aerospace"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  115,
+        "name":  "Artistic Metal Works",
+        "city":  "Cache Valley (Logan area)",
+        "size":  "Small independent",
+        "services":  "Custom railings, gates, structural steel, ornamental metalwork; climate-durable powder coating with warranties",
+        "website":  "artisticmetalworks.biz",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  116,
+        "name":  "Absolute Quality",
+        "city":  "Hyrum",
+        "size":  "Small independent job shop",
+        "services":  "CNC machining, manufacturing; exact-specification component manufacturing",
+        "website":  "https://www.absolutequalitymachining.com",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  117,
+        "name":  "Custom Fabrication \u0026 Machining",
+        "city":  "Logan",
+        "size":  "Small independent job shop",
+        "services":  "General machining, metal fabrication, sheet metal, custom job shop work",
+        "website":  "Search: Custom Fabrication \u0026 Machining Logan Utah",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  118,
+        "name":  "MetalMan Weld (Cache Valley)",
+        "city":  "Logan",
+        "size":  "Small versatile shop",
+        "services":  "Custom steel and aluminum welding, plasma-cut sign making, small-to-medium fabrication; mobile welding; 100-ton press brake and 10 ft shear in-house; powder coating and sandblasting",
+        "website":  "Phone: 435-760-3178",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  119,
+        "name":  "HS Customs",
+        "city":  "North Logan",
+        "size":  "Small independent — world-renowned builder",
+        "services":  "High-end custom car builds, resto-mods, custom airbrushing, in-house upholstery, electrical/wiring, chassis dyno tuning; frame-off restorations",
+        "website":  "hscustoms.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Specialty",
+        "maps_url":  ""
+    },
+    {
+        "id":  120,
+        "name":  "Cache Valley Plating LLC",
+        "city":  "Logan",
+        "size":  "Small independent finishing specialist",
+        "services":  "Plating, anodizing, passivation, chemical derusting; polishing for brass, bronze, and aluminum",
+        "website":  "Search: Cache Valley Plating Logan Utah",
+        "tags":  [
+                     "aerospace"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Finishing \u0026 Community",
+        "maps_url":  ""
+    },
+    {
+        "id":  121,
+        "name":  "Triple T Heat Treat",
+        "city":  "Logan",
+        "size":  "Small independent heat treat specialist",
+        "services":  "Annealing, marquenching, hardening, tempering; comprehensive metallurgical thermal processing for alloy steels and titanium; prevents part distortion during hardening",
+        "website":  "tripletheattreat.com",
+        "tags":  [
+                     "heattreat"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Finishing \u0026 Community",
+        "maps_url":  ""
+    },
+    {
+        "id":  122,
+        "name":  "Utah State University Machine Shop",
+        "city":  "Logan",
+        "size":  "University institutional shop",
+        "services":  "Machining services, fabrication support for research; available to university affiliates and some external clients",
+        "website":  "usu.edu — search facilities/machine shop",
+        "tags":  [
+                     "makerspace"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Finishing \u0026 Community",
+        "maps_url":  ""
+    },
+    {
+        "id":  123,
+        "name":  "Cytiva STEM Makerspace (Logan Library)",
+        "city":  "Logan",
+        "size":  "Public library makerspace",
+        "services":  "Community STEM projects, maker tools, 3D printing, electronics, creative fabrication; public access",
+        "website":  "library.loganutah.gov",
+        "tags":  [
+                     "makerspace"
+                 ],
+        "region":  "cache-valley",
+        "regionTitle":  "Cache Valley",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "category":  "Finishing \u0026 Community",
+        "maps_url":  ""
+    },
+    {
+        "id":  124,
+        "name":  "Alphaeus Manufacturing",
+        "city":  "Washington / Hurricane (2410 W 350 N #2)",
+        "size":  "Small independent — est. 2014, garage startup to 5,000 sq ft+",
+        "services":  "Precision CNC 4-axis and high-speed milling, turning, mill-turn, Swiss machining, saw cutting; prototype to production; medical, biotech, motorsport industries",
+        "website":  "alphaeusmfg.com",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  125,
+        "name":  "Gregorio Services and Machine",
+        "city":  "Hurricane",
+        "size":  "Small independent micro-shop",
+        "services":  "Small machining operations; custom localized machining",
+        "website":  "Search: Gregorio Services Hurricane Utah",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  126,
+        "name":  "Cedar Welding \u0026 Fabrication, Inc.",
+        "city":  "Cedar City (642 N 1070 W) — est. 1993",
+        "size":  "Established independent — 30+ years",
+        "services":  "CNC cutting, ornamental iron, general manufacturing, farm equipment fabrication, custom truck racks and agricultural machinery; prototype through production",
+        "website":  "cedarwelding.com",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Fabrication \u0026 Machining",
+        "maps_url":  ""
+    },
+    {
+        "id":  127,
+        "name":  "Alexander Clark Enterprises",
+        "city":  "Southern Utah / St. George region",
+        "size":  "Small artisan ironwork shop",
+        "services":  "Metal fabrication, ornamental blacksmithing, wrought ironwork (traditional and modern), custom railings, fences, fireplace screens, architectural metalwork",
+        "website":  "alexanderclarkenterprises.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  128,
+        "name":  "Coppertop Metals",
+        "city":  "St. George",
+        "size":  "Small independent",
+        "services":  "Custom metal fabrication, blacksmithing; functional architectural artwork designed for desert climate (UV and wind resistance)",
+        "website":  "coppertopmetals.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  129,
+        "name":  "Liston Metalworks",
+        "city":  "Washington County (St. George area)",
+        "size":  "Small independent",
+        "services":  "Custom metal fabrication, welding repairs, powder coating; full in-house process",
+        "website":  "listonmetalworks.com",
+        "tags":  [
+                     "welding"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  130,
+        "name":  "Southern Utah Metal Works",
+        "city":  "St. George",
+        "size":  "Small independent",
+        "services":  "Custom welding, metal fabrication, gates, residential and commercial metal projects",
+        "website":  "southernutahmetalworks.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  131,
+        "name":  "D IronWorks",
+        "city":  "St. George (980 N 1180 W) | (435) 628-2518",
+        "size":  "Small family-run",
+        "services":  "Custom welding in stainless, aluminum, cast iron, and mild steel; portable on-site welding; shop services for gates, railings, custom projects",
+        "website":  "dironworks.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  132,
+        "name":  "Forbes Welding \u0026 Fabrication (Metal Madness)",
+        "city":  "St. George | (435) 673-5733",
+        "size":  "Small family-owned — 30+ year legacy",
+        "services":  "Ornamental iron and custom metal fab: railings, gates (standard and ornamental), motorcycle accessories, trailer hitches, spiral staircases, custom brackets",
+        "website":  "Contact: forbeswelding@yahoo.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  133,
+        "name":  "Elevated Fab Industries (EFI)",
+        "city":  "St. George — est. 2020",
+        "size":  "Small owner-operated — mobile and shop",
+        "services":  "Heavy equipment welding and repair; custom excavator/loader bucket fabrication, boom and crack repairs, wear-plate installations, screening buckets; mobile on-site welding",
+        "website":  "https://elevatedfabindustries.com",
+        "tags":  [
+                     "welding"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  134,
+        "name":  "Funder Welding \u0026 Design",
+        "city":  "Cedar City",
+        "size":  "Family-owned",
+        "services":  "Wrought iron custom work, commercial steel fabrication; partners with architects and builders on complex design execution",
+        "website":  "fundercustoms.com",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Welding \u0026 Metalwork",
+        "maps_url":  ""
+    },
+    {
+        "id":  135,
+        "name":  "Red Desert Off Road",
+        "city":  "St. George",
+        "size":  "Small independent specialty shop",
+        "services":  "Custom 4x4 performance, lift kits, armor, lighting, suspension mods; features Interactive Garage station for virtual vehicle build visualization",
+        "website":  "reddesertoffroad.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Specialty Automotive \u0026 Off-Road",
+        "maps_url":  ""
+    },
+    {
+        "id":  136,
+        "name":  "Dixie 4 Wheel Drive",
+        "city":  "St. George — 12,000 sq ft facility",
+        "size":  "Established shop — nationally acclaimed",
+        "services":  "Suspension mods, armor, extreme 4x4 modifications; fundamental suspension geometry changes (4-link mounts, long-arm kits, custom skid plates) for Sand Hollow and Zion terrain",
+        "website":  "https://dixie4wheeldrive.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Specialty Automotive \u0026 Off-Road",
+        "maps_url":  ""
+    },
+    {
+        "id":  137,
+        "name":  "Hindenburg Customs",
+        "city":  "Richfield, UT (Central Utah)",
+        "size":  "Small independent",
+        "services":  "Custom UTV roll cages, automotive accessories, structural custom fabrication for motorsports",
+        "website":  "hindenburgcustoms.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Specialty Automotive \u0026 Off-Road",
+        "maps_url":  ""
+    },
+    {
+        "id":  138,
+        "name":  "Voodoo Riders",
+        "city":  "Southern Utah / statewide service",
+        "size":  "Small independent",
+        "services":  "Custom UTV roll cages, specialty off-road fabrication",
+        "website":  "voodoorr.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Specialty Automotive \u0026 Off-Road",
+        "maps_url":  ""
+    },
+    {
+        "id":  139,
+        "name":  "FX Industries",
+        "city":  "Hurricane, UT",
+        "size":  "Small independent specialty coater",
+        "services":  "Powder coating with full media blasting pre-treatment; 8\u0027 x 8\u0027 x 20\u0027 natural gas oven; elite chemical pretreatment for industrial and automotive parts",
+        "website":  "fxindustries.net",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Powder Coating \u0026 Finishing",
+        "maps_url":  ""
+    },
+    {
+        "id":  140,
+        "name":  "St. George Powder Coating",
+        "city":  "St. George / Hurricane / Ivins",
+        "size":  "Small independent",
+        "services":  "Premium powder coating services; serves Washington County and surrounding southern Utah communities",
+        "website":  "stgeorgepowdercoating.com",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Powder Coating \u0026 Finishing",
+        "maps_url":  ""
+    },
+    {
+        "id":  141,
+        "name":  "Elite Powder Coating",
+        "city":  "St. George",
+        "size":  "Small independent",
+        "services":  "Sandblasting, powder coating; custom metal finishing for automotive, industrial, and architectural projects",
+        "website":  "elitepowderstgeorge.com",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Powder Coating \u0026 Finishing",
+        "maps_url":  ""
+    },
+    {
+        "id":  142,
+        "name":  "Western Powder Coating",
+        "city":  "Cedar City (444 W Industrial Rd)",
+        "size":  "Medium regional shop",
+        "services":  "Powder coating, sandblasting, Cerakote firearms finishes; large oven capacity for oversized parts",
+        "website":  "wpcoating.com",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Powder Coating \u0026 Finishing",
+        "maps_url":  ""
+    },
+    {
+        "id":  143,
+        "name":  "Utah Tech University Makerspace (Innovation Plaza)",
+        "city":  "St. George (453 S 600 E)",
+        "size":  "University makerspace — ~8,000 sq ft, open to public",
+        "services":  "Laser cutting, laser etching/engraving, electronics, 3D printing, CNC routers and mills, digital fabrication tools; training and open hours for community/business; also runs Jr Makerspace for K-12 STEM",
+        "website":  "innovation.utahtech.edu/makerspace",
+        "tags":  [
+                     "makerspace",
+                     "laser",
+                     "3dprint",
+                     "cnc"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Digital Fabrication \u0026 Community Spaces",
+        "maps_url":  ""
+    },
+    {
+        "id":  144,
+        "name":  "Thunderworks Makerspace (SUU)",
+        "city":  "Cedar City — Southern Utah University",
+        "size":  "Academic / community facility",
+        "services":  "Industrial waterjet cutting (cuts titanium and steel without heat-affected zone), MIG/TIG welding, CNC routing, 3D printing; open to community and students",
+        "website":  "suu.edu/thunderworks",
+        "tags":  [
+                     "makerspace",
+                     "waterjet",
+                     "welding",
+                     "cnc",
+                     "3dprint"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Digital Fabrication \u0026 Community Spaces",
+        "maps_url":  ""
+    },
+    {
+        "id":  145,
+        "name":  "Washington County Library MakerSpace (Sid Atkin)",
+        "city":  "St. George",
+        "size":  "Public library facility",
+        "services":  "3D printing (Makerbot), Cricut Explore Air, laser cutting, soldering; charges only for raw materials (e.g., $0.05/gram for 3D prints)",
+        "website":  "library.washco.utah.gov",
+        "tags":  [
+                     "makerspace",
+                     "3dprint",
+                     "laser"
+                 ],
+        "region":  "southern-utah",
+        "regionTitle":  "St. George / Southern Utah",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "category":  "Digital Fabrication \u0026 Community Spaces",
+        "maps_url":  ""
+    },
+    {
+        "id":  146,
+        "name":  "Ducworks",
+        "city":  "Utah (verify via ducworks.com)",
+        "size":  "Large-scale industrial fabricator",
+        "services":  "One of the largest waterjet cutting tables in the region; plasma cutting; shears, beam line, oxy-fuel cutting, saws; 36,000 lb overhead crane (Taylor lift); coatings department including architectural patinas on bronze/brass/copper/aluminum/steel",
+        "website":  "ducworks.com",
+        "tags":  [
+                     "waterjet",
+                     "plasma",
+                     "welding",
+                     "cnc"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Statewide / Multi-Region Fabrication",
+        "maps_url":  ""
+    },
+    {
+        "id":  147,
+        "name":  "Utah Fabrication Inc.",
+        "city":  "Utah (Wasatch Front)",
+        "size":  "Established industrial fabricator — 50 years",
+        "services":  "Custom steel fabrication for mining, energy, industrial, municipalities, manufacturing; CNC plasma cutting, bending, welding, finishing; carbon steel, stainless, aluminum",
+        "website":  "https://www.utahfab.com",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Statewide / Multi-Region Fabrication",
+        "maps_url":  ""
+    },
+    {
+        "id":  148,
+        "name":  "Smith Powder Coating LLC",
+        "city":  "Utah (exact location: verify directly)",
+        "size":  "Small family-owned specialty coater",
+        "services":  "Powder coating with SSPC SP5/NACE White Metal blasting; epoxy prime + powder coat; longest-lasting powder coating process available",
+        "website":  "https://smithpowdercoating.com",
+        "tags":  [
+                     "powder"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Statewide / Multi-Region Fabrication",
+        "maps_url":  ""
+    },
+    {
+        "id":  149,
+        "name":  "M\u0026M Cut-O-Matic Inc.",
+        "city":  "Utah — est. 1963, 60+ years in business",
+        "size":  "Long-established cutting service",
+        "services":  "Waterjet cutting (square/round stock, plate, titanium, plastics, marble); metal cutting specialty",
+        "website":  "https://m-mcutomatic.com",
+        "tags":  [
+                     "waterjet",
+                     "cnc"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Statewide / Multi-Region Fabrication",
+        "maps_url":  ""
+    },
+    {
+        "id":  150,
+        "name":  "Crenshaw Die and Manufacturing",
+        "city":  "Utah — est. 1972, 50+ years",
+        "size":  "Mid-size established manufacturer",
+        "services":  "Precision manufacturing, metal fabrication, waterjet cutting; aerospace, defense, automotive, medical industries",
+        "website":  "https://crenshawdiemfg.com",
+        "tags":  [
+                     "cnc",
+                     "waterjet",
+                     "aerospace"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Statewide / Multi-Region Fabrication",
+        "maps_url":  ""
+    },
+    {
+        "id":  151,
+        "name":  "Advance Manufacturing Technology",
+        "city":  "Utah (Wasatch Front) — 45+ years",
+        "size":  "Established mid-size shop",
+        "services":  "CNC machining, CMM precision inspection, CNC prototype machining, large-quantity CNC production, design consultation",
+        "website":  "https://www.advancemfgtech.com",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Statewide / Multi-Region Fabrication",
+        "maps_url":  ""
+    },
+    {
+        "id":  152,
+        "name":  "Alkab Precision",
+        "city":  "Utah (Wasatch Front)",
+        "size":  "Full-service independent",
+        "services":  "Precision machining, welding, fabricating, assembly, design services; one-stop for complex custom projects",
+        "website":  "alkab.com",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Statewide / Multi-Region Fabrication",
+        "maps_url":  ""
+    },
+    {
+        "id":  153,
+        "name":  "Iron Pine",
+        "city":  "Ogden — The Monarch Building",
+        "size":  "Small artisan/digital fab shop",
+        "services":  "Custom metal printing/laser engraving/etching; decorative metal work; custom signage",
+        "website":  "ironpine.company",
+        "tags":  [
+                     "laser",
+                     "cnc"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Statewide / Multi-Region Fabrication",
+        "maps_url":  ""
+    },
+    {
+        "id":  154,
+        "name":  "Red Dot Engineering",
+        "city":  "Moab, UT",
+        "size":  "Small independent — ground-zero for rock crawling engineering",
+        "services":  "Off-road chassis fabrication, welded suspension mounts, complete tube-chassis buggies, custom shock towers; hardcore rock crawling structural design",
+        "website":  "reddotengineering.com",
+        "tags":  [
+                     "offroad",
+                     "welding",
+                     "cnc"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Rural Hubs: Moab / Rock Crawling",
+        "maps_url":  ""
+    },
+    {
+        "id":  155,
+        "name":  "Moab Industries",
+        "city":  "Moab, UT",
+        "size":  "Small independent specialty shop",
+        "services":  "Premium Jeep Wrangler conversions, proprietary \u0027Soft Ride\u0027 technology, Spicer and Motive premium components; DOT-compliant builds field-tested on the Rubicon trail and Moab slickrock",
+        "website":  "moabindustries.com",
+        "tags":  [
+                     "offroad"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Rural Hubs: Moab / Rock Crawling",
+        "maps_url":  ""
+    },
+    {
+        "id":  156,
+        "name":  "KrashFab",
+        "city":  "Moab, UT",
+        "size":  "Small family-owned",
+        "services":  "Roll cages, off-road Jeep builds, extreme-clearance bumpers, custom shock towers, DIY kits for hardcore rock crawlers",
+        "website":  "krashfab.com",
+        "tags":  [
+                     "offroad",
+                     "welding"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Rural Hubs: Moab / Rock Crawling",
+        "maps_url":  ""
+    },
+    {
+        "id":  157,
+        "name":  "Performance Sheet Metal (Moab)",
+        "city":  "Moab, UT",
+        "size":  "Small independent",
+        "services":  "Custom industrial sheet metal fabrication serving Moab and eastern Utah",
+        "website":  "performancesheetmetal.com",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Rural Hubs: Moab / Rock Crawling",
+        "maps_url":  ""
+    },
+    {
+        "id":  158,
+        "name":  "Bent Metal Fab",
+        "city":  "Helper, UT (Price / Carbon County)",
+        "size":  "Small independent",
+        "services":  "Metal fabrication and machine shop work; serves mining and industrial sectors of Carbon County",
+        "website":  "https://bentmetaloffroad.com",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Rural Hubs: Uinta Basin / Carbon County / Central Utah",
+        "maps_url":  ""
+    },
+    {
+        "id":  159,
+        "name":  "W E Machine \u0026 Welding",
+        "city":  "Roosevelt, UT (Uinta Basin)",
+        "size":  "Small independent",
+        "services":  "Machining, heavy welding (SMAW/stick); critical support for heavy machinery and oilfield infrastructure in the Uinta Basin; field repair capable",
+        "website":  "Search: W E Machine \u0026 Welding Roosevelt Utah",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Rural Hubs: Uinta Basin / Carbon County / Central Utah",
+        "maps_url":  ""
+    },
+    {
+        "id":  160,
+        "name":  "LR Customs",
+        "city":  "Lapoint, UT (Uinta Basin)",
+        "size":  "Micro shop — certified small business",
+        "services":  "Milling and turning (manual and CNC); partnerships with local CNC/engraving shops; R\u0026D background machinists",
+        "website":  "MFG.com listing",
+        "tags":  [
+                     "cnc"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Rural Hubs: Uinta Basin / Carbon County / Central Utah",
+        "maps_url":  ""
+    },
+    {
+        "id":  161,
+        "name":  "Thompson Steel \u0026 Materials",
+        "city":  "Lapoint, UT (Uinta Basin / Vernal area)",
+        "size":  "Small independent material supplier",
+        "services":  "Structural steel supply and raw materials; ensures remote eastern Utah fabricators have immediate access to steel plate and bar stock",
+        "website":  "Search: Thompson Steel Lapoint Utah",
+        "tags":  [
+                     "welding"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Rural Hubs: Uinta Basin / Carbon County / Central Utah",
+        "maps_url":  ""
+    },
+    {
+        "id":  162,
+        "name":  "Alumamax, Inc.",
+        "city":  "Richfield, UT (Central Utah)",
+        "size":  "Small independent",
+        "services":  "General machining and fabrication; localized industrial support for the central Utah corridor",
+        "website":  "Search: Alumamax Richfield Utah",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "region":  "other",
+        "regionTitle":  "Other: Statewide, Rural \u0026 Specialty",
+        "regionSubtitle":  "Moab · Vernal · Roosevelt · Price · Richfield · Statewide Multi-Region Shops",
+        "category":  "Rural Hubs: Uinta Basin / Carbon County / Central Utah",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent shop -- est. 2023",
+        "website":  "Search: Al\u0027s Customs North Salt Lake Utah",
+        "services":  "Early American muscle car restomod conversion and customization; in-house design, rendering, conceptual prototyping, custom fabrication, roll cages, LS-swapped street machines; CNC laser equipment",
+        "tags":  [
+                     "cnc",
+                     "welding",
+                     "offroad"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Al\u0027s Customs",
+        "region":  "salt-lake",
+        "city":  "North Salt Lake",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- est. 1999, 1-4 employees",
+        "website":  "Search: Sommers Mobile Welding West Valley City",
+        "services":  "On-site mobile welding services",
+        "tags":  [
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Sommers Mobile Welding",
+        "region":  "salt-lake",
+        "city":  "West Valley City",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Established independent -- 45+ years",
+        "website":  "Search: Steel Coatings Salt Lake City",
+        "services":  "Powder coating, liquid coating, abrasive blasting, vapor degreasing, alodine; serves electronic housings, motorcycle/auto parts, railings, sculptures",
+        "tags":  [
+                     "powder"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Steel Coatings",
+        "region":  "salt-lake",
+        "city":  "Salt Lake City",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent (job shop)",
+        "website":  "Search: Crosadog Services Salt Lake City",
+        "services":  "CNC machining, general contract work, production and prototype machining, short-run productions",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Crosadog Services",
+        "region":  "salt-lake",
+        "city":  "Salt Lake City",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- est. ~1970s, 10-49 employees",
+        "website":  "https://www.brendell.com",
+        "services":  "CNC milling, CNC turning, lathe work, EDM services; commercial and industrial sectors",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Brendell Manufacturing, Inc.",
+        "region":  "salt-lake",
+        "city":  "North Salt Lake",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent",
+        "website":  "https://dynamic-metalworks.com",
+        "services":  "Metal fabrication for trade shows, automotive, architectural, and signage; carbon steel, stainless steel, aluminum; cutting, roll bending, drilling, threading, CNC, TIG/MIG/stick/spot welding",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Dynamic Metalworks",
+        "region":  "salt-lake",
+        "city":  "Woods Cross",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Very small -- under  revenue, 1-9 employees",
+        "website":  "Search: Lance Machining Sandy Utah",
+        "services":  "Custom prototypes; precision CNC machining and manufacturing",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Lance Machining",
+        "region":  "salt-lake",
+        "city":  "Sandy",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- 1-9 employees",
+        "website":  "Search: S\u0026S Manufacturing West Jordan Utah",
+        "services":  "Aluminum machining, CNC cutting/engraving/milling/turning, production machining, robotic welding",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "S\u0026S Manufacturing",
+        "region":  "salt-lake",
+        "city":  "West Jordan",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Very small -- under  revenue, 1-9 employees",
+        "website":  "Search: Howard J W Inc Bluffdale Utah",
+        "services":  "Custom precision machined parts; prototyping, precision screw and CNC machining",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Howard, J. W., Inc.",
+        "region":  "salt-lake",
+        "city":  "Bluffdale",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "Search: A W Fors Machine Welding Salt Lake City",
+        "services":  "Machine and welding shop",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "A W Fors Machine \u0026 Welding Shop",
+        "region":  "salt-lake",
+        "city":  "Salt Lake City",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "Search: All Welding Services LLC Salt Lake City",
+        "services":  "Welding services",
+        "tags":  [
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "All Welding Services, LLC",
+        "region":  "salt-lake",
+        "city":  "Salt Lake City",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "https://theironworksllc.com",
+        "services":  "Iron works and welding",
+        "tags":  [
+                     "welding",
+                     "ornamental"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "The Iron Works LLC",
+        "region":  "salt-lake",
+        "city":  "Woods Cross",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "https://www.mossindustrial.com",
+        "services":  "Industrial services including welding and fabrication",
+        "tags":  [
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Moss Industrial Inc",
+        "region":  "salt-lake",
+        "city":  "Woods Cross",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Mid-to-large -- 90,000 sq ft facility",
+        "website":  "primemachine.com",
+        "services":  "Large multi-axis (5-axis) machining, heavy turning/milling, field machining, obsolete part replication, fabrication, engineering; industrial repair, mining, power, large-component work",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Prime Machine, Inc.",
+        "region":  "salt-lake",
+        "city":  "Salt Lake City (575 W 800 S)",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Established -- 100+ years",
+        "website":  "https://csmw.net",
+        "services":  "Architectural and industrial sheet-metal fabrication, laser cutting, forming",
+        "tags":  [
+                     "laser",
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Carver Sheet Metal Works",
+        "region":  "salt-lake",
+        "city":  "Salt Lake City area",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Established independent",
+        "website":  "https://westernsheetmetal.net",
+        "services":  "Sheet-metal fabrication with laser and related services",
+        "tags":  [
+                     "laser"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Western Sheet Metal",
+        "region":  "salt-lake",
+        "city":  "Salt Lake City area",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Precision manufacturer",
+        "website":  "Search: Cimtech Manufacturing West Jordan Utah",
+        "services":  "Precision CNC machining; aerospace, defense, and medical manufacturing",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Cimtech Manufacturing",
+        "region":  "salt-lake",
+        "city":  "West Jordan",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Precision manufacturer",
+        "website":  "https://www.aerotechmfg.com",
+        "services":  "Precision aerospace machining; complex 5-axis CNC capability",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Aero Tech Manufacturing",
+        "region":  "salt-lake",
+        "city":  "Salt Lake City",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Industrial manufacturer",
+        "website":  "Search: CVI Mfg Commercial Valve West Jordan Utah",
+        "services":  "Industrial machining and valve manufacturing; oil, gas, and heavy industry applications",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "CVI Mfg.",
+        "region":  "salt-lake",
+        "city":  "West Jordan",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Independent precision shop",
+        "website":  "Search: B\u0026D Precision Salt Lake County Utah",
+        "services":  "CNC milling and turning; aerospace and commercial components",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "B\u0026D Precision",
+        "region":  "salt-lake",
+        "city":  "Salt Lake County",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Industrial shop",
+        "website":  "Search: Precision Machine Company Salt Lake City",
+        "services":  "Industrial repair and heavy machining; large-part capability",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Precision Machine Company",
+        "region":  "salt-lake",
+        "city":  "Salt Lake City",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Independent precision shop",
+        "website":  "https://www.interwestmanufacturing.com",
+        "services":  "CNC precision machining; aerospace and commercial production",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Interwest Machine",
+        "region":  "salt-lake",
+        "city":  "Salt Lake Valley",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Established independent -- 40+ years",
+        "website":  "summitpeakmfg.com",
+        "services":  "CNC machining, metal fabrication, design assistance, GD\u0026T, manufacturing solutions; emphasis on automation and quality",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Summit Peak MFG, Inc.",
+        "region":  "salt-lake",
+        "city":  "Murray (6024 S 300 W Ste A)",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Established independent",
+        "website":  "Search: Dee\u0027s Machine Shop Murray Utah",
+        "services":  "General/job-shop precision machining for various industries",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Dee\u0027s Machine Shop, Inc.",
+        "region":  "salt-lake",
+        "city":  "Murray / South Salt Lake",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- -4.9M revenue, 10-49 employees",
+        "website":  "https://foremastertool.com",
+        "services":  "General contract machine work service",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Foremaster Tool Co.",
+        "region":  "weber-ogden",
+        "city":  "Ogden",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "Search: Wasatch Fab Machine Ogden Utah",
+        "services":  "Precision vertical CNC machining (milling and turning); 3, 4, and 9-axis machining; Delrin, Inconel, titanium; commercial and aerospace",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Wasatch Fab \u0026 Machine",
+        "region":  "weber-ogden",
+        "city":  "Ogden",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- Nadcap certified",
+        "website":  "http://www.jspco.com.tw",
+        "services":  "5-axis precision CNC machining with stainless steel and superalloys; aviation, semiconductor, aerospace",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "JSPCO",
+        "region":  "weber-ogden",
+        "city":  "Fruit Heights",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "Search: Fox Machining LLC Ogden Utah",
+        "services":  "Precision CNC machining for plastic, metal, and complex parts; rapid prototyping, reverse engineering, design consulting",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Fox Machining, LLC",
+        "region":  "weber-ogden",
+        "city":  "Ogden",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- -9.9M revenue, 10-49 employees, AS9100D and ITAR registered",
+        "website":  "leanwerks.com",
+        "services":  "Precision CNC machining for medical device, semiconductor, aerospace, automotive, sporting goods, energy; complex hard-material parts with automation",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Leanwerks, LLC",
+        "region":  "weber-ogden",
+        "city":  "Ogden",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Very small -- under  revenue, 1-9 employees, woman-owned",
+        "website":  "http://www.idsmachining.com",
+        "services":  "Precision CNC machining, wire and sinker EDM, lathe work, mechanical design, prototyping, mold making, reverse engineering, pattern making",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "IDS Machining, Inc.",
+        "region":  "weber-ogden",
+        "city":  "Clearfield",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- 10-49 employees",
+        "website":  "Search: Skydandee Manufacturing Clearfield Utah",
+        "services":  "General contract machine work service",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Skydandee Manufacturing, Inc.",
+        "region":  "weber-ogden",
+        "city":  "Clearfield",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Mid-size -- ISO 9001, 50,000 sq ft, 20+ certified welders",
+        "website":  "allmetalsfab.com",
+        "services":  "Flat and tube laser cutting, waterjet, press-brake forming/rolling, MIG/TIG welding, sawing, deburring/finishing; 26 ga sheet to 1-inch plate; industrial and architectural/ornamental",
+        "tags":  [
+                     "laser",
+                     "waterjet",
+                     "welding",
+                     "cnc",
+                     "ornamental"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "All Metals Fabrication",
+        "region":  "weber-ogden",
+        "city":  "Ogden (3160 S 1900 W)",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Family-owned",
+        "website":  "Search: Lou\u0027s Machine Steel Fabrication Ogden Utah",
+        "services":  "Machine shop and heavy steel fabrication, industrial welding, large-diameter lathe (up to 60 inches), repairs, installations",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Lou\u0027s Machine \u0026 Steel Fabrication",
+        "region":  "weber-ogden",
+        "city":  "Ogden (801 W 27th St)",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- -4.9M revenue, 50-99 employees",
+        "website":  "https://macacasting.com",
+        "services":  "Custom industrial castings for mining and energy; iron casting; heat treating, molding, machining, 3D printing/prototyping",
+        "tags":  [
+                     "cnc",
+                     "heattreat"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Macasupply Foundry",
+        "region":  "utah-county",
+        "city":  "Springville",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "https://prolabstudio.com",
+        "services":  "Custom manufacturer of displays and signs; makerspace services available",
+        "tags":  [
+                     "makerspace",
+                     "cnc"
+                 ],
+        "category":  "Digital Fabrication \u0026 Community Spaces",
+        "name":  "Prolab Studio",
+        "region":  "utah-county",
+        "city":  "Provo",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Very small -- under  revenue, 1-9 employees",
+        "website":  "Search: Lindon Precision Lindon Utah",
+        "services":  "Precision machined parts for medical, dental, aerospace, defense; machining, lathe work, milling, TIG/MIG welding",
+        "tags":  [
+                     "cnc",
+                     "welding",
+                     "aerospace"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Lindon Precision",
+        "region":  "utah-county",
+        "city":  "Lindon",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Very small -- under  revenue, 1-9 employees",
+        "website":  "https://www.fisherprecision.com",
+        "services":  "Precision machine work service",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Fisher Precision Co., Inc.",
+        "region":  "utah-county",
+        "city":  "Lindon",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Family-owned -- 40+ years",
+        "website":  "https://colledgemachineusa.com",
+        "services":  "CNC machining, welding, fabrication, large-part repairs",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Colledge Machine",
+        "region":  "utah-county",
+        "city":  "Lindon",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- mobile services available",
+        "website":  "https://martinmetalworks.co",
+        "services":  "Mobile welding, custom fabrication, drafting/design, CNC plasma cutting, farm/commercial truck/equipment repairs",
+        "tags":  [
+                     "welding",
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Martin Metalworks",
+        "region":  "utah-county",
+        "city":  "Lehi",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Large-scale manufacturer",
+        "website":  "https://mitylite.com",
+        "services":  "Aluminum fabrication and large-scale manufacturing; lightweight commercial furniture manufacturing",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "MityLite Manufacturing",
+        "region":  "utah-county",
+        "city":  "Orem",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "Search: 3rd Gen Machine Logan Utah",
+        "services":  "CNC milling services including horizontal and vertical milling; prototypes available",
+        "tags":  [
+                     "cnc"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "3rd Gen Machine",
+        "region":  "cache-valley",
+        "city":  "Logan",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Very small -- est. 2021, under  revenue, 1-9 employees",
+        "website":  "Search: Innovere Machining Logan Utah",
+        "services":  "3 and 4-axis CNC machining (milling, laser cutting); aluminum, steel, stainless steel; product design and reverse engineering",
+        "tags":  [
+                     "cnc",
+                     "laser"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Innovere Machining",
+        "region":  "cache-valley",
+        "city":  "Logan",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "https://www.blackfishindustrial.com",
+        "services":  "4-axis precision CNC machining and fabrication; line boring, manual machining, milling, turning, plasma CNC cutting, welding; commercial and agricultural",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "BlackFish Industrial",
+        "region":  "cache-valley",
+        "city":  "Tremonton",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Independent shop",
+        "website":  "https://cvm-inc.com",
+        "services":  "5-axis CNC; one-stop shop for aerospace, medical, and complex parts",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Central Valley Machine",
+        "region":  "cache-valley",
+        "city":  "North Logan",
+        "maps_url":  ""
+    },
+    {
+        "size":  "AS9100-certified manufacturer",
+        "website":  "https://alignprecision.com/metalcraft-technologies/",
+        "services":  "Aerospace machining and turbine components",
+        "tags":  [
+                     "cnc",
+                     "aerospace"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Metalcraft Technologies",
+        "region":  "southern-utah",
+        "city":  "Cedar City",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "https://www.greatbasincoatings.com",
+        "services":  "Powder coating services",
+        "tags":  [
+                     "powder"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Great Basin Coatings",
+        "region":  "other",
+        "city":  "Delta",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- self-certified Small Disadvantaged Business",
+        "website":  "Search: Ross Welding Machining Koosharem Utah",
+        "services":  "Welding and machining services",
+        "tags":  [
+                     "cnc",
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Ross Welding \u0026 Machining, LLC",
+        "region":  "other",
+        "city":  "Koosharem",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "Search: A \u0026 J Welding Salina Utah",
+        "services":  "Welding services",
+        "tags":  [
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "A \u0026 J Welding",
+        "region":  "other",
+        "city":  "Salina",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "Search: Rasmussen Welding Shop Salina Utah",
+        "services":  "Welding services",
+        "tags":  [
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Rasmussen Welding Shop",
+        "region":  "other",
+        "city":  "Salina",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Presumed small independent",
+        "website":  "Search: Aurora Welding MFG Aurora Utah",
+        "services":  "Welding and manufacturing",
+        "tags":  [
+                     "welding"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "Aurora Welding \u0026 MFG, Inc.",
+        "region":  "other",
+        "city":  "Aurora",
+        "maps_url":  ""
+    },
+    {
+        "size":  "Small independent -- 10-49 employees",
+        "website":  "Search: CT\u0026C Fab Grantsville Utah",
+        "services":  "Steel and pipe fabrication, CNC machining, field welding, installation, sandblasting, ornamental railing, powder coating",
+        "tags":  [
+                     "cnc",
+                     "welding",
+                     "powder",
+                     "ornamental"
+                 ],
+        "category":  "Fabrication \u0026 Machining",
+        "name":  "CT\u0026C Fab",
+        "region":  "other",
+        "city":  "Grantsville (Tooele County)",
+        "maps_url":  ""
+    }
+]
