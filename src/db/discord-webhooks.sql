@@ -102,10 +102,9 @@ CREATE TRIGGER on_contact_insert
 CREATE TABLE IF NOT EXISTS directory_requests (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   shop_name   TEXT NOT NULL CHECK (char_length(shop_name) BETWEEN 1 AND 200),
-  city        TEXT NOT NULL CHECK (char_length(city) BETWEEN 1 AND 200),
+  maps_url    TEXT NOT NULL DEFAULT '' CHECK (char_length(maps_url) <= 2000),
   contact     TEXT NOT NULL CHECK (char_length(contact) BETWEEN 1 AND 500),
   services    TEXT NOT NULL DEFAULT '' CHECK (char_length(services) <= 5000),
-  region      TEXT NOT NULL,
   status      TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','dismissed')),
   created_at  TIMESTAMPTZ DEFAULT now()
 );
@@ -138,11 +137,10 @@ DECLARE
   _embed   JSONB;
 BEGIN
   _fields := jsonb_build_array(
-    jsonb_build_object('name', 'Shop Name', 'value', NEW.shop_name, 'inline', true),
-    jsonb_build_object('name', 'City',      'value', NEW.city,      'inline', true),
-    jsonb_build_object('name', 'Region',    'value', NEW.region,    'inline', true),
-    jsonb_build_object('name', 'Contact',   'value', LEFT(NEW.contact, 1024),  'inline', false),
-    jsonb_build_object('name', 'Services',  'value', LEFT(COALESCE(NEW.services, '(none)'), 1024), 'inline', false),
+    jsonb_build_object('name', 'Shop Name',  'value', NEW.shop_name, 'inline', true),
+    jsonb_build_object('name', 'Contact',    'value', LEFT(NEW.contact, 1024),  'inline', true),
+    jsonb_build_object('name', 'Maps URL',   'value', LEFT(COALESCE(NEW.maps_url, '(none)'), 1024), 'inline', false),
+    jsonb_build_object('name', 'Services',   'value', LEFT(COALESCE(NEW.services, '(none)'), 1024), 'inline', false),
     jsonb_build_object('name', E'\u2705 Quick Approve', 'value',
       '[Approve in Admin Dashboard](https://orangedrewce.github.io/UTAH-FAB-DIRECTORY/admin?approve_id=' || NEW.id::TEXT || ')',
       'inline', false)
@@ -205,5 +203,10 @@ DROP POLICY IF EXISTS "Public read contact photos" ON storage.objects;
 CREATE POLICY "Public read contact photos"
   ON storage.objects FOR SELECT
   USING (bucket_id = 'contact-photos');
+
+-- Migration helper: if table already exists with old schema, add maps_url and
+-- drop city/region columns that are no longer used by the form.
+ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS maps_url TEXT NOT NULL DEFAULT '';
+ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'pending';
 
 -- Done!

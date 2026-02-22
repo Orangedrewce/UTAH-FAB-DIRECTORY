@@ -89,8 +89,8 @@
             <input type="text" id="jShopName" required maxlength="200" placeholder="e.g. Acme Fabrication">
           </div>
           <div class="join-field">
-            <label for="jCity">City *</label>
-            <input type="text" id="jCity" required maxlength="200" placeholder="e.g. Ogden">
+            <label for="jMapsUrl">Google Maps Profile URL *</label>
+            <input type="url" id="jMapsUrl" required maxlength="1000" placeholder="https://maps.google.com/…">
           </div>
         </div>
 
@@ -100,22 +100,9 @@
             <input type="text" id="jContact" required maxlength="500" placeholder="website.com or email@example.com">
           </div>
           <div class="join-field">
-            <label for="jRegion">Region *</label>
-            <select id="jRegion" required>
-              <option value="">Select region…</option>
-              <option value="salt-lake">Salt Lake Valley</option>
-              <option value="utah-county">Utah County</option>
-              <option value="weber-ogden">Weber / Ogden</option>
-              <option value="cache-valley">Cache Valley</option>
-              <option value="southern-utah">Southern Utah</option>
-              <option value="other">Other / Rural</option>
-            </select>
+            <label for="jServices">Services Offered</label>
+            <textarea id="jServices" rows="3" maxlength="5000" placeholder="CNC machining, laser cutting, welding…"></textarea>
           </div>
-        </div>
-
-        <div class="join-field join-field--full">
-          <label for="jServices">Services Offered</label>
-          <textarea id="jServices" rows="3" maxlength="5000" placeholder="CNC machining, laser cutting, welding…"></textarea>
         </div>
 
         <div class="join-actions">
@@ -477,9 +464,8 @@
 
       const payload = {
         shop_name: document.getElementById('jShopName').value.trim(),
-        city:      document.getElementById('jCity').value.trim(),
+        maps_url:  document.getElementById('jMapsUrl').value.trim(),
         contact:   document.getElementById('jContact').value.trim(),
-        region:    document.getElementById('jRegion').value,
         services:  document.getElementById('jServices').value.trim(),
       };
 

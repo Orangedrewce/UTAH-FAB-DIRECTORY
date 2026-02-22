@@ -209,10 +209,11 @@ async function handleApproveDeepLink() {
   // Insert into fab_shops (inactive by default so admin can enrich before publishing)
   const shopPayload = {
     name:      req.shop_name,
-    city:      req.city,
-    region:    req.region,
+    city:      '',
+    region:    'other',
     services:  req.services || '',
     website:   req.contact || '',
+    maps_url:  req.maps_url || '',
     category:  'Fabrication & Machining',
     tags:      [],
     is_active: false,
@@ -220,8 +221,16 @@ async function handleApproveDeepLink() {
 
   const { error: insertErr } = await _supabase.from('fab_shops').insert([shopPayload]);
   if (insertErr) {
-    alert('Failed to create shop: ' + insertErr.message);
-    return;
+    // Handle duplicate name+region constraint
+    if (insertErr.code === '23505' || insertErr.message.includes('uq_fab_shops_name_region')) {
+      if (!confirm(`A shop named "${req.shop_name}" already exists in this region. Mark this request as approved anyway?`)) {
+        return;
+      }
+      // Skip insert — just mark as approved below
+    } else {
+      alert('Failed to create shop: ' + insertErr.message);
+      return;
+    }
   }
 
   // Mark request as approved
@@ -747,12 +756,12 @@ function renderRequests() {
   requestsPanel.classList.remove('hidden');
 
   requestsList.innerHTML = pendingRequests.map(r => {
-    const regionLabel = (REGIONS.find(reg => reg.slug === r.region) || {}).title || r.region;
     const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const mapsLink = r.maps_url ? `<a href="${esc(r.maps_url)}" target="_blank" rel="noopener noreferrer">Maps ↗</a>` : '';
     return `<div class="requests-card" data-request-id="${r.id}">
       <div class="requests-card-info">
         <div class="requests-card-name">${esc(r.shop_name)}</div>
-        <div class="requests-card-meta">${esc(r.city)} · ${esc(regionLabel)} · ${esc(r.contact)} · ${date}</div>
+        <div class="requests-card-meta">${esc(r.contact)} · ${date} ${mapsLink}</div>
         ${r.services ? `<div class="requests-card-services">${esc(r.services)}</div>` : ''}
       </div>
       <div class="requests-card-actions">
@@ -785,10 +794,11 @@ requestsList.addEventListener('click', async (e) => {
     // Insert into fab_shops (inactive by default so admin can enrich before publishing)
     const shopPayload = {
       name:      req.shop_name,
-      city:      req.city,
-      region:    req.region,
+      city:      '',
+      region:    'other',
       services:  req.services || '',
       website:   req.contact || '',
+      maps_url:  req.maps_url || '',
       category:  'Fabrication & Machining',
       tags:      [],
       is_active: false,
@@ -796,10 +806,20 @@ requestsList.addEventListener('click', async (e) => {
 
     const { error: insertErr } = await _supabase.from('fab_shops').insert([shopPayload]);
     if (insertErr) {
-      alert('Failed to create shop: ' + insertErr.message);
-      approveBtn.disabled = false;
-      approveBtn.textContent = 'Approve';
-      return;
+      // Handle duplicate name+region constraint
+      if (insertErr.code === '23505' || insertErr.message.includes('uq_fab_shops_name_region')) {
+        if (!confirm(`A shop named "${req.shop_name}" already exists in this region. Mark this request as approved anyway?`)) {
+          approveBtn.disabled = false;
+          approveBtn.textContent = 'Approve';
+          return;
+        }
+        // Skip insert — just mark as approved below
+      } else {
+        alert('Failed to create shop: ' + insertErr.message);
+        approveBtn.disabled = false;
+        approveBtn.textContent = 'Approve';
+        return;
+      }
     }
 
     // Mark request as approved

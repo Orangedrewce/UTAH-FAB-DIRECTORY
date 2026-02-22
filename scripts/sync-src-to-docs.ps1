@@ -16,7 +16,7 @@ git checkout dev
 
 # 4) Save changes
 git add -A
-git commit -m "directory request panel."
+git commit -m "admin url."
 
 # 5) Publish to live site
 git push 
