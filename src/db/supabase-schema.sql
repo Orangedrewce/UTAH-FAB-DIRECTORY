@@ -173,6 +173,31 @@ CREATE POLICY "Admin read analytics"
 
 
 -- ============================================================================
+-- PHASE 5b: STORAGE — contact-photos bucket
+-- ============================================================================
+-- NOTE: metadata fields (mimetype, size) are populated AFTER insert, so
+-- checking them in WITH CHECK causes RLS to reject all uploads.
+-- File-type and size validation is enforced in script.js instead.
+-- ============================================================================
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('contact-photos', 'contact-photos', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Anon upload contact photos" ON storage.objects;
+CREATE POLICY "Anon upload contact photos"
+  ON storage.objects FOR INSERT
+  TO public
+  WITH CHECK (bucket_id = 'contact-photos');
+
+DROP POLICY IF EXISTS "Public read contact photos" ON storage.objects;
+CREATE POLICY "Public read contact photos"
+  ON storage.objects FOR SELECT
+  TO public
+  USING (bucket_id = 'contact-photos');
+
+
+-- ============================================================================
 -- PHASE 6: SEED DATA — Regions (upsert)
 -- ============================================================================
 

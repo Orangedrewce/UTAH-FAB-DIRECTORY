@@ -110,6 +110,32 @@ body {
 
   .count-badge strong { color: var(--brand-orange-dim); }
 
+  /* ── SUPPORT / DONATE LINK ── */
+  .support-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brand-orange-dim);
+    text-decoration: none;
+    border: 1px solid var(--brand-orange-dim);
+    border-radius: var(--radius);
+    padding: 5px 12px;
+    opacity: 0.75;
+    transition: opacity 0.2s, background 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .support-link:hover {
+    opacity: 1;
+    background: var(--brand-orange-dim);
+    color: #fff;
+  }
+  .support-link svg { flex-shrink: 0; }
+
   /* ── GOOGLE FALLBACK LINK ── */
   .google-link {
     display: inline-block;

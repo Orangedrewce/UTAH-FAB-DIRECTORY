@@ -744,7 +744,7 @@ async function handleRequestAction(requestId, action, region = null) {
 
     const { error: updErr } = await _supabase
       .from("directory_requests")
-      .update({ status: action === "approve" ? "approved" : "rejected" })
+      .update({ status: action === "approve" ? "approved" : "dismissed" })
       .eq("id", requestId);
 
     if (updErr) throw updErr;
