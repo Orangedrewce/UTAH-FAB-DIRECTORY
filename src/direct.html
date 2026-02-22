@@ -90,7 +90,7 @@
           </div>
           <div class="join-field">
             <label for="jMapsUrl">Google Maps Profile URL *</label>
-            <input type="url" id="jMapsUrl" required maxlength="1000" placeholder="https://maps.google.com/…">
+            <input type="text" id="jMapsUrl" required maxlength="1000" placeholder="https://maps.app.goo.gl/… or https://maps.google.com/…">
           </div>
         </div>
 
@@ -382,6 +382,11 @@
   const SUPABASE_URL  = 'https://dntcmvspcwwdwnmyqfiw.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudGNtdnNwY3d3ZHdubXlxZml3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MDA5MDksImV4cCI6MjA4NzI3NjkwOX0.cgiLMn6YH0BnLshl_458nGwdjnAJaN3MZz8jT4lwfkc';
 
+  // Single shared Supabase client for the entire page
+  const _sb = (typeof window.supabase !== 'undefined' && !SUPABASE_URL.includes('YOUR_PROJECT'))
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+    : null;
+
   /** Region title/subtitle lookup (used when data comes from Supabase
       which stores region as a slug FK with no denormalised title) */
   const REGION_META = {
@@ -394,8 +399,7 @@
   };
 
   async function loadFromSupabase() {
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    const { data, error } = await sb
+    const { data, error } = await _sb
       .from('fab_shops')
       .select('*')
       .eq('is_active', true)
@@ -422,7 +426,7 @@
   (async () => {
     try {
       // Try Supabase first; fall back to static shops.json
-      const isConfigured = !SUPABASE_URL.includes('YOUR_PROJECT');
+      const isConfigured = !!_sb;
       if (isConfigured) {
         try {
           allShops = await loadFromSupabase();
@@ -470,8 +474,7 @@
       };
 
       try {
-        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-        const { error } = await sb.from('directory_requests').insert([payload]);
+        const { error } = await _sb.from('directory_requests').insert([payload]);
         if (error) throw error;
 
         // Discord notification is handled server-side by the Supabase trigger

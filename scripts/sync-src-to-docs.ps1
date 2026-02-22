@@ -16,7 +16,7 @@ git checkout dev
 
 # 4) Save changes
 git add -A
-git commit -m "admin url."
+git commit -m "JOIN THE DIRECTORY."
 
 # 5) Publish to live site
 git push 
