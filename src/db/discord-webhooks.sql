@@ -78,7 +78,7 @@ BEGIN
   --    Move to a Supabase Vault secret or environment variable in production.
   PERFORM net.http_post(
     url     := 'https://discord.com/api/webhooks/1474899689680928981/SJduDzevWXaj47df2aaDefLDUjabqu-YT6_RSNW4Uhqn7-LcaincWgp-UCfXhFgdV-cy',
-    body    := _payload,
+    body    := _payload::text,
     headers := jsonb_build_object('Content-Type', 'application/json')
   );
 
@@ -163,7 +163,7 @@ BEGIN
   --    Move to a Supabase Vault secret or environment variable in production.
   PERFORM net.http_post(
     url     := 'https://discord.com/api/webhooks/1474899689680928981/SJduDzevWXaj47df2aaDefLDUjabqu-YT6_RSNW4Uhqn7-LcaincWgp-UCfXhFgdV-cy',
-    body    := _payload,
+    body    := _payload::text,
     headers := jsonb_build_object('Content-Type', 'application/json')
   );
 
@@ -192,11 +192,8 @@ CREATE POLICY "Anon upload contact photos"
   ON storage.objects FOR INSERT
   WITH CHECK (
     bucket_id = 'contact-photos'
-    AND (octet_length(decode(
-           COALESCE(metadata->>'size', '0'), 'escape'
-         )) IS NOT NULL)                           -- metadata must exist
     AND (COALESCE(metadata->>'mimetype', '') ~* '^image/(jpeg|png|gif|webp)$')
-    AND (COALESCE((metadata->>'size')::BIGINT, 0) <= 5242880)  -- 5 MB cap
+    AND (COALESCE((metadata->>'size')::BIGINT, 0) BETWEEN 1 AND 5242880)  -- 1 byte to 5 MB
   );
 
 DROP POLICY IF EXISTS "Public read contact photos" ON storage.objects;
@@ -204,9 +201,34 @@ CREATE POLICY "Public read contact photos"
   ON storage.objects FOR SELECT
   USING (bucket_id = 'contact-photos');
 
--- Migration helper: if table already exists with old schema, add maps_url and
--- drop city/region columns that are no longer used by the form.
+-- ============================================================================
+-- MIGRATION HELPERS — safe on both fresh and existing installs
+-- ============================================================================
+
+-- Add new columns if they don't exist yet
 ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS maps_url TEXT NOT NULL DEFAULT '';
-ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'pending';
+ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS status  TEXT NOT NULL DEFAULT 'pending';
+
+-- Relax old city/region NOT NULL constraints (columns may not exist on fresh installs)
+DO $$
+BEGIN
+  -- Drop CHECK constraints on city if they exist
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'directory_requests' AND column_name = 'city'
+  ) THEN
+    ALTER TABLE directory_requests ALTER COLUMN city DROP NOT NULL;
+    ALTER TABLE directory_requests ALTER COLUMN city SET DEFAULT '';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'directory_requests' AND column_name = 'region'
+  ) THEN
+    ALTER TABLE directory_requests ALTER COLUMN region DROP NOT NULL;
+    ALTER TABLE directory_requests ALTER COLUMN region SET DEFAULT '';
+  END IF;
+END
+$$;
 
 -- Done!

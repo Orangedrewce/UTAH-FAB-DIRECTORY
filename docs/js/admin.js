@@ -40,6 +40,54 @@ const CATEGORIES = [
 // ── Canonical regions (loaded from DB, fallback hardcoded) ─────────────
 let REGIONS = [];
 
+// ── Utah region bounding boxes (lat/lng ranges) ────────────────────────
+const REGION_BOUNDS = [
+  { slug: 'cache-box-elder',  label: 'Cache / Box Elder',        latMin: 41.4, latMax: 42.05, lngMin: -112.5, lngMax: -111.5 },
+  { slug: 'davis-weber',      label: 'Davis / Weber',            latMin: 40.85, latMax: 41.4,  lngMin: -112.2, lngMax: -111.7 },
+  { slug: 'salt-lake-metro',  label: 'Salt Lake Metro',          latMin: 40.5,  latMax: 40.85, lngMin: -112.15, lngMax: -111.7 },
+  { slug: 'utah-county',      label: 'Utah County',              latMin: 39.9,  latMax: 40.5,  lngMin: -112.0, lngMax: -111.3 },
+  { slug: 'iron-washington',  label: 'Iron / Washington',        latMin: 37.0,  latMax: 37.9,  lngMin: -114.0, lngMax: -113.0 },
+];
+
+/**
+ * Parse a Google Maps URL and try to extract city name + region.
+ * Works with full URLs like:
+ *   https://www.google.com/maps/place/Shop+Name,+City,+UT/@40.76,-111.89,17z/...
+ * Short links (maps.app.goo.gl) can't be resolved client-side due to CORS.
+ * Returns { city, region, label } — all empty strings if nothing could be parsed.
+ */
+function parseMapsUrl(url) {
+  const result = { city: '', region: 'other', label: '' };
+  if (!url) return result;
+
+  // Try to extract coordinates: /@lat,lng
+  const coordMatch = url.match(/@([-\d.]+),([-\d.]+)/);
+  if (coordMatch) {
+    const lat = parseFloat(coordMatch[1]);
+    const lng = parseFloat(coordMatch[2]);
+    for (const b of REGION_BOUNDS) {
+      if (lat >= b.latMin && lat <= b.latMax && lng >= b.lngMin && lng <= b.lngMax) {
+        result.region = b.slug;
+        result.label  = b.label;
+        break;
+      }
+    }
+  }
+
+  // Try to extract city from /place/ segment: ".../place/Shop+Name,+City,+UT/..."
+  const placeMatch = url.match(/\/place\/([^/@]+)/);
+  if (placeMatch) {
+    const decoded = decodeURIComponent(placeMatch[1]).replace(/\+/g, ' ');
+    // Look for ", City, UT" or ", City, Utah" pattern
+    const cityMatch = decoded.match(/,\s*([A-Za-z\s]+?),\s*(?:UT|Utah)\b/i);
+    if (cityMatch) {
+      result.city = cityMatch[1].trim();
+    }
+  }
+
+  return result;
+}
+
 // ── State ───────────────────────────────────────────────────────────────
 let allShops  = [];   // full dataset from fab_shops
 let filtered  = [];   // after search/filter applied
@@ -204,13 +252,16 @@ async function handleApproveDeepLink() {
   const card = requestsList.querySelector(`[data-request-id="${approveId}"]`);
   if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-  if (!confirm(`Approve listing request for "${req.shop_name}"?`)) return;
+  // Auto-fill city & region from Maps URL
+  const mapsInfo = parseMapsUrl(req.maps_url);
+  const regionHint = mapsInfo.label ? ` (detected region: ${mapsInfo.label}${mapsInfo.city ? ', ' + mapsInfo.city : ''})` : '';
+  if (!confirm(`Approve listing request for "${req.shop_name}"?${regionHint}`)) return;
 
   // Insert into fab_shops (inactive by default so admin can enrich before publishing)
   const shopPayload = {
     name:      req.shop_name,
-    city:      '',
-    region:    'other',
+    city:      mapsInfo.city,
+    region:    mapsInfo.region,
     services:  req.services || '',
     website:   req.contact || '',
     maps_url:  req.maps_url || '',
@@ -758,9 +809,11 @@ function renderRequests() {
   requestsList.innerHTML = pendingRequests.map(r => {
     const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const mapsLink = r.maps_url ? `<a href="${esc(r.maps_url)}" target="_blank" rel="noopener noreferrer">Maps ↗</a>` : '';
+    const loc = parseMapsUrl(r.maps_url);
+    const regionTag = loc.label ? `<span class="requests-card-region">${esc(loc.label)}${loc.city ? ' · ' + esc(loc.city) : ''}</span>` : '';
     return `<div class="requests-card" data-request-id="${r.id}">
       <div class="requests-card-info">
-        <div class="requests-card-name">${esc(r.shop_name)}</div>
+        <div class="requests-card-name">${esc(r.shop_name)} ${regionTag}</div>
         <div class="requests-card-meta">${esc(r.contact)} · ${date} ${mapsLink}</div>
         ${r.services ? `<div class="requests-card-services">${esc(r.services)}</div>` : ''}
       </div>
@@ -791,11 +844,14 @@ requestsList.addEventListener('click', async (e) => {
     approveBtn.disabled = true;
     approveBtn.textContent = 'Approving…';
 
+    // Auto-fill city & region from Maps URL
+    const mapsInfo = parseMapsUrl(req.maps_url);
+
     // Insert into fab_shops (inactive by default so admin can enrich before publishing)
     const shopPayload = {
       name:      req.shop_name,
-      city:      '',
-      region:    'other',
+      city:      mapsInfo.city,
+      region:    mapsInfo.region,
       services:  req.services || '',
       website:   req.contact || '',
       maps_url:  req.maps_url || '',
