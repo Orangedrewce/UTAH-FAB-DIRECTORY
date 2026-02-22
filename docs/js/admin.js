@@ -764,11 +764,15 @@ shopForm.addEventListener("submit", async (e) => {
 
   if (error) {
     let msg = error.message;
-    if (error.code === "23505" || (error.message && error.message.includes("uq_fab_shops_name_region"))) {
+    if (
+      error.code === "23505" ||
+      (error.message && error.message.includes("uq_fab_shops_name_region"))
+    ) {
       const action = editId ? "update" : "add";
       msg = `Cannot ${action}: a different shop named "${payload.name}" already exists in the "${payload.region}" region. Delete the duplicate first, or choose a different region.`;
     } else if (error.code === "23503") {
-      msg = "Invalid region selected. Please ensure your regions table is seeded.";
+      msg =
+        "Invalid region selected. Please ensure your regions table is seeded.";
     }
     alert("Save failed: " + msg);
     return;
@@ -870,18 +874,21 @@ async function loadRequests() {
 /** Build a <select> dropdown for region, pre-selected to detectedSlug */
 function regionSelectHtml(requestId, detectedSlug) {
   const fallback = [
-    { slug: 'salt-lake',     title: 'Salt Lake Valley' },
-    { slug: 'utah-county',   title: 'Utah County' },
-    { slug: 'weber-ogden',   title: 'Weber / Ogden Area' },
-    { slug: 'cache-valley',  title: 'Cache Valley' },
-    { slug: 'southern-utah', title: 'St. George / Southern Utah' },
-    { slug: 'other',         title: 'Other / Statewide' },
+    { slug: "salt-lake", title: "Salt Lake Valley" },
+    { slug: "utah-county", title: "Utah County" },
+    { slug: "weber-ogden", title: "Weber / Ogden Area" },
+    { slug: "cache-valley", title: "Cache Valley" },
+    { slug: "southern-utah", title: "St. George / Southern Utah" },
+    { slug: "other", title: "Other / Statewide" },
   ];
   const list = REGIONS.length ? REGIONS : fallback;
   const safe = validRegion(detectedSlug);
-  const opts = list.map(r =>
-    `<option value="${esc(r.slug)}"${r.slug === safe ? ' selected' : ''}>${esc(r.title || r.slug)}</option>`
-  ).join('');
+  const opts = list
+    .map(
+      (r) =>
+        `<option value="${esc(r.slug)}"${r.slug === safe ? " selected" : ""}>${esc(r.title || r.slug)}</option>`,
+    )
+    .join("");
   return `<select class="requests-region-select" data-request-id="${requestId}">${opts}</select>`;
 }
 
@@ -908,7 +915,9 @@ function renderRequests() {
         : "";
       const loc = parseMapsUrl(r.maps_url);
       const regionDropdown = regionSelectHtml(r.id, loc.region);
-      const cityTag = loc.city ? `<span class="requests-card-city">${esc(loc.city)}</span>` : '';
+      const cityTag = loc.city
+        ? `<span class="requests-card-city">${esc(loc.city)}</span>`
+        : "";
       return `<div class="requests-card" data-request-id="${r.id}">
       <div class="requests-card-info">
         <div class="requests-card-name">${esc(r.shop_name)} ${cityTag}</div>
@@ -932,8 +941,9 @@ function renderRequests() {
 
 // Toggle requests panel open/closed
 requestsToggle.addEventListener("click", () => {
-  requestsPanel.classList.toggle("open");
+  const isOpen = requestsPanel.classList.toggle("open");
   requestsBody.classList.toggle("hidden");
+  requestsToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
 });
 
 // Delegate clicks inside requests list
@@ -950,12 +960,18 @@ requestsList.addEventListener("click", async (e) => {
     approveBtn.textContent = "Approving…";
 
     // Read region from the dropdown the admin may have edited
-    const regionSelect = requestsList.querySelector(`select[data-request-id="${id}"]`);
-    const chosenRegion = regionSelect ? regionSelect.value : validRegion(parseMapsUrl(req.maps_url).region);
+    const regionSelect = requestsList.querySelector(
+      `select[data-request-id="${id}"]`,
+    );
+    const chosenRegion = regionSelect
+      ? regionSelect.value
+      : validRegion(parseMapsUrl(req.maps_url).region);
     const mapsInfo = parseMapsUrl(req.maps_url);
 
     // Read visibility toggle
-    const activeCb = requestsList.querySelector(`.toggle-active-cb[data-id="${id}"]`);
+    const activeCb = requestsList.querySelector(
+      `.toggle-active-cb[data-id="${id}"]`,
+    );
     const setActive = activeCb ? activeCb.checked : false;
 
     // Insert into fab_shops

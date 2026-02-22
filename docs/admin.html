@@ -31,7 +31,7 @@
 <!-- ═══════════════════════════════════════════════════
      ADMIN DASHBOARD — hidden until authenticated
 ═══════════════════════════════════════════════════ -->
-<div id="adminDash" class="admin-dash hidden">
+<main id="adminDash" class="admin-dash hidden">
 
   <div class="bg-grid"></div>
   <div class="corner tl"></div>
@@ -80,7 +80,7 @@
   <!-- Pending directory requests -->
   <div class="requests-panel hidden" id="requestsPanel">
     <div class="requests-panel-inner">
-      <button type="button" class="requests-toggle" id="requestsToggle">
+      <button type="button" class="requests-toggle" id="requestsToggle" aria-expanded="false">
         <span class="requests-toggle-label">Listing Requests</span>
         <span class="requests-badge" id="requestsBadge">0</span>
         <svg class="requests-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -115,13 +115,13 @@
     </div><!-- /table-scroll -->
   </div>
 
-</div><!-- /adminDash -->
+</main><!-- /adminDash -->
 
 <!-- ═══════════════════════════════════════════════════
      SHOP EDIT MODAL
 ═══════════════════════════════════════════════════ -->
 <div class="modal-backdrop hidden" id="modalBackdrop">
-  <div class="modal" id="shopModal">
+  <div class="modal" id="shopModal" role="dialog" aria-labelledby="modalTitle">
     <div class="modal-header">
       <h2 id="modalTitle">Add Shop</h2>
       <button class="modal-close" id="modalCloseBtn">&times;</button>
