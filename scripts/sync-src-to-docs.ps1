@@ -26,9 +26,11 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "modules refactor"
+  git commit -m "Domain activation sucsess, comment blocks, url updates"
 
   # 5) Publish to live site
+  git pull origin dev --rebase
+  git pull origin main --rebase
   git push origin dev
   git push origin dev:main
 #>
