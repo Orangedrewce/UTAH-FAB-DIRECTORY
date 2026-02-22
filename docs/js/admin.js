@@ -746,6 +746,7 @@ shopForm.addEventListener("submit", async (e) => {
 
   let error;
   const editId = fId.value;
+  console.log("[save]", editId ? `UPDATE id=${editId}` : "INSERT", payload);
 
   if (editId) {
     // UPDATE
@@ -763,9 +764,11 @@ shopForm.addEventListener("submit", async (e) => {
 
   if (error) {
     let msg = error.message;
-    if (error.code === "23503") {
-      msg =
-        "Invalid region selected. Please ensure your regions table is seeded.";
+    if (error.code === "23505" || (error.message && error.message.includes("uq_fab_shops_name_region"))) {
+      const action = editId ? "update" : "add";
+      msg = `Cannot ${action}: a different shop named "${payload.name}" already exists in the "${payload.region}" region. Delete the duplicate first, or choose a different region.`;
+    } else if (error.code === "23503") {
+      msg = "Invalid region selected. Please ensure your regions table is seeded.";
     }
     alert("Save failed: " + msg);
     return;
