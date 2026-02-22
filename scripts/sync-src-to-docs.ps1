@@ -16,7 +16,7 @@ git checkout dev
 
 # 4) Save changes
 git add -A
-git commit -m "Active vs inactive section, select all."
+git commit -m "directory request panel."
 
 # 5) Publish to live site
 git push 
