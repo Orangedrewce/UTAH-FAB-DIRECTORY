@@ -209,10 +209,23 @@ CREATE POLICY "Public read contact photos"
 ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS maps_url TEXT NOT NULL DEFAULT '';
 ALTER TABLE directory_requests ADD COLUMN IF NOT EXISTS status  TEXT NOT NULL DEFAULT 'pending';
 
--- Relax old city/region NOT NULL constraints (columns may not exist on fresh installs)
+-- Relax old city/region NOT NULL and CHECK constraints (columns may not exist on fresh installs)
 DO $$
+DECLARE
+  _con RECORD;
 BEGIN
-  -- Drop CHECK constraints on city if they exist
+  -- Drop all CHECK constraints that reference 'city' or 'region' columns
+  FOR _con IN
+    SELECT conname
+    FROM pg_constraint
+    WHERE conrelid = 'directory_requests'::regclass
+      AND contype = 'c'  -- CHECK constraints
+      AND (pg_get_constraintdef(oid) ~* '\bcity\b' OR pg_get_constraintdef(oid) ~* '\bregion\b')
+  LOOP
+    EXECUTE format('ALTER TABLE directory_requests DROP CONSTRAINT %I', _con.conname);
+  END LOOP;
+
+  -- Drop NOT NULL and set defaults for city (if column exists)
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
     WHERE table_name = 'directory_requests' AND column_name = 'city'
@@ -221,6 +234,7 @@ BEGIN
     ALTER TABLE directory_requests ALTER COLUMN city SET DEFAULT '';
   END IF;
 
+  -- Drop NOT NULL and set defaults for region (if column exists)
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
     WHERE table_name = 'directory_requests' AND column_name = 'region'
