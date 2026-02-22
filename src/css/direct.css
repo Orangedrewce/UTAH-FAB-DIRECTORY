@@ -394,6 +394,106 @@ body {
 
   .no-results.visible { display: block; }
 
+  /* ── JOIN THE DIRECTORY ── */
+  .join-section {
+    max-width: 720px;
+    margin: 4rem auto 0;
+    padding: 2.5rem 2rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-neutral);
+    border-radius: var(--radius);
+    position: relative;
+    z-index: 1;
+  }
+  .join-inner { max-width: 640px; margin: 0 auto; }
+  .join-title {
+    font-family: var(--font-title);
+    font-size: 1.6rem;
+    letter-spacing: .08em;
+    text-align: center;
+    margin-bottom: .25rem;
+  }
+  .join-title span { color: var(--brand-orange-dim); }
+  .join-sub {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: .78rem;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+  }
+  .join-row {
+    display: flex;
+    gap: .75rem;
+    flex-wrap: wrap;
+  }
+  .join-field {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-width: 200px;
+    margin-bottom: .75rem;
+  }
+  .join-field--full { flex-basis: 100%; }
+  .join-field label {
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--text-muted);
+    margin-bottom: .3rem;
+  }
+  .join-field input,
+  .join-field select,
+  .join-field textarea {
+    background: var(--bg-deep);
+    border: 1px solid var(--border-neutral);
+    border-radius: var(--radius);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: .85rem;
+    padding: .5rem .65rem;
+  }
+  .join-field input:focus,
+  .join-field select:focus,
+  .join-field textarea:focus {
+    border-color: var(--brand-orange-dim);
+    outline: 2px solid var(--brand-orange-dim);
+    outline-offset: 2px;
+  }
+  .join-field textarea { resize: vertical; }
+  .join-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: .5rem;
+  }
+  .join-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: .6rem 1.4rem;
+    background: var(--brand-orange-dim);
+    color: #fff;
+    border: 1px solid var(--brand-orange-dim);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: .82rem;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .join-btn:hover { background: #c84009; }
+  .join-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .join-feedback {
+    font-family: var(--font-mono);
+    font-size: .78rem;
+  }
+  .join-feedback.success { color: var(--success); }
+  .join-feedback.error   { color: var(--danger); }
+
+  @media (max-width: 700px) {
+    .join-section { padding: 1.5rem 1rem; margin-top: 2rem; }
+    .join-row { flex-direction: column; gap: 0; }
+  }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 1100px) {
     .card-grid { grid-template-columns: repeat(2, 1fr); }

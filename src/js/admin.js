@@ -44,6 +44,7 @@ let REGIONS = [];
 let allShops  = [];   // full dataset from fab_shops
 let filtered  = [];   // after search/filter applied
 let selectedIds = new Set();  // bulk-selection state
+let pendingRequests = [];     // directory_requests with status='pending'
 let _dashboardLoading = false;  // guard against double init
 
 // ── DOM refs ────────────────────────────────────────────────────────────
@@ -68,6 +69,13 @@ const selectAllCb      = $('#selectAll');
 const bulkActions      = $('#bulkActions');
 const bulkCountEl      = $('#bulkCount');
 const bulkToggleBtn    = $('#bulkToggleBtn');
+
+// Requests panel
+const requestsPanel  = $('#requestsPanel');
+const requestsToggle = $('#requestsToggle');
+const requestsBadge  = $('#requestsBadge');
+const requestsBody   = $('#requestsBody');
+const requestsList   = $('#requestsList');
 
 // Modal
 const modalBackdrop = $('#modalBackdrop');
@@ -122,6 +130,7 @@ loginForm.addEventListener('submit', async (e) => {
 logoutBtn.addEventListener('click', async () => {
   await _supabase.auth.signOut();
   allShops = [];
+  pendingRequests = [];
   shopTableBody.innerHTML = '';
   authGate.classList.remove('hidden');
   adminDash.classList.add('hidden');
@@ -137,11 +146,93 @@ async function showDashboard(user) {
   adminEmailEl.textContent = user.email;
   populateCategoryList();
   await loadRegions();
-  await loadShops();
+  await Promise.all([loadShops(), loadRequests()]);
   // Measure real header/toolbar heights now that dashboard is visible
   syncLayoutHeights();
 
   _dashboardLoading = false;
+
+  // Handle ?approve_id= deep-link from Discord
+  await handleApproveDeepLink();
+}
+
+/**
+ * If the URL contains ?approve_id=<uuid>, auto-trigger the approve flow
+ * for that request. Cleans up the URL afterwards.
+ */
+async function handleApproveDeepLink() {
+  const params = new URLSearchParams(window.location.search);
+  const approveId = params.get('approve_id');
+  if (!approveId) return;
+
+  // Clean the URL so a refresh doesn't re-trigger
+  const clean = new URL(window.location);
+  clean.searchParams.delete('approve_id');
+  history.replaceState(null, '', clean);
+
+  // Find the request in already-loaded pending list
+  let req = pendingRequests.find(r => r.id === approveId);
+
+  // If not in the pending list, fetch it directly (may already be processed)
+  if (!req) {
+    const { data, error } = await _supabase
+      .from('directory_requests')
+      .select('*')
+      .eq('id', approveId)
+      .single();
+
+    if (error || !data) {
+      alert('Request not found. It may have been deleted.');
+      return;
+    }
+    if (data.status !== 'pending') {
+      alert(`This request has already been ${data.status}.`);
+      return;
+    }
+    req = data;
+  }
+
+  // Open the requests panel so the user sees the action
+  if (!requestsPanel.classList.contains('open')) {
+    requestsPanel.classList.add('open');
+    requestsBody.classList.remove('hidden');
+  }
+
+  // Scroll the matching card into view
+  const card = requestsList.querySelector(`[data-request-id="${approveId}"]`);
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  if (!confirm(`Approve listing request for "${req.shop_name}"?`)) return;
+
+  // Insert into fab_shops (inactive by default so admin can enrich before publishing)
+  const shopPayload = {
+    name:      req.shop_name,
+    city:      req.city,
+    region:    req.region,
+    services:  req.services || '',
+    website:   req.contact || '',
+    category:  'Fabrication & Machining',
+    tags:      [],
+    is_active: false,
+  };
+
+  const { error: insertErr } = await _supabase.from('fab_shops').insert([shopPayload]);
+  if (insertErr) {
+    alert('Failed to create shop: ' + insertErr.message);
+    return;
+  }
+
+  // Mark request as approved
+  const { error: updateErr } = await _supabase
+    .from('directory_requests')
+    .update({ status: 'approved' })
+    .eq('id', approveId);
+
+  if (updateErr) console.error('Failed to update request status:', updateErr);
+
+  // Refresh both panels
+  await Promise.all([loadShops(), loadRequests()]);
+  alert(`"${req.shop_name}" approved and added to the shop list (inactive).`);
 }
 
 /** Populate the category datalist from the JS-defined CATEGORIES array */
@@ -604,6 +695,7 @@ function syncLayoutHeights() {
 _supabase.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_OUT' || !session) {
     allShops = [];
+    pendingRequests = [];
     shopTableBody.innerHTML = '';
     authGate.classList.remove('hidden');
     adminDash.classList.add('hidden');
@@ -618,3 +710,128 @@ checkSession();
 
 // Sync layout heights after dashboard renders and on resize
 window.addEventListener('resize', syncLayoutHeights);
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DIRECTORY REQUESTS  — Load, Render, Approve, Dismiss
+═══════════════════════════════════════════════════════════════════════ */
+
+async function loadRequests() {
+  const { data, error } = await _supabase
+    .from('directory_requests')
+    .select('*')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Failed to load requests:', error);
+    pendingRequests = [];
+  } else {
+    pendingRequests = data || [];
+  }
+
+  renderRequests();
+}
+
+function renderRequests() {
+  const count = pendingRequests.length;
+  requestsBadge.textContent = count;
+
+  if (count === 0) {
+    requestsPanel.classList.add('hidden');
+    return;
+  }
+
+  requestsPanel.classList.remove('hidden');
+
+  requestsList.innerHTML = pendingRequests.map(r => {
+    const regionLabel = (REGIONS.find(reg => reg.slug === r.region) || {}).title || r.region;
+    const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `<div class="requests-card" data-request-id="${r.id}">
+      <div class="requests-card-info">
+        <div class="requests-card-name">${esc(r.shop_name)}</div>
+        <div class="requests-card-meta">${esc(r.city)} · ${esc(regionLabel)} · ${esc(r.contact)} · ${date}</div>
+        ${r.services ? `<div class="requests-card-services">${esc(r.services)}</div>` : ''}
+      </div>
+      <div class="requests-card-actions">
+        <button class="btn btn-primary btn-sm approve-req-btn" data-id="${r.id}">Approve</button>
+        <button class="btn btn-outline btn-sm dismiss-req-btn" data-id="${r.id}">Dismiss</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Toggle requests panel open/closed
+requestsToggle.addEventListener('click', () => {
+  requestsPanel.classList.toggle('open');
+  requestsBody.classList.toggle('hidden');
+});
+
+// Delegate clicks inside requests list
+requestsList.addEventListener('click', async (e) => {
+  const approveBtn = e.target.closest('.approve-req-btn');
+  const dismissBtn = e.target.closest('.dismiss-req-btn');
+
+  if (approveBtn) {
+    const id = approveBtn.dataset.id;
+    const req = pendingRequests.find(r => r.id === id);
+    if (!req) return;
+
+    approveBtn.disabled = true;
+    approveBtn.textContent = 'Approving…';
+
+    // Insert into fab_shops (inactive by default so admin can enrich before publishing)
+    const shopPayload = {
+      name:      req.shop_name,
+      city:      req.city,
+      region:    req.region,
+      services:  req.services || '',
+      website:   req.contact || '',
+      category:  'Fabrication & Machining',
+      tags:      [],
+      is_active: false,
+    };
+
+    const { error: insertErr } = await _supabase.from('fab_shops').insert([shopPayload]);
+    if (insertErr) {
+      alert('Failed to create shop: ' + insertErr.message);
+      approveBtn.disabled = false;
+      approveBtn.textContent = 'Approve';
+      return;
+    }
+
+    // Mark request as approved
+    const { error: updateErr } = await _supabase
+      .from('directory_requests')
+      .update({ status: 'approved' })
+      .eq('id', id);
+
+    if (updateErr) console.error('Failed to update request status:', updateErr);
+
+    // Refresh both panels
+    await Promise.all([loadShops(), loadRequests()]);
+    return;
+  }
+
+  if (dismissBtn) {
+    const id = dismissBtn.dataset.id;
+    if (!confirm('Dismiss this listing request?')) return;
+
+    dismissBtn.disabled = true;
+    dismissBtn.textContent = 'Dismissing…';
+
+    const { error } = await _supabase
+      .from('directory_requests')
+      .update({ status: 'dismissed' })
+      .eq('id', id);
+
+    if (error) {
+      alert('Dismiss failed: ' + error.message);
+      dismissBtn.disabled = false;
+      dismissBtn.textContent = 'Dismiss';
+      return;
+    }
+
+    await loadRequests();
+  }
+});

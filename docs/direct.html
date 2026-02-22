@@ -74,6 +74,58 @@
 
   <span class="ref-tag">DWG-FAB-DIR // REV 2026</span>
 
+  <!-- ═══════════════════════════════════════════════════
+       JOIN THE DIRECTORY — Request form
+  ═══════════════════════════════════════════════════ -->
+  <section class="join-section" id="joinSection">
+    <div class="join-inner">
+      <h2 class="join-title">JOIN THE <span>DIRECTORY</span></h2>
+      <p class="join-sub">Own a fab shop, machine shop, or maker space in Utah? Request a free listing.</p>
+
+      <form id="joinForm" class="join-form" autocomplete="off">
+        <div class="join-row">
+          <div class="join-field">
+            <label for="jShopName">Shop Name *</label>
+            <input type="text" id="jShopName" required maxlength="200" placeholder="e.g. Acme Fabrication">
+          </div>
+          <div class="join-field">
+            <label for="jCity">City *</label>
+            <input type="text" id="jCity" required maxlength="200" placeholder="e.g. Ogden">
+          </div>
+        </div>
+
+        <div class="join-row">
+          <div class="join-field">
+            <label for="jContact">Contact Link / Email *</label>
+            <input type="text" id="jContact" required maxlength="500" placeholder="website.com or email@example.com">
+          </div>
+          <div class="join-field">
+            <label for="jRegion">Region *</label>
+            <select id="jRegion" required>
+              <option value="">Select region…</option>
+              <option value="salt-lake">Salt Lake Valley</option>
+              <option value="utah-county">Utah County</option>
+              <option value="weber-ogden">Weber / Ogden</option>
+              <option value="cache-valley">Cache Valley</option>
+              <option value="southern-utah">Southern Utah</option>
+              <option value="other">Other / Rural</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="join-field join-field--full">
+          <label for="jServices">Services Offered</label>
+          <textarea id="jServices" rows="3" maxlength="5000" placeholder="CNC machining, laser cutting, welding…"></textarea>
+        </div>
+
+        <div class="join-actions">
+          <button type="submit" class="join-btn" id="joinSubmitBtn">Submit Request</button>
+          <span class="join-feedback" id="joinFeedback"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
 </div><!-- /main -->
 
 <script>
@@ -407,6 +459,83 @@
         '</div>';
     }
   })();
+
+  /* ═══════════════════════════════════════════════════
+     JOIN THE DIRECTORY — Form submission
+  ═══════════════════════════════════════════════════ */
+  const joinForm      = document.getElementById('joinForm');
+  const joinSubmitBtn = document.getElementById('joinSubmitBtn');
+  const joinFeedback  = document.getElementById('joinFeedback');
+
+  if (joinForm) {
+    joinForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      joinSubmitBtn.disabled = true;
+      joinSubmitBtn.textContent = 'Sending…';
+      joinFeedback.textContent = '';
+      joinFeedback.className = 'join-feedback';
+
+      const payload = {
+        shop_name: document.getElementById('jShopName').value.trim(),
+        city:      document.getElementById('jCity').value.trim(),
+        contact:   document.getElementById('jContact').value.trim(),
+        region:    document.getElementById('jRegion').value,
+        services:  document.getElementById('jServices').value.trim(),
+      };
+
+      const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1474899689680928981/SJduDzevWXaj47df2aaDefLDUjabqu-YT6_RSNW4Uhqn7-LcaincWgp-UCfXhFgdV-cy';
+      const ADMIN_URL = 'https://utahfabdirectory.com/admin.html';
+
+      try {
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+        const { data: inserted, error } = await sb
+          .from('directory_requests')
+          .insert([payload])
+          .select('id')
+          .single();
+        if (error) throw error;
+
+        // Fire-and-forget Discord notification with Approve link
+        const approveLink = `${ADMIN_URL}?approve_id=${inserted.id}`;
+        const regionLabel = REGION_META[payload.region]
+          ? REGION_META[payload.region].title
+          : payload.region;
+
+        fetch(DISCORD_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: 'Utah Fab Directory',
+            embeds: [{
+              title: '\uD83D\uDCCB New Directory Listing Request',
+              color: 16738859,
+              fields: [
+                { name: 'Shop Name', value: payload.shop_name, inline: true },
+                { name: 'City',      value: payload.city,      inline: true },
+                { name: 'Region',    value: regionLabel,       inline: true },
+                { name: 'Contact',   value: payload.contact.slice(0, 1024), inline: false },
+                { name: 'Services',  value: payload.services || '(none)',   inline: false },
+                { name: '\u2705 Quick Approve', value: `[Approve in Admin Dashboard](${approveLink})`, inline: false },
+              ],
+              timestamp: new Date().toISOString(),
+              footer: { text: 'Utah Fab Directory' },
+            }],
+          }),
+        }).catch(err => console.warn('Discord webhook failed (non-critical):', err));
+
+        joinFeedback.textContent = 'Request submitted — we\'ll review it shortly!';
+        joinFeedback.classList.add('success');
+        joinForm.reset();
+      } catch (err) {
+        console.error('Join request failed:', err);
+        joinFeedback.textContent = 'Something went wrong. Please try again.';
+        joinFeedback.classList.add('error');
+      } finally {
+        joinSubmitBtn.disabled = false;
+        joinSubmitBtn.textContent = 'Submit Request';
+      }
+    });
+  }
 
 })();
 </script>
