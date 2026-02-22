@@ -483,46 +483,12 @@
         services:  document.getElementById('jServices').value.trim(),
       };
 
-      const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1474899689680928981/SJduDzevWXaj47df2aaDefLDUjabqu-YT6_RSNW4Uhqn7-LcaincWgp-UCfXhFgdV-cy';
-      const ADMIN_URL = 'https://utahfabdirectory.com/admin.html';
-
       try {
         const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-        const { data: inserted, error } = await sb
-          .from('directory_requests')
-          .insert([payload])
-          .select('id')
-          .single();
+        const { error } = await sb.from('directory_requests').insert([payload]);
         if (error) throw error;
 
-        // Fire-and-forget Discord notification with Approve link
-        const approveLink = `${ADMIN_URL}?approve_id=${inserted.id}`;
-        const regionLabel = REGION_META[payload.region]
-          ? REGION_META[payload.region].title
-          : payload.region;
-
-        fetch(DISCORD_WEBHOOK, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: 'Utah Fab Directory',
-            embeds: [{
-              title: '\uD83D\uDCCB New Directory Listing Request',
-              color: 16738859,
-              fields: [
-                { name: 'Shop Name', value: payload.shop_name, inline: true },
-                { name: 'City',      value: payload.city,      inline: true },
-                { name: 'Region',    value: regionLabel,       inline: true },
-                { name: 'Contact',   value: payload.contact.slice(0, 1024), inline: false },
-                { name: 'Services',  value: payload.services || '(none)',   inline: false },
-                { name: '\u2705 Quick Approve', value: `[Approve in Admin Dashboard](${approveLink})`, inline: false },
-              ],
-              timestamp: new Date().toISOString(),
-              footer: { text: 'Utah Fab Directory' },
-            }],
-          }),
-        }).catch(err => console.warn('Discord webhook failed (non-critical):', err));
-
+        // Discord notification is handled server-side by the Supabase trigger
         joinFeedback.textContent = 'Request submitted — we\'ll review it shortly!';
         joinFeedback.classList.add('success');
         joinForm.reset();
