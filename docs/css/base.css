@@ -107,7 +107,7 @@ a {
 ::-webkit-scrollbar-thumb { background: var(--border-neutral); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--brand-orange-dim); }
 /* Firefox */
-* {
+html {
   scrollbar-width: thin;
   scrollbar-color: var(--border-neutral) var(--bg-deep);
 }

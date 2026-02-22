@@ -100,6 +100,10 @@ body {
 
   /* Base select styles now in base.css — focus rule handled there */
 
+  select {
+    min-width: 0; /* allow shrinking inside flex header-controls */
+  }
+
   .count-badge {
     font-family: var(--font-mono);
     font-size: 0.7rem;
@@ -485,7 +489,7 @@ body {
   .join-form .form-group select:focus,
   .join-form .form-group textarea:focus {
     border-color: var(--brand-orange-dim);
-    outline: none;
+    /* outline inherited from base.css — do not override */
   }
   .join-form .form-group textarea { resize: vertical; }
 
