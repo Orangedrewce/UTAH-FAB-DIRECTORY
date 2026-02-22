@@ -70,7 +70,7 @@
 
 import { supabase as _supabase } from "./supabase.js";
 import { ALL_TAGS, CATEGORIES, REGION_BOUNDS } from "./constants.js";
-import { esc, parseMapsUrl } from "./utils.js";
+import { esc, parseMapsUrl, debounce } from "./utils.js";
 import { fetchShops, fetchRegions, fetchRequests } from "./api.js";
 
 // ── Canonical regions (loaded from DB, fallback hardcoded) ─────────────
@@ -345,7 +345,7 @@ function applyFilters() {
   renderTable();
 }
 
-adminSearch.addEventListener("input", applyFilters);
+adminSearch.addEventListener("input", debounce(applyFilters, 250));
 adminRegionFilt.addEventListener("change", applyFilters);
 adminTagFilt.addEventListener("change", applyFilters);
 showInactive.addEventListener("change", applyFilters);

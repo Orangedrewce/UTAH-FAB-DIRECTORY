@@ -61,7 +61,7 @@
 
 import { supabase as _sb } from "./supabase.js";
 import { REGION_ORDER } from "./constants.js";
-import { esc, websiteLink } from "./utils.js";
+import { esc, websiteLink, debounce } from "./utils.js";
 import { fetchShops, fetchJSONShops } from "./api.js";
 
 /* ═══════════════════════════════════════════════════
@@ -250,7 +250,7 @@ serviceFilter.addEventListener("change", () => {
   applyFilters();
 });
 
-searchInput.addEventListener("input", applyFilters);
+searchInput.addEventListener("input", debounce(applyFilters, 250));
 regionFilter.addEventListener("change", applyFilters);
 
 /* ═══════════════════════════════════════════════════

@@ -110,6 +110,11 @@ export async function fetchRequests() {
 export async function fetchJSONShops() {
   const res = await fetch("data/shops.json");
   if (!res.ok) throw new Error("HTTP " + res.status);
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch (e) {
+    throw new Error("Invalid JSON in shops.json: " + e.message);
+  }
   return data.map(normaliseShop);
 }

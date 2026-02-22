@@ -157,6 +157,20 @@ function initContactForm() {
       return;
     }
 
+    // Validate file before touching the button
+    if (cfFile.files.length > 0) {
+      const file = cfFile.files[0];
+      if (file.size > MAX_FILE_SIZE) {
+        showFeedback("FILE TOO LARGE (MAX 5 MB)", "error");
+        return;
+      }
+      const fileType = (file.type || "").toLowerCase();
+      if (!(fileType in ALLOWED_TYPES)) {
+        showFeedback("ONLY JPEG, PNG, GIF, WEBP ALLOWED", "error");
+        return;
+      }
+    }
+
     submitBtn.disabled = true;
     submitBtn.textContent = "SENDING…";
     showFeedback("", "");
@@ -164,24 +178,16 @@ function initContactForm() {
     let photoUrl = null;
 
     try {
-      // Validate & upload photo if present
+      // Upload photo if present (already validated above)
       if (cfFile.files.length > 0) {
         const file = cfFile.files[0];
+        const fileType = (file.type || "").toLowerCase();
 
-        if (file.size > MAX_FILE_SIZE) {
-          showFeedback("FILE TOO LARGE (MAX 5 MB)", "error");
-          return;
-        }
-        if (!(file.type in ALLOWED_TYPES)) {
-          showFeedback("ONLY JPEG, PNG, GIF, WEBP ALLOWED", "error");
-          return;
-        }
-
-        const ext = ALLOWED_TYPES[file.type];
-        const uniqueId =
-          typeof crypto.randomUUID === "function"
-            ? crypto.randomUUID()
-            : Math.random().toString(36).slice(2, 10);
+        const ext = ALLOWED_TYPES[fileType];
+        const uniqueId = crypto.randomUUID
+          ? crypto.randomUUID()
+          : Array.from(crypto.getRandomValues(new Uint8Array(16)))
+              .map((b) => b.toString(16).padStart(2, "0")).join("");
         const path = `${Date.now()}_${uniqueId}.${ext}`;
 
         const { data: uploadData, error: uploadErr } = await sb.storage

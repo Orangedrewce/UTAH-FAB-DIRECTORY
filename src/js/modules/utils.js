@@ -49,6 +49,15 @@
 
 import { REGION_BOUNDS } from "./constants.js";
 
+/** Delay fn execution until after `wait` ms of no calls (reduces redundant work on rapid input) */
+export function debounce(fn, wait = 250) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), wait);
+  };
+}
+
 /** Escape a string for safe HTML insertion */
 export function esc(str) {
   if (!str) return "";
@@ -124,8 +133,9 @@ export function websiteLink(shop) {
   );
   if (emailMatch) {
     const email = emailMatch[0];
+    const escapedEmail = email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const remaining = raw
-      .replace(email, "")
+      .replace(new RegExp(escapedEmail, "g"), "")
       .replace(/^[\s|,·]+|[\s|,·]+$/g, "")
       .trim();
     const link = `<a class="card-link" href="mailto:${esc(email)}">${esc(email)}</a>`;
@@ -145,9 +155,19 @@ export function websiteLink(shop) {
     const href = urlMatch[0].startsWith("http")
       ? urlMatch[0]
       : "https://" + urlMatch[0];
+    // Block javascript: and other non-http(s) schemes
+    if (!/^https?:\/\//i.test(href)) {
+      const q = encodeURIComponent(shop.name + " " + shop.city + " Utah");
+      return (
+        `<a class="card-link card-link--search" href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener noreferrer">` +
+        `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> ` +
+        `Search Google</a>`
+      );
+    }
     const display = urlMatch[0].replace(/^https?:\/\//i, "").replace(/\/$/, "");
+    const escapedMatch = urlMatch[0].replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const remaining = raw
-      .replace(urlMatch[0], "")
+      .replace(new RegExp(escapedMatch, "g"), "")
       .replace(/^[\s|,·]+|[\s|,·]+$/g, "")
       .trim();
     const link = `<a class="card-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(display)}</a>`;
@@ -192,7 +212,7 @@ export function websiteLink(shop) {
 /** Normalise a shop object — handles both shops.json keys and Supabase column names */
 export function normaliseShop(s) {
   return {
-    id: String(s.id),
+    id: s.id != null ? String(s.id) : "",
     name: s.name,
     city: s.city,
     size: s.size || s.size_desc || "",
