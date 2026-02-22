@@ -47,6 +47,18 @@ body {
     color 0.3s;
 }
 
+/* System preference fallback */
+@media (prefers-color-scheme: light) {
+  body:not(.dark-mode) {
+    --iron: #f0ece2;
+    --light: #1a1a1a;
+    --muted: #5a5a4a;
+    --card-bg: rgba(0, 0, 0, 0.04);
+    --card-border: rgba(255, 107, 43, 0.35);
+    --grid-color: rgba(255, 107, 43, 0.1);
+  }
+}
+
 /* ── LAYOUT ── */
 .page-wrap {
   max-width: 900px;
@@ -291,6 +303,10 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 .service-card {
