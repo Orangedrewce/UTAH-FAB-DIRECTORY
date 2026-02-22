@@ -3,148 +3,13 @@
    Supabase-backed CRUD for the Utah Fab Directory
    ═══════════════════════════════════════════════════════════════════════ */
 
-// ── Supabase config ─────────────────────────────────────────────────────
-const SUPABASE_URL = "https://dntcmvspcwwdwnmyqfiw.supabase.co";
-const SUPABASE_ANON =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudGNtdnNwY3d3ZHdubXlxZml3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MDA5MDksImV4cCI6MjA4NzI3NjkwOX0.cgiLMn6YH0BnLshl_458nGwdjnAJaN3MZz8jT4lwfkc";
-
-if (typeof window.supabase === "undefined") {
-  document.body.innerHTML =
-    '<p style="color:#d63031;text-align:center;margin-top:4rem;">Supabase SDK failed to load. Check your network or script order.</p>';
-  throw new Error("Supabase SDK not available");
-}
-
-const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
-// ── All known tags (matches the existing tag vocabulary in shops.json) ──
-const ALL_TAGS = [
-  "3dprint",
-  "aerospace",
-  "cnc",
-  "heattreat",
-  "laser",
-  "makerspace",
-  "offroad",
-  "ornamental",
-  "powder",
-  "waterjet",
-  "welding",
-  "plasma",
-  "anodize",
-  "plating",
-  "assembly",
-  "prototype",
-  "structural",
-  "sheetmetal",
-];
-
-// ── Canonical categories (single source of truth for datalist + validation) ──
-const CATEGORIES = [
-  "Fabrication & Machining",
-  "Welding & Metalwork",
-  "Specialty Automotive",
-  "Specialty Automotive & Off-Road",
-  "Industrial Finishing: Anodizing, Plating & Heat Treating",
-  "Powder Coating & Finishing",
-  "Digital Fabrication & Community Spaces",
-  "Statewide / Multi-Region Fabrication",
-  "Rural Hubs: Moab / Rock Crawling",
-  "Rural Hubs: Uinta Basin / Carbon County / Central Utah",
-  "Specialty",
-  "Finishing & Community",
-];
+import { supabase as _supabase } from "./modules/supabase.js";
+import { ALL_TAGS, CATEGORIES, REGION_BOUNDS } from "./modules/constants.js";
+import { esc, parseMapsUrl } from "./modules/utils.js";
+import { fetchShops, fetchRegions, fetchRequests } from "./modules/api.js";
 
 // ── Canonical regions (loaded from DB, fallback hardcoded) ─────────────
 let REGIONS = [];
-
-// ── Utah region bounding boxes (lat/lng ranges) ────────────────────────
-// Slugs MUST match the `regions` table in Supabase (FK constraint on fab_shops)
-const REGION_BOUNDS = [
-  {
-    slug: "cache-valley",
-    label: "Cache Valley",
-    latMin: 41.4,
-    latMax: 42.05,
-    lngMin: -112.5,
-    lngMax: -111.5,
-  },
-  {
-    slug: "weber-ogden",
-    label: "Weber / Ogden Area",
-    latMin: 40.85,
-    latMax: 41.4,
-    lngMin: -112.2,
-    lngMax: -111.7,
-  },
-  {
-    slug: "salt-lake",
-    label: "Salt Lake Valley",
-    latMin: 40.5,
-    latMax: 40.85,
-    lngMin: -112.15,
-    lngMax: -111.7,
-  },
-  {
-    slug: "utah-county",
-    label: "Utah County",
-    latMin: 39.9,
-    latMax: 40.5,
-    lngMin: -112.0,
-    lngMax: -111.3,
-  },
-  {
-    slug: "southern-utah",
-    label: "St. George / Southern Utah",
-    latMin: 37.0,
-    latMax: 37.9,
-    lngMin: -114.0,
-    lngMax: -113.0,
-  },
-];
-
-/**
- * Parse a Google Maps URL and try to extract city name + region.
- * Works with full URLs like:
- *   https://www.google.com/maps/place/Shop+Name,+City,+UT/@40.76,-111.89,17z/...
- * Short links (maps.app.goo.gl) can't be resolved client-side due to CORS.
- * Returns { city, region, label } — all empty strings if nothing could be parsed.
- */
-function parseMapsUrl(url) {
-  const result = { city: "", region: "other", label: "" };
-  if (!url) return result;
-
-  // Try to extract coordinates: /@lat,lng
-  const coordMatch = url.match(/@([-\d.]+),([-\d.]+)/);
-  if (coordMatch) {
-    const lat = parseFloat(coordMatch[1]);
-    const lng = parseFloat(coordMatch[2]);
-    for (const b of REGION_BOUNDS) {
-      if (
-        lat >= b.latMin &&
-        lat <= b.latMax &&
-        lng >= b.lngMin &&
-        lng <= b.lngMax
-      ) {
-        result.region = b.slug;
-        result.label = b.label;
-        break;
-      }
-    }
-  }
-
-  // Try to extract city from /place/ segment: ".../place/Shop+Name,+City,+UT/..."
-  const placeMatch = url.match(/\/place\/([^/@]+)/);
-  if (placeMatch) {
-    const decoded = decodeURIComponent(placeMatch[1]).replace(/\+/g, " ");
-    // Look for ", City, UT" or ", City, Utah" pattern
-    const cityMatch = decoded.match(/,\s*([A-Za-z\s]+?),\s*(?:UT|Utah)\b/i);
-    if (cityMatch) {
-      result.city = cityMatch[1].trim();
-    }
-  }
-
-  return result;
-}
 
 /** Validate a region slug against the DB-loaded REGIONS array, falling back to 'other' */
 function validRegion(slug) {
@@ -345,23 +210,10 @@ function populateCategoryList() {
 ═══════════════════════════════════════════════════════════════════════ */
 
 async function loadRegions() {
-  const { data, error } = await _supabase
-    .from("regions")
-    .select("*")
-    .order("sort_order");
-
-  if (!error && data && data.length > 0) {
-    REGIONS = data;
-  } else {
-    // Fallback
-    REGIONS = [
-      { slug: "salt-lake", title: "Salt Lake Valley" },
-      { slug: "utah-county", title: "Utah County" },
-      { slug: "weber-ogden", title: "Weber / Ogden Area" },
-      { slug: "cache-valley", title: "Cache Valley" },
-      { slug: "southern-utah", title: "St. George / Southern Utah" },
-      { slug: "other", title: "Other: Statewide, Rural & Specialty" },
-    ];
+  try {
+    REGIONS = await fetchRegions();
+  } catch (error) {
+    console.error("Critical error loading regions:", error);
   }
 
   // Populate toolbar region filter (build string, assign once)
@@ -382,19 +234,11 @@ async function loadRegions() {
 }
 
 async function loadShops() {
-  // Authenticated users can see all shops (including inactive) via RLS
-  const { data, error } = await _supabase
-    .from("fab_shops")
-    .select("*")
-    .order("region")
-    .order("sort_order")
-    .order("name");
-
-  if (error) {
+  try {
+    allShops = await fetchShops(false); // fetch all for admin
+  } catch (error) {
     console.error("Failed to load shops:", error);
     allShops = [];
-  } else {
-    allShops = data || [];
   }
 
   // Populate tag filter dropdown with tags that exist in data (build string, assign once)
@@ -408,6 +252,16 @@ async function loadShops() {
   adminTagFilt.innerHTML = tagFilterHtml;
 
   applyFilters();
+}
+
+async function loadRequests() {
+  try {
+    pendingRequests = await fetchRequests();
+    renderRequestsBadge();
+    renderRequestsList();
+  } catch (err) {
+    console.error("Failed to load requests:", err);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -619,13 +473,6 @@ bulkToggleBtn.addEventListener("click", async () => {
   await loadShops();
 });
 
-function esc(str) {
-  if (!str) return "";
-  const d = document.createElement("div");
-  d.textContent = str;
-  return d.innerHTML;
-}
-
 /* ═══════════════════════════════════════════════════════════════════════
    MODAL  — Add / Edit
 ═══════════════════════════════════════════════════════════════════════ */
@@ -791,15 +638,13 @@ deleteBtn.addEventListener("click", async () => {
   if (!editId) return;
   if (!confirm("Delete this shop permanently?")) return;
 
-  const DELETE_LABEL = "Delete";
-
   deleteBtn.disabled = true;
   deleteBtn.textContent = "Deleting…";
 
   const { error } = await _supabase.from("fab_shops").delete().eq("id", editId);
 
   deleteBtn.disabled = false;
-  deleteBtn.textContent = DELETE_LABEL;
+  deleteBtn.textContent = "Delete";
 
   if (error) {
     alert("Delete failed: " + error.message);
@@ -811,243 +656,161 @@ deleteBtn.addEventListener("click", async () => {
 });
 
 /* ═══════════════════════════════════════════════════════════════════════
-   INIT — Reactive auth + layout measurement
-═════════════════════════════════════════════════════════════════════ */
-
-/** Measure real header height and set toolbar top + table-scroll max-height dynamically */
-function syncLayoutHeights() {
-  const header = document.querySelector(".admin-header");
-  const toolbar = document.querySelector(".toolbar");
-  const tableScroll = document.querySelector(".table-scroll");
-  if (!header || !toolbar) return;
-
-  const headerH = header.offsetHeight;
-  const toolbarH = toolbar.offsetHeight;
-  toolbar.style.top = headerH + "px";
-  if (tableScroll) {
-    tableScroll.style.maxHeight = `calc(100vh - ${headerH + toolbarH}px)`;
-    tableScroll.style.maxHeight = `calc(100dvh - ${headerH + toolbarH}px)`;
-  }
-}
-
-// Listen for auth state changes reactively
-_supabase.auth.onAuthStateChange((event, session) => {
-  if (event === "SIGNED_OUT" || !session) {
-    allShops = [];
-    pendingRequests = [];
-    shopTableBody.innerHTML = "";
-    authGate.classList.remove("hidden");
-    adminDash.classList.add("hidden");
-    _dashboardLoading = false;
-  } else if (session) {
-    showDashboard(session.user);
-  }
-});
-
-// Also check on load (handles page refresh with existing session)
-checkSession();
-
-// Sync layout heights after dashboard renders and on resize
-window.addEventListener("resize", syncLayoutHeights);
-
-/* ═══════════════════════════════════════════════════════════════════════
-   DIRECTORY REQUESTS  — Load, Render, Approve, Dismiss
+   REQUESTS PANEL
 ═══════════════════════════════════════════════════════════════════════ */
 
-async function loadRequests() {
-  const { data, error } = await _supabase
-    .from("directory_requests")
-    .select("*")
-    .eq("status", "pending")
-    .order("created_at", { ascending: false });
+requestsToggle.addEventListener("click", () => {
+  const isOpen = requestsPanel.classList.toggle("open");
+  requestsBody.classList.toggle("hidden", !isOpen);
+  requestsToggle.setAttribute("aria-expanded", isOpen);
+});
 
-  if (error) {
-    console.error("Failed to load requests:", error);
-    pendingRequests = [];
-  } else {
-    pendingRequests = data || [];
-  }
-
-  renderRequests();
-}
-
-/** Build a <select> dropdown for region, pre-selected to detectedSlug */
-function regionSelectHtml(requestId, detectedSlug) {
-  const fallback = [
-    { slug: "salt-lake", title: "Salt Lake Valley" },
-    { slug: "utah-county", title: "Utah County" },
-    { slug: "weber-ogden", title: "Weber / Ogden Area" },
-    { slug: "cache-valley", title: "Cache Valley" },
-    { slug: "southern-utah", title: "St. George / Southern Utah" },
-    { slug: "other", title: "Other / Statewide" },
-  ];
-  const list = REGIONS.length ? REGIONS : fallback;
-  const safe = validRegion(detectedSlug);
-  const opts = list
-    .map(
-      (r) =>
-        `<option value="${esc(r.slug)}"${r.slug === safe ? " selected" : ""}>${esc(r.title || r.slug)}</option>`,
-    )
-    .join("");
-  return `<select class="requests-region-select" data-request-id="${requestId}">${opts}</select>`;
-}
-
-function renderRequests() {
+function renderRequestsBadge() {
   const count = pendingRequests.length;
   requestsBadge.textContent = count;
+  requestsBadge.classList.toggle("hidden", count === 0);
+  requestsPanel.classList.toggle("hidden", count === 0);
+}
 
-  if (count === 0) {
-    requestsPanel.classList.add("hidden");
+function renderRequestsList() {
+  if (pendingRequests.length === 0) {
+    requestsList.innerHTML =
+      '<p class="requests-empty">No pending requests.</p>';
     return;
   }
 
-  requestsPanel.classList.remove("hidden");
-
   requestsList.innerHTML = pendingRequests
     .map((r) => {
-      const date = new Date(r.created_at).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-      const mapsLink = r.maps_url
-        ? `<a href="${esc(r.maps_url)}" target="_blank" rel="noopener noreferrer">Maps ↗</a>`
-        : "";
-      const loc = parseMapsUrl(r.maps_url);
-      // Prefer the user's submitted region; fallback to the map guess
-      const preSelectedRegion = r.region || loc.region;
-      const regionDropdown = regionSelectHtml(r.id, preSelectedRegion);
-      const cityTag = (r.city || loc.city)
-        ? `<span class="requests-card-city">${esc(r.city || loc.city)}</span>`
-        : "";
-      return `<div class="requests-card" data-request-id="${r.id}">
-      <div class="requests-card-info">
-        <div class="requests-card-name">${esc(r.shop_name)} ${cityTag}</div>
-        <div class="requests-card-meta">${esc(r.contact)} · ${date} ${mapsLink}</div>
-        <div class="requests-card-region-row">Region: ${regionDropdown}</div>
-        ${r.services ? `<div class="requests-card-services">${esc(r.services)}</div>` : ""}
-      </div>
-      <div class="requests-card-actions">
-        <label class="toggle-active-label" title="Activate shop immediately upon approval">
-          <input type="checkbox" class="toggle-active-cb" data-id="${r.id}">
-          <span class="toggle-active-slider"></span>
-          <span class="toggle-active-text">Set Active</span>
-        </label>
-        <button class="btn btn-primary btn-sm approve-req-btn" data-id="${r.id}">Approve</button>
-        <button class="btn btn-outline btn-sm dismiss-req-btn" data-id="${r.id}">Dismiss</button>
-      </div>
-    </div>`;
+      const mapsInfo = parseMapsUrl(r.maps_url);
+      const city = r.city || mapsInfo.city || "(Unknown City)";
+      const date = new Date(r.created_at).toLocaleDateString();
+
+      return `
+      <div class="requests-card" data-request-id="${r.id}">
+        <div class="requests-card-header">
+          <div class="requests-card-title">${esc(r.shop_name)}</div>
+          <div class="requests-card-date">${date}</div>
+        </div>
+        <div class="requests-card-row"><strong>City:</strong> ${esc(city)}</div>
+        <div class="requests-card-row"><strong>Services:</strong> ${esc(r.services || "—")}</div>
+        <div class="requests-card-row"><strong>Contact:</strong> ${esc(r.contact)}</div>
+        <div class="requests-card-actions">
+           <div class="requests-card-assign">
+             <select class="assign-region-select" aria-label="Assign Region">
+               <option value="salt-lake" ${r.region === "salt-lake" ? "selected" : ""}>Salt Lake Valley</option>
+               <option value="utah-county" ${r.region === "utah-county" ? "selected" : ""}>Utah County</option>
+               <option value="weber-ogden" ${r.region === "weber-ogden" ? "selected" : ""}>Weber / Ogden</option>
+               <option value="cache-valley" ${r.region === "cache-valley" ? "selected" : ""}>Cache Valley</option>
+               <option value="southern-utah" ${r.region === "southern-utah" ? "selected" : ""}>Southern Utah</option>
+               <option value="other" ${r.region === "other" || !r.region ? "selected" : ""}>Other / Rural</option>
+             </select>
+           </div>
+           <button class="btn btn-primary btn-sm approve-req-btn" data-id="${r.id}">Approve</button>
+           <button class="btn btn-outline btn-sm reject-req-btn" data-id="${r.id}">Reject</button>
+        </div>
+      </div>`;
     })
     .join("");
 }
 
-// Toggle requests panel open/closed
-requestsToggle.addEventListener("click", () => {
-  const isOpen = requestsPanel.classList.toggle("open");
-  requestsBody.classList.toggle("hidden");
-  requestsToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+requestsList.addEventListener("click", async (e) => {
+  const approveId = e.target.closest(".approve-req-btn")?.dataset.id;
+  const rejectId = e.target.closest(".reject-req-btn")?.dataset.id;
+
+  if (approveId) {
+    const card = e.target.closest(".requests-card");
+    const region = card.querySelector(".assign-region-select").value;
+    await handleRequestAction(approveId, "approve", region);
+  } else if (rejectId) {
+    if (confirm("Reject and delete this request?")) {
+      await handleRequestAction(rejectId, "reject");
+    }
+  }
 });
 
-// Delegate clicks inside requests list
-requestsList.addEventListener("click", async (e) => {
-  const approveBtn = e.target.closest(".approve-req-btn");
-  const dismissBtn = e.target.closest(".dismiss-req-btn");
+async function handleRequestAction(requestId, action, region = null) {
+  const req = pendingRequests.find((r) => r.id === requestId);
+  if (!req) return;
 
-  if (approveBtn) {
-    const id = approveBtn.dataset.id;
-    const req = pendingRequests.find((r) => r.id === id);
-    if (!req) return;
+  const btn = requestsList.querySelector(
+    `[data-id="${requestId}"].${action === "approve" ? "approve-req-btn" : "reject-req-btn"}`,
+  );
+  if (btn) btn.disabled = true;
 
-    approveBtn.disabled = true;
-    approveBtn.textContent = "Approving…";
+  try {
+    if (action === "approve") {
+      const mapsInfo = parseMapsUrl(req.maps_url);
 
-    // Read region from the dropdown the admin may have edited
-    const regionSelect = requestsList.querySelector(
-      `select[data-request-id="${id}"]`,
-    );
-    const chosenRegion = regionSelect
-      ? regionSelect.value
-      : validRegion(req.region || parseMapsUrl(req.maps_url).region);
-    const mapsInfo = parseMapsUrl(req.maps_url);
+      const newShop = {
+        name: req.shop_name,
+        city: req.city || mapsInfo.city || "",
+        region: region || req.region || "other",
+        services: req.services || "",
+        website: req.contact,
+        maps_url: req.maps_url || "",
+        tags: req.tags || [],
+        is_active: true,
+      };
 
-    // Read visibility toggle
-    const activeCb = requestsList.querySelector(
-      `.toggle-active-cb[data-id="${id}"]`,
-    );
-    const setActive = activeCb ? activeCb.checked : false;
-
-    // Insert into fab_shops
-    const shopPayload = {
-      name: req.shop_name,
-      city: req.city || mapsInfo.city,
-      region: chosenRegion,
-      services: req.services || "",
-      website: req.contact || "",
-      maps_url: req.maps_url || "",
-      category: "Fabrication & Machining",
-      tags: req.tags || [],
-      is_active: setActive,
-    };
-
-    const { error: insertErr } = await _supabase
-      .from("fab_shops")
-      .insert([shopPayload]);
-    if (insertErr) {
-      // Handle duplicate name+region constraint
-      if (
-        insertErr.code === "23505" ||
-        insertErr.message.includes("uq_fab_shops_name_region")
-      ) {
-        if (
-          !confirm(
-            `A shop named "${req.shop_name}" already exists in this region. Mark this request as approved anyway?`,
-          )
-        ) {
-          approveBtn.disabled = false;
-          approveBtn.textContent = "Approve";
-          return;
-        }
-        // Skip insert — just mark as approved below
-      } else {
-        alert("Failed to create shop: " + insertErr.message);
-        approveBtn.disabled = false;
-        approveBtn.textContent = "Approve";
-        return;
-      }
+      const { error: insErr } = await _supabase
+        .from("fab_shops")
+        .insert([newShop]);
+      if (insErr) throw insErr;
     }
 
-    // Mark request as approved
-    const { error: updateErr } = await _supabase
+    const { error: updErr } = await _supabase
       .from("directory_requests")
-      .update({ status: "approved" })
-      .eq("id", id);
+      .update({ status: action === "approve" ? "approved" : "rejected" })
+      .eq("id", requestId);
 
-    if (updateErr) console.error("Failed to update request status:", updateErr);
+    if (updErr) throw updErr;
 
-    // Refresh both panels
-    await Promise.all([loadShops(), loadRequests()]);
-    return;
+    pendingRequests = pendingRequests.filter((r) => r.id !== requestId);
+    renderRequestsBadge();
+    renderRequestsList();
+    if (action === "approve") await loadShops();
+  } catch (err) {
+    console.error(`Request ${action} failed:`, err);
+    alert(`Failed to ${action} request: ` + err.message);
+  } finally {
+    if (btn) btn.disabled = false;
   }
+}
 
-  if (dismissBtn) {
-    const id = dismissBtn.dataset.id;
-    if (!confirm("Dismiss this listing request?")) return;
+/* ═══════════════════════════════════════════════════════════════════════
+   LAYOUT STICKINESS
+═══════════════════════════════════════════════════════════════════════ */
 
-    dismissBtn.disabled = true;
-    dismissBtn.textContent = "Dismissing…";
+function syncLayoutHeights() {
+  const adminHeader = $(".admin-header");
+  const toolbar = $(".toolbar");
+  if (!adminHeader || !toolbar) return;
 
-    const { error } = await _supabase
-      .from("directory_requests")
-      .update({ status: "dismissed" })
-      .eq("id", id);
+  const headerH = adminHeader.offsetHeight;
+  const toolbarH = toolbar.offsetHeight;
 
-    if (error) {
-      alert("Dismiss failed: " + error.message);
-      dismissBtn.disabled = false;
-      dismissBtn.textContent = "Dismiss";
-      return;
-    }
+  document.documentElement.style.setProperty("--header-h", headerH + "px");
+  document.documentElement.style.setProperty("--toolbar-h", toolbarH + "px");
+  document.documentElement.style.setProperty(
+    "--sticky-top",
+    headerH + toolbarH + "px",
+  );
+}
 
-    await loadRequests();
+window.addEventListener("resize", syncLayoutHeights);
+
+/* ═══════════════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════════════ */
+
+checkSession();
+
+// Listen for auth state changes
+_supabase.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_IN" && session) {
+    showDashboard(session.user);
+  } else if (event === "SIGNED_OUT") {
+    authGate.classList.remove("hidden");
+    adminDash.classList.add("hidden");
   }
 });

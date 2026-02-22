@@ -1,8 +1,10 @@
+import { supabase as sb } from "./modules/supabase.js";
+
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
 const lightboxLabel = document.getElementById("lightbox-label");
 
-function openLightbox(element) {
+export function openLightbox(element) {
   if (!lightbox || !lightboxImg || !lightboxLabel) {
     return;
   }
@@ -18,7 +20,7 @@ function openLightbox(element) {
   lightbox.classList.add("open");
 }
 
-function closeLightbox() {
+export function closeLightbox() {
   if (!lightbox) {
     return;
   }
@@ -45,15 +47,6 @@ document.addEventListener("keydown", (event) => {
 (function () {
   "use strict";
 
-  const SUPABASE_URL = "https://dntcmvspcwwdwnmyqfiw.supabase.co";
-  const SUPABASE_ANON =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudGNtdnNwY3d3ZHdubXlxZml3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MDA5MDksImV4cCI6MjA4NzI3NjkwOX0.cgiLMn6YH0BnLshl_458nGwdjnAJaN3MZz8jT4lwfkc";
-
-  // Guard: Supabase SDK may not be loaded on all pages
-  if (typeof window.supabase === "undefined") return;
-
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
   const form = document.getElementById("contactForm");
   const cfEmail = document.getElementById("cfEmail");
   const cfMessage = document.getElementById("cfMessage");
@@ -69,10 +62,10 @@ document.addEventListener("keydown", (event) => {
   // Constants
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
   const ALLOWED_TYPES = {
-    'image/jpeg': 'jpg',
-    'image/png':  'png',
-    'image/gif':  'gif',
-    'image/webp': 'webp',
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/gif": "gif",
+    "image/webp": "webp",
   };
 
   // Show selected file name
@@ -89,7 +82,7 @@ document.addEventListener("keydown", (event) => {
   function showFeedback(msg, type) {
     if (!feedback) return;
     feedback.textContent = msg;
-    feedback.classList.remove('error', 'success');
+    feedback.classList.remove("error", "success");
     if (type) feedback.classList.add(type);
   }
 
@@ -125,18 +118,19 @@ document.addEventListener("keydown", (event) => {
         const file = cfFile.files[0];
 
         if (file.size > MAX_FILE_SIZE) {
-          showFeedback('FILE TOO LARGE (MAX 5 MB)', 'error');
+          showFeedback("FILE TOO LARGE (MAX 5 MB)", "error");
           return;
         }
         if (!(file.type in ALLOWED_TYPES)) {
-          showFeedback('ONLY JPEG, PNG, GIF, WEBP ALLOWED', 'error');
+          showFeedback("ONLY JPEG, PNG, GIF, WEBP ALLOWED", "error");
           return;
         }
 
         const ext = ALLOWED_TYPES[file.type];
-        const uniqueId = typeof crypto.randomUUID === 'function'
-          ? crypto.randomUUID()
-          : Math.random().toString(36).slice(2, 10);
+        const uniqueId =
+          typeof crypto.randomUUID === "function"
+            ? crypto.randomUUID()
+            : Math.random().toString(36).slice(2, 10);
         const path = `${Date.now()}_${uniqueId}.${ext}`;
 
         const { data: uploadData, error: uploadErr } = await sb.storage
