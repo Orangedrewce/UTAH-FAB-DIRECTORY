@@ -6,27 +6,31 @@
   Cleans docs/, then copies everything from src/ EXCEPT the db/ folder
   (SQL schemas and migration scripts are dev-only).
 
+  JS file layout (all entry points and modules live under src/js/modules/):
+    src/js/modules/admin.js       — admin dashboard entry point
+    src/js/modules/directory.js   — public directory entry point
+    src/js/modules/script.js      — index/lightbox/contact entry point
+    src/js/modules/supabase.js    — shared Supabase client
+    src/js/modules/constants.js   — shared constants (regions, tags, categories)
+    src/js/modules/utils.js       — shared utility functions
+    src/js/modules/api.js         — shared data-fetching functions
+
+  Workflow:
   # 1) Work in dev
-git checkout dev
+  git checkout dev
 
-# 2) Edit files in src/
+  # 2) Edit files in src/
 
-# 3) Sync src -> docs
-./scripts/sync-src-to-docs.ps1
+  # 3) Sync src -> docs
+  ./scripts/sync-src-to-docs.ps1
 
-# 4) Save changes
-git add -A
-git commit -m "error handling"
+  # 4) Save changes
+  git add -A
+  git commit -m "your message here"
 
-# 5) Publish to live site
-git push 
-git push origin dev:main
-
-
-# 6) Pull main back to dev (keeps things in sync)
-git fetch
-git pull origin main #oh fuck go back git push origin dev:main --force# 1) Work in dev
-git checkout dev
+  # 5) Publish to live site
+  git push origin dev
+  git push origin dev:main
 #>
 
 $ErrorActionPreference = 'Stop'

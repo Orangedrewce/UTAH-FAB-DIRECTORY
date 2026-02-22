@@ -1,4 +1,4 @@
-import { supabase as sb } from "./modules/supabase.js";
+import { supabase as sb } from "./supabase.js";
 
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
@@ -35,6 +35,10 @@ export function closeLightbox() {
   }
 }
 
+// Expose to window for inline HTML handlers
+window.openLightbox = openLightbox;
+window.closeLightbox = closeLightbox;
+
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && lightbox?.classList.contains("open")) {
     closeLightbox();
@@ -44,10 +48,10 @@ document.addEventListener("keydown", (event) => {
 /* ═══════════════════════════════════════════════════════════════════════
    CONTACT FORM — Supabase submission + photo upload
    ═══════════════════════════════════════════════════════════════════════ */
-(function () {
-  "use strict";
-
+function initContactForm() {
   const form = document.getElementById("contactForm");
+  if (!form) return; // Not on the portfolio page
+
   const cfEmail = document.getElementById("cfEmail");
   const cfMessage = document.getElementById("cfMessage");
   const cfFile = document.getElementById("cfFile");
@@ -56,7 +60,6 @@ document.addEventListener("keydown", (event) => {
   const submitBtn = document.getElementById("cfSubmitBtn");
   const feedback = document.getElementById("cfFeedback");
 
-  if (!form) return; // Not on the portfolio page
   if (!cfFile || !cfFileName || !cfFileLabel || !feedback || !submitBtn) return;
 
   // Constants
@@ -68,6 +71,13 @@ document.addEventListener("keydown", (event) => {
     "image/webp": "webp",
   };
 
+  function showFeedback(msg, type) {
+    if (!feedback) return;
+    feedback.textContent = msg;
+    feedback.classList.remove("error", "success");
+    if (type) feedback.classList.add(type);
+  }
+
   // Show selected file name
   cfFile.addEventListener("change", () => {
     if (cfFile.files.length > 0) {
@@ -78,13 +88,6 @@ document.addEventListener("keydown", (event) => {
       cfFileLabel.classList.remove("has-file");
     }
   });
-
-  function showFeedback(msg, type) {
-    if (!feedback) return;
-    feedback.textContent = msg;
-    feedback.classList.remove("error", "success");
-    if (type) feedback.classList.add(type);
-  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -171,4 +174,6 @@ document.addEventListener("keydown", (event) => {
       submitBtn.textContent = "SEND";
     }
   });
-})();
+}
+
+initContactForm();

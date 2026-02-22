@@ -3,29 +3,13 @@
    Supabase-backed CRUD for the Utah Fab Directory
    ═══════════════════════════════════════════════════════════════════════ */
 
-import { supabase as _supabase } from "./modules/supabase.js";
-import { ALL_TAGS, CATEGORIES, REGION_BOUNDS } from "./modules/constants.js";
-import { esc, parseMapsUrl } from "./modules/utils.js";
-import { fetchShops, fetchRegions, fetchRequests } from "./modules/api.js";
+import { supabase as _supabase } from "./supabase.js";
+import { ALL_TAGS, CATEGORIES, REGION_BOUNDS } from "./constants.js";
+import { esc, parseMapsUrl } from "./utils.js";
+import { fetchShops, fetchRegions, fetchRequests } from "./api.js";
 
 // ── Canonical regions (loaded from DB, fallback hardcoded) ─────────────
 let REGIONS = [];
-
-/** Validate a region slug against the DB-loaded REGIONS array, falling back to 'other' */
-function validRegion(slug) {
-  if (!slug) return "other";
-  if (REGIONS.length && REGIONS.some((r) => r.slug === slug)) return slug;
-  // If REGIONS hasn't loaded yet, accept known hardcoded slugs
-  const known = [
-    "salt-lake",
-    "utah-county",
-    "weber-ogden",
-    "cache-valley",
-    "southern-utah",
-    "other",
-  ];
-  return known.includes(slug) ? slug : "other";
-}
 
 // ── State ───────────────────────────────────────────────────────────────
 let allShops = []; // full dataset from fab_shops
