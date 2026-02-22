@@ -89,6 +89,15 @@ function parseMapsUrl(url) {
   return result;
 }
 
+/** Validate a region slug against the DB-loaded REGIONS array, falling back to 'other' */
+function validRegion(slug) {
+  if (!slug) return 'other';
+  if (REGIONS.length && REGIONS.some(r => r.slug === slug)) return slug;
+  // If REGIONS hasn't loaded yet, accept known hardcoded slugs
+  const known = ['salt-lake','utah-county','weber-ogden','cache-valley','southern-utah','other'];
+  return known.includes(slug) ? slug : 'other';
+}
+
 // ── State ───────────────────────────────────────────────────────────────
 let allShops  = [];   // full dataset from fab_shops
 let filtered  = [];   // after search/filter applied
@@ -255,6 +264,7 @@ async function handleApproveDeepLink() {
 
   // Auto-fill city & region from Maps URL
   const mapsInfo = parseMapsUrl(req.maps_url);
+  const safeRegion = validRegion(mapsInfo.region);
   const regionHint = mapsInfo.label ? ` (detected region: ${mapsInfo.label}${mapsInfo.city ? ', ' + mapsInfo.city : ''})` : '';
   if (!confirm(`Approve listing request for "${req.shop_name}"?${regionHint}`)) return;
 
@@ -262,7 +272,7 @@ async function handleApproveDeepLink() {
   const shopPayload = {
     name:      req.shop_name,
     city:      mapsInfo.city,
-    region:    mapsInfo.region,
+    region:    safeRegion,
     services:  req.services || '',
     website:   req.contact || '',
     maps_url:  req.maps_url || '',
@@ -847,12 +857,13 @@ requestsList.addEventListener('click', async (e) => {
 
     // Auto-fill city & region from Maps URL
     const mapsInfo = parseMapsUrl(req.maps_url);
+    const safeRegion = validRegion(mapsInfo.region);
 
     // Insert into fab_shops (inactive by default so admin can enrich before publishing)
     const shopPayload = {
       name:      req.shop_name,
       city:      mapsInfo.city,
-      region:    mapsInfo.region,
+      region:    safeRegion,
       services:  req.services || '',
       website:   req.contact || '',
       maps_url:  req.maps_url || '',

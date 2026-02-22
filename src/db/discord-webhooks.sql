@@ -28,7 +28,7 @@ ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Anon insert contact" ON contact_messages;
 CREATE POLICY "Anon insert contact"
   ON contact_messages FOR INSERT
-  TO anon
+  TO public
   WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admin read contact" ON contact_messages;
@@ -99,6 +99,12 @@ CREATE TRIGGER on_contact_insert
 -- ============================================================================
 -- DIRECTORY REQUESTS
 -- ============================================================================
+
+-- Ensure 'other' region exists (FK target for fab_shops.region fallback)
+INSERT INTO regions (slug, title, subtitle, sort_order)
+VALUES ('other', 'Other: Statewide, Rural & Specialty',
+        'Moab . Vernal . Roosevelt . Price . Richfield . Statewide Multi-Region Shops', 6)
+ON CONFLICT (slug) DO NOTHING;
 
 -- ── MIGRATION: fix old table schema BEFORE trying to create ─────────────
 -- This runs first so the table is in a good state before anything else.
@@ -174,7 +180,7 @@ ALTER TABLE directory_requests ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Anon insert directory request" ON directory_requests;
 CREATE POLICY "Anon insert directory request"
   ON directory_requests FOR INSERT
-  TO anon
+  TO public
   WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admin read directory requests" ON directory_requests;
@@ -252,7 +258,7 @@ ON CONFLICT (id) DO NOTHING;
 DROP POLICY IF EXISTS "Anon upload contact photos" ON storage.objects;
 CREATE POLICY "Anon upload contact photos"
   ON storage.objects FOR INSERT
-  TO anon
+  TO public
   WITH CHECK (
     bucket_id = 'contact-photos'
     AND (COALESCE(metadata->>'mimetype', '') ~* '^image/(jpeg|png|gif|webp)$')
