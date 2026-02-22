@@ -914,6 +914,11 @@ function renderRequests() {
         ${r.services ? `<div class="requests-card-services">${esc(r.services)}</div>` : ""}
       </div>
       <div class="requests-card-actions">
+        <label class="toggle-active-label" title="Activate shop immediately upon approval">
+          <input type="checkbox" class="toggle-active-cb" data-id="${r.id}">
+          <span class="toggle-active-slider"></span>
+          <span class="toggle-active-text">Set Active</span>
+        </label>
         <button class="btn btn-primary btn-sm approve-req-btn" data-id="${r.id}">Approve</button>
         <button class="btn btn-outline btn-sm dismiss-req-btn" data-id="${r.id}">Dismiss</button>
       </div>
@@ -946,7 +951,11 @@ requestsList.addEventListener("click", async (e) => {
     const chosenRegion = regionSelect ? regionSelect.value : validRegion(parseMapsUrl(req.maps_url).region);
     const mapsInfo = parseMapsUrl(req.maps_url);
 
-    // Insert into fab_shops (inactive by default so admin can enrich before publishing)
+    // Read visibility toggle
+    const activeCb = requestsList.querySelector(`.toggle-active-cb[data-id="${id}"]`);
+    const setActive = activeCb ? activeCb.checked : false;
+
+    // Insert into fab_shops
     const shopPayload = {
       name: req.shop_name,
       city: mapsInfo.city,
@@ -956,7 +965,7 @@ requestsList.addEventListener("click", async (e) => {
       maps_url: req.maps_url || "",
       category: "Fabrication & Machining",
       tags: [],
-      is_active: false,
+      is_active: setActive,
     };
 
     const { error: insertErr } = await _supabase

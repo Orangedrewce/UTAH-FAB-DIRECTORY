@@ -646,8 +646,10 @@ body.modal-open {
 }
 .requests-card-actions {
   display: flex;
-  gap: .4rem;
+  align-items: center;
+  gap: .5rem;
   flex-shrink: 0;
+  flex-wrap: wrap;
 }
 .requests-card-region-row {
   display: flex;
@@ -689,3 +691,48 @@ body.modal-open {
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: .8rem;}
+
+/* ── Toggle Active switch on request cards ── */
+.toggle-active-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .4em;
+  cursor: pointer;
+  user-select: none;
+  margin-right: auto;          /* push buttons to the right */
+}
+.toggle-active-cb {
+  display: none;                /* hide native checkbox */
+}
+.toggle-active-slider {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  background: var(--border-neutral);
+  border-radius: 8px;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+.toggle-active-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  background: var(--bg-surface);
+  border-radius: 50%;
+  transition: transform .2s;
+}
+.toggle-active-cb:checked + .toggle-active-slider {
+  background: var(--accent, var(--brand-orange-dim));
+}
+.toggle-active-cb:checked + .toggle-active-slider::after {
+  transform: translateX(14px);
+}
+.toggle-active-text {
+  font-size: .68rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
