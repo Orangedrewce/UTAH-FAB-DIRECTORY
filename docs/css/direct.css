@@ -461,6 +461,50 @@ body {
     outline-offset: 2px;
   }
   .join-field textarea { resize: vertical; }
+
+  /* Services checkbox grid */
+  .join-services-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+  }
+  .svc-chip {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  .svc-chip input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .svc-chip span {
+    display: inline-block;
+    padding: .3em .7em;
+    border-radius: 999px;
+    border: 1px solid var(--border, rgba(255,255,255,.12));
+    background: rgba(255,255,255,.04);
+    color: var(--text-dim, #aaa);
+    font-size: .78rem;
+    transition: all .15s ease;
+  }
+  .svc-chip:hover span {
+    border-color: var(--accent, #FF6B2B);
+    color: var(--text-main, #ddd);
+  }
+  .svc-chip input:checked + span {
+    background: var(--accent, #FF6B2B);
+    border-color: var(--accent, #FF6B2B);
+    color: #fff;
+    font-weight: 600;
+  }
+  .svc-chip input:focus-visible + span {
+    outline: 2px solid var(--accent, #FF6B2B);
+    outline-offset: 2px;
+  }
+
   .join-actions {
     display: flex;
     align-items: center;

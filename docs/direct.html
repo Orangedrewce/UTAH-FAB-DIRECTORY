@@ -99,9 +99,29 @@
             <label for="jContact">Contact Link / Email *</label>
             <input type="text" id="jContact" required maxlength="500" placeholder="website.com or email@example.com">
           </div>
-          <div class="join-field">
-            <label for="jServices">Services Offered</label>
-            <textarea id="jServices" rows="3" maxlength="5000" placeholder="CNC machining, laser cutting, welding…"></textarea>
+          <div class="join-field join-field--full">
+            <label>Services Offered <span style="font-weight:400;color:var(--text-dim);">(select all that apply)</span></label>
+            <div class="join-services-grid" id="jServicesGrid">
+              <label class="svc-chip"><input type="checkbox" name="svc" value="cnc"><span>CNC Machining</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="laser"><span>Laser Cutting</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="welding"><span>Welding</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="plasma"><span>Plasma Cutting</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="waterjet"><span>Waterjet</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="3dprint"><span>3D Printing</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="sheetmetal"><span>Sheet Metal</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="powder"><span>Powder Coating</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="anodize"><span>Anodizing</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="plating"><span>Plating</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="heattreat"><span>Heat Treating</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="structural"><span>Structural</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="prototype"><span>Prototyping</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="assembly"><span>Assembly</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="ornamental"><span>Ornamental</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="offroad"><span>Off-Road / 4x4</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="aerospace"><span>Aerospace</span></label>
+              <label class="svc-chip"><input type="checkbox" name="svc" value="makerspace"><span>Makerspace</span></label>
+            </div>
+            <input type="text" id="jServicesOther" maxlength="500" placeholder="Other services not listed above…" style="margin-top:.5rem;">
           </div>
         </div>
 
@@ -466,11 +486,15 @@
       joinFeedback.textContent = '';
       joinFeedback.className = 'join-feedback';
 
+      const checked = [...document.querySelectorAll('#jServicesGrid input:checked')].map(cb => cb.value);
+      const otherSvc = document.getElementById('jServicesOther').value.trim();
+      if (otherSvc) checked.push(otherSvc);
+
       const payload = {
         shop_name: document.getElementById('jShopName').value.trim(),
         maps_url:  document.getElementById('jMapsUrl').value.trim(),
         contact:   document.getElementById('jContact').value.trim(),
-        services:  document.getElementById('jServices').value.trim(),
+        services:  checked.join(', '),
       };
 
       try {
