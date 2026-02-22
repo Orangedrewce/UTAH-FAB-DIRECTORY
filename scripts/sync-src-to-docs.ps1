@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "Domain activation sucsess, comment blocks, url updates"
+  git commit -m "experemental js hardening"
 
   # 5) Publish to live site
   git pull origin dev --rebase
