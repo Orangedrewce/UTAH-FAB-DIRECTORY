@@ -914,9 +914,11 @@ function renderRequests() {
         ? `<a href="${esc(r.maps_url)}" target="_blank" rel="noopener noreferrer">Maps ↗</a>`
         : "";
       const loc = parseMapsUrl(r.maps_url);
-      const regionDropdown = regionSelectHtml(r.id, loc.region);
-      const cityTag = loc.city
-        ? `<span class="requests-card-city">${esc(loc.city)}</span>`
+      // Prefer the user's submitted region; fallback to the map guess
+      const preSelectedRegion = r.region || loc.region;
+      const regionDropdown = regionSelectHtml(r.id, preSelectedRegion);
+      const cityTag = (r.city || loc.city)
+        ? `<span class="requests-card-city">${esc(r.city || loc.city)}</span>`
         : "";
       return `<div class="requests-card" data-request-id="${r.id}">
       <div class="requests-card-info">
@@ -965,7 +967,7 @@ requestsList.addEventListener("click", async (e) => {
     );
     const chosenRegion = regionSelect
       ? regionSelect.value
-      : validRegion(parseMapsUrl(req.maps_url).region);
+      : validRegion(req.region || parseMapsUrl(req.maps_url).region);
     const mapsInfo = parseMapsUrl(req.maps_url);
 
     // Read visibility toggle
@@ -977,13 +979,13 @@ requestsList.addEventListener("click", async (e) => {
     // Insert into fab_shops
     const shopPayload = {
       name: req.shop_name,
-      city: mapsInfo.city,
+      city: req.city || mapsInfo.city,
       region: chosenRegion,
       services: req.services || "",
       website: req.contact || "",
       maps_url: req.maps_url || "",
       category: "Fabrication & Machining",
-      tags: [],
+      tags: req.tags || [],
       is_active: setActive,
     };
 

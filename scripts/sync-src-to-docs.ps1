@@ -16,7 +16,7 @@ git checkout dev
 
 # 4) Save changes
 git add -A
-git commit -m "fk sql."
+git commit -m "error handling"
 
 # 5) Publish to live site
 git push 
