@@ -5,7 +5,7 @@ node_modules/
 dist/
 build/
 *.log
-
+.py
 # Ignore files containing secrets
 discord-webhooks.sql
 *webhook*.sql
