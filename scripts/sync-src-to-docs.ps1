@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "PayPal support link in directory header, CNAME for utahfabdirectory.com, discord webhook url updated to custom domain, debounce search input in admin+directory, isSafeUrl guard on websiteLink href, global regex for remaining contact strip, null-safe id in normaliseShop, JSON parse error boundary in fetchJSONShops, file validation moved before button disable, crypto.getRandomValues fallback, Firefox scrollbar target html not *, join-form outline:none accessibility fix, select min-width:0 flex shrink, admin live preview modal split pane with css fixes, pricing.html standalone page, pricing nav links from index, attribution footer in directory, PayPal deposit block on pricing page, liability copy tweaks on revision+deposit terms"
+  git commit -m "major additions, portfolio site"
 
   # 5) Publish to live site
   git pull origin dev --rebase

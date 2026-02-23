@@ -96,7 +96,7 @@ function portfolioItemHTML(item) {
 
   let embedSrc = item.model_url || "";
   if (embedSrc && !embedSrc.includes("3dviewer.net") && !embedSrc.includes("embed")) {
-    embedSrc = `https://3dviewer.net/embed.html#model=${encodeURIComponent(embedSrc)}`;
+    embedSrc = `https://3dviewer.net/embed.html#model=${embedSrc}`;
   }
 
   const mediaHtml = embedSrc
