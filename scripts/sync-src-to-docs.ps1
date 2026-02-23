@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "Admin preview window i frame, multi file upload"
+  git commit -m "bug fixes"
 
   # 5) Publish to live site
   git pull origin dev --rebase
