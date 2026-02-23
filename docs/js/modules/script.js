@@ -84,16 +84,38 @@ document.addEventListener("keydown", (event) => {
 /**
  * Build HTML for a single portfolio <figure>.
  */
+function buildEmbedSrc(modelUrl) {
+  if (!modelUrl) return "";
+  if (modelUrl.includes("3dviewer.net")) return modelUrl;
+  return `https://3dviewer.net/embed.html#model=${modelUrl}`;
+}
+
 function portfolioItemHTML(item) {
   const tag = esc(item.tag || "RENDER");
   const title = esc(item.title);
   const desc = esc(item.description || "");
   const label = `${tag} · ${title}`;
-  const imgUrl = item.image_url || "assets/Render.png";
 
+  // 3D model with no image → embed viewer directly; no lightbox
+  if (!item.image_url && item.model_url) {
+    return `<figure class="port-item port-item--model" data-tag="${tag}">
+    <div class="port-thumb--model">
+      <iframe class="port-model-frame" src="${esc(buildEmbedSrc(item.model_url))}" loading="lazy" tabindex="-1"></iframe>
+      <span class="port-model-badge">3D</span>
+    </div>
+    <figcaption class="port-caption">
+      <span class="port-tag">${tag}</span>
+      <span class="port-title">${title}</span>
+      ${desc ? `<span class="port-meta">${desc}</span>` : ""}
+    </figcaption>
+  </figure>`;
+  }
+
+  const imgUrl = item.image_url || "assets/Render.png";
   return `<figure class="port-item" data-tag="${tag}">
     <div class="port-thumb thumb" onclick="openLightbox(this)" data-label="${esc(label)}">
       <img src="${esc(imgUrl)}" alt="${title}" loading="lazy">
+      ${item.model_url ? '<span class="port-model-badge">3D</span>' : ""}
       <div class="thumb-overlay">[ VIEW ]</div>
     </div>
     <figcaption class="port-caption">
