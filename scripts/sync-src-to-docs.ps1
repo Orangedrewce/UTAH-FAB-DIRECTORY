@@ -26,13 +26,13 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "bug fixes"
+  git commit -m "xyz GIZMO, CONTROLS FOR OBJECT "
 
   # 5) Publish to live site
   git pull origin dev --rebase
   git pull origin main --rebase
-  git push origin dev
-  git push origin dev:main
+  git push origin dev (DO THIS FIRST)
+  git push origin dev:main (THEN THIS)
 #>
 
 $ErrorActionPreference = 'Stop'

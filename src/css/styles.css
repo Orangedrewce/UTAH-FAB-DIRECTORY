@@ -116,36 +116,6 @@ body {
   font-size: var(--fs-xs);
 }
 
-/* ── MODE TOGGLE ── */
-.toggle-wrap {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
-}
-
-#mode-toggle {
-  background: none;
-  border: 1px solid var(--card-border);
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  letter-spacing: 2px;
-  padding: 6px 14px;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition:
-    color 0.2s,
-    border-color 0.2s;
-}
-#mode-toggle:hover {
-  border-color: var(--orange);
-  color: var(--orange);
-}
-#mode-toggle:focus {
-  outline: 2px solid var(--orange);
-  outline-offset: 2px;
-}
-
 /* ── HEADER ── */
 .header {
   display: flex;
@@ -311,53 +281,6 @@ body {
   letter-spacing: 1px;
 }
 
-/* ── SERVICES ── */
-.services-section {
-  margin-bottom: 36px;
-  position: relative;
-}
-
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-@media (max-width: 900px) {
-  .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.service-card {
-  border: 1px solid var(--card-border);
-  background: var(--card-bg);
-  padding: 18px 16px;
-  position: relative;
-}
-.service-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 100%;
-  background: var(--orange);
-}
-.service-card h3 {
-  font-family: var(--font-title);
-  font-size: var(--fs-2xl);
-  letter-spacing: 1px;
-  color: var(--light);
-  margin-bottom: 7px;
-}
-.service-card p {
-  font-size: var(--fs-md);
-  color: var(--muted);
-  line-height: 1.65;
-  font-weight: 300;
-}
-
 .thumb {
   aspect-ratio: 4/3;
   border: 1px solid var(--card-border);
@@ -485,39 +408,6 @@ body {
 }
 .lightbox-next {
   right: 1rem;
-}
-
-/* ── MARKETS ── */
-.markets-section {
-  margin-bottom: 36px;
-  position: relative;
-}
-.markets-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.market-tag {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  letter-spacing: 2px;
-  border: 1px solid rgba(255, 107, 43, 0.4);
-  color: var(--orange);
-  padding: 7px 14px;
-  text-transform: uppercase;
-}
-.market-tag.filled {
-  background: var(--orange);
-  color: var(--bg-dark);
-  font-weight: 600;
-}
-
-/* ── SKILLS ── */
-.skills-section {
-  margin-bottom: 36px;
-  position: relative;
-  animation: revealUp 0.7s 0.3s ease-out both;
 }
 
 /* ── CAPABILITIES GRID ── */

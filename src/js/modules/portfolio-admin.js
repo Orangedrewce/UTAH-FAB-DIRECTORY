@@ -39,6 +39,7 @@ import {
   deletePortfolioItem,
   uploadPortfolioAsset,
 } from "./api.js";
+import { esc } from "./utils.js";
 
 // ── DOM refs ────────────────────────────────────────────────────────────
 const $ = (sel) => document.querySelector(sel);
@@ -236,12 +237,6 @@ function buildEmbedSrc(modelUrl) {
   if (modelUrl.includes("3dviewer.net")) return modelUrl;
   // Raw file URL(s) — wrap in 3dviewer embed
   return `https://3dviewer.net/embed.html#model=${modelUrl}`;
-}
-
-function esc(str) {
-  const d = document.createElement("div");
-  d.textContent = str || "";
-  return d.innerHTML;
 }
 
 function renderGrid() {
