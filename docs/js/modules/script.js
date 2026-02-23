@@ -16,7 +16,7 @@
 
 import { supabase as sb } from "./supabase.js";
 import { fetchPortfolioItems } from "./api.js";
-import { esc } from "./utils.js";
+import { esc, generateUUID } from "./utils.js";
 
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
@@ -283,11 +283,7 @@ function initContactForm() {
         const file = cfFile.files[0];
         const fileType = (file.type || "").toLowerCase();
         const ext = ALLOWED_TYPES[fileType];
-        const uniqueId = crypto.randomUUID
-          ? crypto.randomUUID()
-          : Array.from(crypto.getRandomValues(new Uint8Array(16)))
-              .map((b) => b.toString(16).padStart(2, "0"))
-              .join("");
+        const uniqueId = generateUUID();
         const path = `${Date.now()}_${uniqueId}.${ext}`;
 
         const { data: uploadData, error: uploadErr } = await sb.storage

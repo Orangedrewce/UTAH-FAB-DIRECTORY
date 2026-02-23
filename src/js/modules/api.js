@@ -51,7 +51,7 @@
 
 import { supabase } from "./supabase.js";
 import { REGION_META, REGION_ORDER } from "./constants.js";
-import { normaliseShop } from "./utils.js";
+import { normaliseShop, generateUUID } from "./utils.js";
 
 export async function fetchShops(onlyActive = true) {
   let query = supabase
@@ -205,11 +205,7 @@ export async function deletePortfolioItem(id) {
  */
 export async function uploadPortfolioAsset(file) {
   const ext = file.name.split(".").pop().toLowerCase();
-  const uniqueId = crypto.randomUUID
-    ? crypto.randomUUID()
-    : Array.from(crypto.getRandomValues(new Uint8Array(16)))
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
+  const uniqueId = generateUUID();
   const path = `${Date.now()}_${uniqueId}.${ext}`;
 
   // Browsers return empty type for CAD formats — map manually

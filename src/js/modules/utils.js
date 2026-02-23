@@ -35,6 +35,9 @@
  *   • debounce(fn, wait)   – Returns a debounced version of `fn` that
  *                           delays invocation until `wait` ms after the
  *                           last call. Used by directory.js search/filter.
+ *   • generateUUID()       – Returns a v4 UUID string using
+ *                           crypto.randomUUID when available, with a
+ *                           getRandomValues fallback for older browsers.
  *
  * HOW TO ADD FEATURES / MODIFY:
  *   • NEW CONTACT TYPE - To support a new contact format (e.g. Instagram
@@ -229,4 +232,12 @@ export function normaliseShop(s) {
     category: s.category || "Fabrication & Machining",
     is_active: s.is_active !== false,
   };
+}
+
+/** Returns a v4 UUID, falling back to getRandomValues for older browsers */
+export function generateUUID() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return Array.from(crypto.getRandomValues(new Uint8Array(16)))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
