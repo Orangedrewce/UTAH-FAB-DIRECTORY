@@ -69,6 +69,13 @@ window.closeLightbox = closeLightbox;
 window.navigateLightbox = navigateLightbox;
 
 document.addEventListener("keydown", (event) => {
+  const fsEl = document.fullscreenElement;
+  if (event.key === "Escape" && fsEl?.closest?.(".port-thumb--model")) {
+    event.preventDefault();
+    document.exitFullscreen?.();
+    return;
+  }
+
   if (!lightbox?.classList.contains("open")) return;
   switch (event.key) {
     case "Escape":     closeLightbox(); break;
@@ -94,6 +101,20 @@ function getPrimaryModelUrl(rawUrl) {
 // ── Per-card OV viewer registry & lifecycle ─────────────────────────────
 /** @type {Map<string, {viewer: object, hostEl: HTMLElement}>} */
 const viewerRegistry = new Map();
+const fullscreenTargets = new Set();
+
+function syncViewerFullscreenButtons() {
+  for (const target of fullscreenTargets) {
+    const btn = target.querySelector(".model-fullscreen-btn");
+    if (!btn) continue;
+    const active = document.fullscreenElement === target;
+    btn.textContent = active ? "EXIT" : "FULL";
+    btn.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
+    btn.classList.toggle("is-active", active);
+  }
+}
+
+document.addEventListener("fullscreenchange", syncViewerFullscreenButtons);
 
 /**
  * Monkey-patch OV navigation so controls match Fusion 360:
@@ -122,6 +143,7 @@ function patchFusion360Controls(embeddedViewer) {
 // ── XYZ orbit-axis gizmo settings ───────────────────────────────────────
 const AXIS_LENGTH  = 18;   // px – half-length of each axis line
 const AXIS_WIDTH   = 1.5;  // px – stroke width
+const AXIS_MARGIN  = 18;   // px – margin from bottom-left corner
 const AXIS_COLORS  = { x: "#ff3333", y: "#33cc33", z: "#3388ff" }; // standard RGB
 
 /**
@@ -147,8 +169,8 @@ function addPivotGizmo(embeddedViewer, hostEl) {
       overlay.style.height = h + "px";
       ctx.setTransform(window.devicePixelRatio || 1, 0, 0, window.devicePixelRatio || 1, 0, 0);
 
-      const cx = w / 2;
-      const cy = h / 2;
+      const cx = AXIS_MARGIN;
+      const cy = h - AXIS_MARGIN;
 
       ctx.clearRect(0, 0, w, h);
       ctx.lineWidth = AXIS_WIDTH;
@@ -193,6 +215,31 @@ function initCardViewer(hostEl, modelUrl) {
   if (!id || !modelUrl) return;
   disposeCardViewer(id);
 
+  const fullscreenTarget = hostEl.closest(".port-thumb--model") || hostEl;
+  let fullscreenBtn = fullscreenTarget.querySelector(".model-fullscreen-btn");
+  fullscreenTargets.add(fullscreenTarget);
+
+  if (!fullscreenBtn) {
+    fullscreenBtn = document.createElement("button");
+    fullscreenBtn.type = "button";
+    fullscreenBtn.className = "model-fullscreen-btn";
+    fullscreenTarget.appendChild(fullscreenBtn);
+  }
+
+  fullscreenBtn.onclick = async () => {
+    try {
+      if (document.fullscreenElement === fullscreenTarget) {
+        await document.exitFullscreen?.();
+      } else {
+        await fullscreenTarget.requestFullscreen?.();
+      }
+    } catch (err) {
+      console.warn("Fullscreen toggle failed:", err);
+    }
+  };
+
+  syncViewerFullscreenButtons();
+
   if (typeof OV === "undefined") {
     console.warn("Online3DViewer (OV) not loaded — falling back.");
     hostEl.innerHTML = '<span class="model-viewer-fallback">3D PREVIEW UNAVAILABLE</span>';
@@ -224,6 +271,8 @@ function initCardViewer(hostEl, modelUrl) {
 function disposeCardViewer(id) {
   const entry = viewerRegistry.get(id);
   if (!entry) return;
+  const fullscreenTarget = entry.hostEl.closest(".port-thumb--model") || entry.hostEl;
+  fullscreenTargets.delete(fullscreenTarget);
   try { entry.viewer.Destroy(); } catch (_) { /* best-effort */ }
   entry.hostEl.innerHTML = "";
   viewerRegistry.delete(id);

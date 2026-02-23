@@ -91,6 +91,7 @@ const pModelSizeBytes = $("#pModelSizeBytes");
 let allItems = [];
 let filtered = [];
 let _ready = false;
+let _adminFsBound = false;
 
 // ── HELPERS ─────────────────────────────────────────────────────────────
 function formatBytes(bytes) {
@@ -193,6 +194,12 @@ async function initPortfolio() {
 
   // Escape to close
   document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && document.fullscreenElement?.closest?.(".port-admin-card-img")) {
+      e.preventDefault();
+      document.exitFullscreen?.();
+      return;
+    }
+
     if (e.key === "Escape" && portModalBackdrop && !portModalBackdrop.classList.contains("hidden")) {
       closeModal();
     }
@@ -259,7 +266,8 @@ function renderGrid() {
           item.image_url
             ? `<img src="${esc(item.image_url)}" alt="${esc(item.title)}" loading="lazy">`
             : item.model_url
-              ? `<iframe class="port-admin-card-preview-frame" src="${esc(buildEmbedSrc(item.model_url))}" loading="lazy" tabindex="-1"></iframe>`
+              ? `<iframe class="port-admin-card-preview-frame" src="${esc(buildEmbedSrc(item.model_url))}" loading="lazy" tabindex="-1"></iframe>
+                 <button type="button" class="port-admin-fs-btn" aria-label="Enter fullscreen">FULL</button>`
               : `<div class="port-admin-card-placeholder">NO IMAGE</div>`
         }
         ${item.model_url ? '<span class="port-admin-3d-badge">3D</span>' : ""}
@@ -284,14 +292,51 @@ function renderGrid() {
     )
     .join("");
 
-  // Attach edit listeners via delegation
-  portAdminGrid.addEventListener("click", (e) => {
+  // Attach edit/fullscreen listeners via delegation (bind once)
+  if (!portAdminGrid.dataset.bound) {
+    portAdminGrid.addEventListener("click", (e) => {
+    const fsBtn = e.target.closest(".port-admin-fs-btn");
+    if (fsBtn) {
+      const frameWrap = fsBtn.closest(".port-admin-card-img");
+      if (!frameWrap) return;
+
+      const toggle = async () => {
+        try {
+          if (document.fullscreenElement === frameWrap) {
+            await document.exitFullscreen?.();
+          } else {
+            await frameWrap.requestFullscreen?.();
+          }
+        } catch (err) {
+          console.warn("Admin preview fullscreen failed:", err);
+        }
+      };
+
+      toggle();
+      return;
+    }
+
     const editBtn = e.target.closest(".port-edit-btn");
     if (editBtn) {
       const item = allItems.find((i) => i.id === editBtn.dataset.id);
       if (item) openModal(item);
     }
-  });
+    });
+    portAdminGrid.dataset.bound = "1";
+  }
+
+  if (!_adminFsBound) {
+    document.addEventListener("fullscreenchange", () => {
+      portAdminGrid.querySelectorAll(".port-admin-fs-btn").forEach((btn) => {
+        const frameWrap = btn.closest(".port-admin-card-img");
+        const active = document.fullscreenElement === frameWrap;
+        btn.textContent = active ? "EXIT" : "FULL";
+        btn.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
+        btn.classList.toggle("is-active", active);
+      });
+    });
+    _adminFsBound = true;
+  }
 }
 
 // ── MODAL ───────────────────────────────────────────────────────────────

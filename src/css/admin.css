@@ -954,6 +954,33 @@ body.modal-open {
   display: block;
   pointer-events: none;  /* clicks pass through to Edit button */
 }
+.port-admin-fs-btn {
+  position: absolute;
+  top: .4rem;
+  left: .4rem;
+  z-index: 4;
+  border: 1px solid var(--border-neutral);
+  background: rgba(0, 0, 0, .55);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: .1rem .4rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.port-admin-fs-btn:hover,
+.port-admin-fs-btn.is-active {
+  border-color: var(--brand-orange-dim);
+  color: var(--brand-orange-dim);
+}
+.port-admin-card-img:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: auto;
+  background: var(--bg-deep);
+}
 
 .port-admin-card-body {
   padding: .75rem;

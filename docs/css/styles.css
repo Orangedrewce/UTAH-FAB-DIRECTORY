@@ -773,6 +773,30 @@ body {
   height: 100%;
   position: relative;
 }
+.model-fullscreen-btn {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 3;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(13, 17, 23, 0.72);
+  color: var(--light);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  padding: 3px 7px;
+  cursor: pointer;
+}
+.model-fullscreen-btn:hover,
+.model-fullscreen-btn.is-active {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+.port-thumb--model:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: auto;
+}
 .model-viewer-host canvas {
   display: block;
   width: 100% !important;

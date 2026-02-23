@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "xyz GIZMO, CONTROLS FOR OBJECT "
+  git commit -m "Description change"
 
   # 5) Publish to live site
   git pull origin dev --rebase
