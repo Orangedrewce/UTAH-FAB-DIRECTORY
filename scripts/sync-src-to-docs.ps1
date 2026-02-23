@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "full screen"
+  git commit -m "full screen, thumbnail for progets, full screen for render, controls for render, toast message"
 
   # 5) Publish to live site
   git pull origin dev --rebase
