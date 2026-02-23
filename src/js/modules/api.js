@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: api.js — Data-Fetching Layer (Supabase + JSON Fallback)
+ * MODULE: api.js - Data-Fetching Layer (Supabase + JSON Fallback)
  * ═══════════════════════════════════════════════════════════════════════
  *
  * PURPOSE:
@@ -13,7 +13,7 @@
  *   • fetchShops(onlyActive = true)
  *       Queries the `fab_shops` table, ordered by region → sort_order →
  *       name.  When `onlyActive` is true (default), only rows with
- *       `is_active = true` are returned — this is used by the public
+ *       `is_active = true` are returned - this is used by the public
  *       directory.  The admin dashboard passes `false` to get every row.
  *       Each row is enriched with regionTitle / regionSubtitle from
  *       REGION_META, then normalised via `normaliseShop()`.
@@ -35,16 +35,16 @@
  *       data source used when Supabase is unreachable.
  *
  * HOW TO ADD FEATURES / MODIFY:
- *   • NEW TABLE QUERY — Export a new async function that calls
+ *   • NEW TABLE QUERY - Export a new async function that calls
  *     `supabase.from("<table>").select(...)`, handles errors, and
  *     returns the data array.  Import it into whichever page module
  *     needs the data.
- *   • ADD COLUMNS — If you add columns to `fab_shops`, update the
+ *   • ADD COLUMNS - If you add columns to `fab_shops`, update the
  *     `normaliseShop()` function in utils.js so the new column has a
  *     default value and consistent key name.
- *   • CHANGE SORT ORDER — Adjust the `.order()` calls inside
+ *   • CHANGE SORT ORDER - Adjust the `.order()` calls inside
  *     `fetchShops()`.
- *   • PAGINATION — Chain `.range(from, to)` on the Supabase query
+ *   • PAGINATION - Chain `.range(from, to)` on the Supabase query
  *     inside `fetchShops()` if the table grows large.
  * ═══════════════════════════════════════════════════════════════════════
  */
@@ -117,4 +117,125 @@ export async function fetchJSONShops() {
     throw new Error("Invalid JSON in shops.json: " + e.message);
   }
   return data.map(normaliseShop);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PORTFOLIO - Dynamic portfolio items (public + admin)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/**
+ * Fetch visible portfolio items, ordered by sort_order.
+ * Pass `onlyFeatured = true` to get just homepage-featured items.
+ */
+export async function fetchPortfolioItems(onlyFeatured = false) {
+  let query = supabase
+    .from("portfolio_items")
+    .select("*")
+    .eq("is_visible", true)
+    .order("sort_order")
+    .order("created_at", { ascending: false });
+
+  if (onlyFeatured) {
+    query = query.eq("is_featured", true);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data || [];
+}
+
+/**
+ * Fetch ALL portfolio items (including hidden) for admin dashboard.
+ */
+export async function fetchAllPortfolioItems() {
+  const { data, error } = await supabase
+    .from("portfolio_items")
+    .select("*")
+    .order("sort_order")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+/**
+ * Insert a new portfolio item. Returns the inserted row.
+ */
+export async function insertPortfolioItem(payload) {
+  const { data, error } = await supabase
+    .from("portfolio_items")
+    .insert([payload])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Update an existing portfolio item by id. Returns the updated row.
+ */
+export async function updatePortfolioItem(id, payload) {
+  const { data, error } = await supabase
+    .from("portfolio_items")
+    .update(payload)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Delete a portfolio item by id.
+ */
+export async function deletePortfolioItem(id) {
+  const { error } = await supabase
+    .from("portfolio_items")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
+}
+
+/**
+ * Upload a portfolio image or 3D model file to Supabase Storage.
+ * Returns the public URL.
+ */
+export async function uploadPortfolioAsset(file) {
+  const ext = file.name.split(".").pop().toLowerCase();
+  const uniqueId = crypto.randomUUID
+    ? crypto.randomUUID()
+    : Array.from(crypto.getRandomValues(new Uint8Array(16)))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+  const path = `${Date.now()}_${uniqueId}.${ext}`;
+
+  // Browsers return empty type for CAD formats — map manually
+  const MIME = {
+    glb:  "model/gltf-binary",
+    gltf: "model/gltf+json",
+    step: "application/step",
+    stp:  "application/step",
+    stl:  "model/stl",
+    obj:  "model/obj",
+    png:  "image/png",
+    jpg:  "image/jpeg",
+    jpeg: "image/jpeg",
+    webp: "image/webp",
+  };
+  const contentType = MIME[ext] || file.type || "application/octet-stream";
+
+  const { error: uploadErr } = await supabase.storage
+    .from("portfolio-assets")
+    .upload(path, file, { contentType });
+
+  if (uploadErr) throw new Error("Upload failed: " + uploadErr.message);
+
+  const { data: urlData } = supabase.storage
+    .from("portfolio-assets")
+    .getPublicUrl(path);
+
+  return urlData.publicUrl;
 }

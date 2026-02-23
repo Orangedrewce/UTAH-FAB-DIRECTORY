@@ -10,6 +10,10 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 img, picture, video, canvas, svg {
   display: block;
   max-width: 100%;
@@ -95,6 +99,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+::selection {
+  background: rgba(255, 107, 43, 0.3);
+  color: var(--text-bright);
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -156,6 +165,25 @@ html {
   letter-spacing: 3px;
   white-space: nowrap;
   pointer-events: none;
+}
+
+/* ── ENTRANCE ANIMATIONS ─────────────────────────────────────────────── */
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes revealFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ── UTILITY CLASSES ─────────────────────────────────────────────────── */

@@ -1,12 +1,12 @@
-﻿-- ============================================================================
--- UTAH FAB DIRECTORY — Complete Supabase Setup
--- This script is IDEMPOTENT — safe to re-run at any time.
+-- ============================================================================
+-- UTAH FAB DIRECTORY - Complete Supabase Setup
+-- This script is IDEMPOTENT - safe to re-run at any time.
 -- Paste the entire contents into Supabase Dashboard > SQL Editor > New Query
 -- ============================================================================
 
 
 -- ============================================================================
--- PHASE 1: NUCLEAR CLEANUP — Drop ALL function overloads
+-- PHASE 1: NUCLEAR CLEANUP - Drop ALL function overloads
 -- ============================================================================
 -- Dynamically finds and drops EVERY overload of every managed function,
 -- regardless of parameter types. No stale versions survive this.
@@ -34,7 +34,7 @@ $$;
 
 
 -- ============================================================================
--- PHASE 2: TABLES — Create or verify structure
+-- PHASE 2: TABLES - Create or verify structure
 -- ============================================================================
 -- Uses IF NOT EXISTS so existing data is never destroyed.
 -- To alter columns on an existing install, add explicit ALTER TABLE blocks.
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS directory_analytics (
 
 
 -- ============================================================================
--- PHASE 3: INDEXES — Idempotent with IF NOT EXISTS
+-- PHASE 3: INDEXES - Idempotent with IF NOT EXISTS
 -- ============================================================================
 
 -- Add maps_url column if it doesn't already exist (for existing installs)
@@ -103,7 +103,7 @@ CREATE INDEX IF NOT EXISTS idx_analytics_time     ON directory_analytics(created
 
 
 -- ============================================================================
--- PHASE 4: FUNCTIONS & TRIGGERS — Recreated fresh every run
+-- PHASE 4: FUNCTIONS & TRIGGERS - Recreated fresh every run
 -- ============================================================================
 -- Phase 1 already dropped all overloads; now recreate cleanly.
 -- ============================================================================
@@ -124,7 +124,7 @@ CREATE TRIGGER set_updated_at
 
 
 -- ============================================================================
--- PHASE 5: ROW LEVEL SECURITY — Drop-then-create for clean idempotency
+-- PHASE 5: ROW LEVEL SECURITY - Drop-then-create for clean idempotency
 -- ============================================================================
 
 ALTER TABLE fab_shops             ENABLE ROW LEVEL SECURITY;
@@ -161,7 +161,7 @@ CREATE POLICY "Admin full access regions"
 DROP POLICY IF EXISTS "Anon insert analytics"      ON directory_analytics;
 DROP POLICY IF EXISTS "Admin read analytics"       ON directory_analytics;
 
--- ⚠️  Consider a rate-limit function or pg_cron cleanup job in production
+-- Consider a rate-limit function or pg_cron cleanup job in production
 --    to prevent abuse of unrestricted anonymous inserts.
 CREATE POLICY "Anon insert analytics"
   ON directory_analytics FOR INSERT
@@ -173,7 +173,7 @@ CREATE POLICY "Admin read analytics"
 
 
 -- ============================================================================
--- PHASE 5b: STORAGE — contact-photos bucket
+-- PHASE 5b: STORAGE - contact-photos bucket
 -- ============================================================================
 -- NOTE: metadata fields (mimetype, size) are populated AFTER insert, so
 -- checking them in WITH CHECK causes RLS to reject all uploads.
@@ -198,7 +198,7 @@ CREATE POLICY "Public read contact photos"
 
 
 -- ============================================================================
--- PHASE 6: SEED DATA — Regions (upsert)
+-- PHASE 6: SEED DATA - Regions (upsert)
 -- ============================================================================
 
 INSERT INTO regions (slug, title, subtitle, sort_order) VALUES
@@ -215,7 +215,7 @@ ON CONFLICT (slug) DO UPDATE SET
 
 
 -- ============================================================================
--- PHASE 7: SEED DATA — Shops (upsert on name + region)
+-- PHASE 7: SEED DATA - Shops (upsert on name + region)
 -- ============================================================================
 -- Uses a unique constraint on (name, region) for safe re-runs.
 -- If the shop already exists, every column is refreshed.
@@ -484,7 +484,7 @@ ON CONFLICT ON CONSTRAINT uq_fab_shops_name_region DO UPDATE SET
 
 
 -- ============================================================================
--- DONE — Verify counts
+-- DONE - Verify counts
 -- ============================================================================
 DO $$
 DECLARE

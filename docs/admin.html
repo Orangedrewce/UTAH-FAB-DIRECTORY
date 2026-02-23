@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Utah Fab Directory — Admin</title>
+<title>Utah Fab Directory - Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&family=Share+Tech+Mono&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
 <body>
 
 <!-- ═══════════════════════════════════════════════════
-     AUTH GATE — shown when not logged in
+     AUTH GATE - shown when not logged in
 ═══════════════════════════════════════════════════ -->
 <div id="authGate" class="auth-gate">
   <div class="auth-box">
@@ -31,7 +31,7 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════
-     ADMIN DASHBOARD — hidden until authenticated
+     ADMIN DASHBOARD - hidden until authenticated
 ═══════════════════════════════════════════════════ -->
 <main id="adminDash" class="admin-dash hidden">
 
@@ -47,11 +47,23 @@
       <h1>UTAH <span>FAB</span> ADMIN</h1>
       <div class="admin-header-right">
         <a href="direct.html" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">View Public Directory</a>
+        <a href="portfolio.html" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">View Portfolio</a>
         <span id="adminEmail" class="admin-email"></span>
         <button id="logoutBtn" class="btn btn-outline btn-sm">Sign Out</button>
       </div>
     </div>
   </header>
+
+  <!-- ── TAB BAR ── -->
+  <nav class="admin-tabs" id="adminTabs">
+    <button class="admin-tab active" data-tab="directory">Directory</button>
+    <button class="admin-tab" data-tab="portfolio">Portfolio</button>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════════
+       TAB: DIRECTORY (existing content)
+  ════════════════════════════════════════════════════ -->
+  <div class="admin-tab-panel active" id="tabDirectory">
 
   <!-- Toolbar -->
   <div class="toolbar">
@@ -117,7 +129,139 @@
     </div><!-- /table-scroll -->
   </div>
 
+  </div><!-- /tabDirectory -->
+
+  <!-- ════════════════════════════════════════════════════
+       TAB: PORTFOLIO
+  ════════════════════════════════════════════════════ -->
+  <div class="admin-tab-panel" id="tabPortfolio">
+
+    <!-- Portfolio toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-inner">
+        <div class="toolbar-left">
+          <input type="search" id="portAdminSearch" placeholder="Search portfolio…" class="admin-search">
+          <select id="portTagFilter">
+            <option value="">All Tags</option>
+            <option value="INTAKE">Intake</option>
+            <option value="MODEL">Model</option>
+            <option value="OUTPUT">Output</option>
+            <option value="RENDER">Render</option>
+            <option value="ASSEMBLY">Assembly</option>
+          </select>
+          <label class="toggle-label">
+            <input type="checkbox" id="showHidden"> Show hidden
+          </label>
+        </div>
+        <div class="toolbar-right">
+          <span class="admin-count"><strong id="portAdminCount">0</strong> items</span>
+          <button class="btn btn-primary" id="addPortfolioBtn">+ Add Item</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portfolio card grid -->
+    <div class="port-admin-grid-wrap">
+      <div class="port-admin-grid" id="portAdminGrid">
+        <!-- Rendered by portfolio-admin.js -->
+      </div>
+      <div class="table-empty hidden" id="portAdminEmpty">No portfolio items found.</div>
+    </div>
+
+  </div><!-- /tabPortfolio -->
+
 </main><!-- /adminDash -->
+
+<!-- ═══════════════════════════════════════════════════
+     PORTFOLIO EDIT MODAL
+═══════════════════════════════════════════════════ -->
+<div class="modal-backdrop hidden" id="portModalBackdrop">
+  <div class="modal modal--wide" id="portModal" role="dialog" aria-labelledby="portModalTitle">
+    <div class="modal-header">
+      <h2 id="portModalTitle">Add Portfolio Item</h2>
+      <button class="modal-close" id="portModalCloseBtn">&times;</button>
+    </div>
+
+    <div class="modal-split">
+      <form id="portForm" class="modal-body" autocomplete="off">
+
+        <div class="form-group">
+          <label for="pTitle">Title *</label>
+          <input type="text" id="pTitle" required placeholder="Driveshaft · Parametric 3D Model">
+        </div>
+
+        <div class="form-group">
+          <label for="pDesc">Description</label>
+          <textarea id="pDesc" rows="2" placeholder="Fusion 360 / DFM for CNC turning"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="pTag">Tag *</label>
+            <select id="pTag" required>
+              <option value="INTAKE">Intake</option>
+              <option value="MODEL">Model</option>
+              <option value="OUTPUT">Output</option>
+              <option value="RENDER" selected>Render</option>
+              <option value="ASSEMBLY">Assembly</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="pSortOrder">Sort Order</label>
+            <input type="number" id="pSortOrder" value="0" min="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="pImage">Image (PNG/JPG/WebP)</label>
+          <div class="port-upload-zone" id="pImageZone">
+            <input type="file" id="pImage" accept="image/png,image/jpeg,image/webp" class="sr-only">
+            <div class="port-upload-preview" id="pImagePreview">
+              <span class="port-upload-placeholder">Click or drag to upload image</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>3D Model (optional)</label>
+          <div class="port-upload-zone" id="pModelZone">
+            <input type="file" id="pModelFile" accept=".glb,.gltf,.step,.stl,.obj" class="sr-only">
+            <div class="port-upload-preview" id="pModelPreview">
+              <span class="port-upload-placeholder">Click or drag to upload .glb / .step / .stl</span>
+            </div>
+          </div>
+          <input type="url" id="pModelUrl" placeholder="-- or paste a public URL directly --" style="margin-top:6px;">
+          <span class="form-hint">Upload goes to Supabase Storage. URL auto-fills on upload. Paste a 3dviewer.net link to use an external embed instead.</span>
+        </div>
+
+        <div class="form-row">
+          <label class="toggle-label">
+            <input type="checkbox" id="pFeatured"> Featured (show on homepage)
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="pVisible" checked> Visible
+          </label>
+        </div>
+
+        <input type="hidden" id="pId" value="">
+        <input type="hidden" id="pExistingImageUrl" value="">
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="portModalCancelBtn">Cancel</button>
+          <button type="button" class="btn btn-danger hidden" id="portDeleteBtn">Delete</button>
+          <button type="submit" class="btn btn-primary" id="portSaveBtn">Save Item</button>
+        </div>
+      </form>
+
+      <div class="modal-preview-pane">
+        <h3 class="preview-title">Live Preview</h3>
+        <div id="portLivePreview" class="port-live-preview">
+          <!-- Rendered reactively -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════════
      SHOP EDIT MODAL
@@ -157,7 +301,7 @@
 
       <div class="form-group">
         <label for="fSize">Size / Description</label>
-        <input type="text" id="fSize" placeholder="e.g. Small family-owned — est. 1978, 45+ years">
+        <input type="text" id="fSize" placeholder="e.g. Small family-owned - est. 1978, 45+ years">
       </div>
 
       <div class="form-group">
@@ -210,5 +354,6 @@
 <!-- Supabase JS client (CDN) -->
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script type="module" src="js/modules/admin.js"></script>
+<script type="module" src="js/modules/portfolio-admin.js"></script>
 </body>
 </html>

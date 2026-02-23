@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: utils.js — Shared Utility / Helper Functions
+ * MODULE: utils.js - Shared Utility / Helper Functions
  * ═══════════════════════════════════════════════════════════════════════
  *
  * PURPOSE:
@@ -34,15 +34,15 @@
  *                           values, and unified key names.
  *
  * HOW TO ADD FEATURES / MODIFY:
- *   • NEW CONTACT TYPE — To support a new contact format (e.g. Instagram
+ *   • NEW CONTACT TYPE - To support a new contact format (e.g. Instagram
  *     handle), add a new regex/match block inside `websiteLink()` before
  *     the fallback section (step 4).
- *   • NEW REGION — If you add a new geographic region, add its bounding
+ *   • NEW REGION - If you add a new geographic region, add its bounding
  *     box to REGION_BOUNDS in constants.js; `parseMapsUrl` will pick
  *     it up automatically.
- *   • NEW SHOP FIELD — Add a default value in `normaliseShop()` so
+ *   • NEW SHOP FIELD - Add a default value in `normaliseShop()` so
  *     every consumer sees a consistent property.
- *   • NEW HELPER — Export a new function from this file and import it
+ *   • NEW HELPER - Export a new function from this file and import it
  *     where needed.  Keep functions pure (no side-effects).
  * ═══════════════════════════════════════════════════════════════════════
  */
@@ -73,7 +73,7 @@ export function esc(str) {
  * Works with full URLs like:
  *   https://www.google.com/maps/place/Shop+Name,+City,+UT/@40.76,-111.89,17z/...
  * Short links (maps.app.goo.gl) can't be resolved client-side due to CORS.
- * Returns { city, region, label } — all empty strings if nothing could be parsed.
+ * Returns { city, region, label } - all empty strings if nothing could be parsed.
  */
 export function parseMapsUrl(url) {
   const result = { city: "", region: "other", label: "" };
@@ -209,7 +209,7 @@ export function websiteLink(shop) {
   );
 }
 
-/** Normalise a shop object — handles both shops.json keys and Supabase column names */
+/** Normalise a shop object - handles both shops.json keys and Supabase column names */
 export function normaliseShop(s) {
   return {
     id: s.id != null ? String(s.id) : "",

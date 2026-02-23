@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: directory.js — Public Directory Page Controller
+ * MODULE: directory.js - Public Directory Page Controller
  * ═══════════════════════════════════════════════════════════════════════
  *
  * PURPOSE:
@@ -22,16 +22,16 @@
  *      each card, hiding empty category headers and region sections.
  *
  * KEY SECTIONS:
- *   • STATE          — `allShops` (full dataset) and `activeFilter`
+ *   • STATE          - `allShops` (full dataset) and `activeFilter`
  *                      (currently selected service tag, default "all").
- *   • DOM REFERENCES — Cached element references for performance.
- *   • HELPERS        — `mapsLink()` builds a Google Maps link icon;
+ *   • DOM REFERENCES - Cached element references for performance.
+ *   • HELPERS        - `mapsLink()` builds a Google Maps link icon;
  *                      `renderCard()` builds one card's HTML.
- *   • BUILD DOM      — `buildDirectory()` constructs the entire card
+ *   • BUILD DOM      - `buildDirectory()` constructs the entire card
  *                      grid from the shop array.
- *   • FILTER ENGINE  — `applyFilters()` shows/hides cards and sections
+ *   • FILTER ENGINE  - `applyFilters()` shows/hides cards and sections
  *                      based on the current search, region, and tag.
- *   • JOIN FORM      — Handles the "Request to join the directory"
+ *   • JOIN FORM      - Handles the "Request to join the directory"
  *                      form submission, inserting a row into the
  *                      `directory_requests` Supabase table.  Includes
  *                      detailed error handling for common Supabase
@@ -39,21 +39,21 @@
  *                      missing table, network errors, JWT expiry).
  *
  * HOW TO ADD FEATURES / MODIFY:
- *   • NEW CARD FIELD — Add the field to `renderCard()`, then make sure
+ *   • NEW CARD FIELD - Add the field to `renderCard()`, then make sure
  *     the field exists in the normalised shop object (update
  *     `normaliseShop()` in utils.js and the shop's column in Supabase).
- *   • NEW FILTER — Add an `<input>` or `<select>` to the HTML, cache
+ *   • NEW FILTER - Add an `<input>` or `<select>` to the HTML, cache
  *     its reference up top, read its value inside `applyFilters()`,
  *     and add an event listener at the bottom that calls
  *     `applyFilters()`.
- *   • CATEGORY SORT ORDER — Currently categories render in insertion
+ *   • CATEGORY SORT ORDER - Currently categories render in insertion
  *     order.  To sort alphabetically, call
  *     `[...rObj.categories.entries()].sort((a,b) => a[0].localeCompare(b[0]))`
  *     inside `buildDirectory()` before iterating.
- *   • PAGINATION / VIRTUAL SCROLL — Replace the `contentRoot.innerHTML`
+ *   • PAGINATION / VIRTUAL SCROLL - Replace the `contentRoot.innerHTML`
  *     approach with an incremental rendering strategy if the shop count
  *     grows beyond ~500.
- *   • NEW JOIN-FORM FIELD — Add the input to the HTML, read its value
+ *   • NEW JOIN-FORM FIELD - Add the input to the HTML, read its value
  *     inside the submit handler's `payload` object, and add the
  *     matching column to the `directory_requests` table in Supabase.
  * ═══════════════════════════════════════════════════════════════════════
@@ -240,7 +240,7 @@ function applyFilters() {
     googleFallback.style.display = "none";
   }
 
-  // ── Shareable URL — push current filter state into the address bar ──
+  // ── Shareable URL - push current filter state into the address bar ──
   const params = new URLSearchParams();
   if (regionVal) params.set("region", regionVal);
   if (activeFilter !== "all") params.set("service", activeFilter);
@@ -262,7 +262,7 @@ searchInput.addEventListener("input", debounce(applyFilters, 250));
 regionFilter.addEventListener("change", applyFilters);
 
 /* ═══════════════════════════════════════════════════
-   INIT — fetch shops.json → render → filter
+   INIT - fetch shops.json → render → filter
 ═══════════════════════════════════════════════════ */
 
 (async () => {
@@ -303,7 +303,7 @@ regionFilter.addEventListener("change", applyFilters);
 })();
 
 /* ═══════════════════════════════════════════════════
-   JOIN THE DIRECTORY — Tag picker + Form submission
+   JOIN THE DIRECTORY - Tag picker + Form submission
 ═══════════════════════════════════════════════════ */
 // Tag chip click → toggle selected
 const jTagPicker = document.getElementById("jTagPicker");
@@ -345,7 +345,7 @@ if (joinForm) {
       if (error) throw error;
 
       // Discord notification is handled server-side by the Supabase trigger
-      joinFeedback.textContent = "Request submitted — we'll review it shortly!";
+      joinFeedback.textContent = "Request submitted - we'll review it shortly!";
       joinFeedback.classList.add("success");
       joinForm.reset();
       // Clear tag selections
@@ -369,7 +369,7 @@ if (joinForm) {
         msg = "Please fill in all required fields.";
       else if (code === "42501" || em.includes("row-level security"))
         msg =
-          "Permission denied — the database is not accepting requests right now.";
+          "Permission denied - the database is not accepting requests right now.";
       else if (code === "42P01")
         msg =
           "The request form is not set up yet (table missing). Please contact the admin.";
@@ -378,10 +378,10 @@ if (joinForm) {
         (em.includes("column") && em.includes("does not exist"))
       )
         msg =
-          "The form schema is outdated — please contact the admin to run the latest migration.";
+          "The form schema is outdated - please contact the admin to run the latest migration.";
       else if (code.startsWith("42") || em.includes("check constraint"))
         msg =
-          "Database schema error — please contact the admin. (" +
+          "Database schema error - please contact the admin. (" +
           (em || code) +
           ")";
       else if (
@@ -389,9 +389,9 @@ if (joinForm) {
         em.includes("NetworkError") ||
         em.includes("network")
       )
-        msg = "Network error — check your internet connection and try again.";
+        msg = "Network error - check your internet connection and try again.";
       else if (code === "PGRST301" || em.includes("JWT"))
-        msg = "Session expired — please refresh the page and try again.";
+        msg = "Session expired - please refresh the page and try again.";
       else if (em) msg = "Error: " + em;
 
       joinFeedback.textContent = msg;

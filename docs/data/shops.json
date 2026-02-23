@@ -1,4 +1,4 @@
-﻿[
+[
     {
         "id":  1,
         "name":  "Laser Concepts Inc.",
@@ -23,7 +23,7 @@
         "id":  2,
         "name":  "Utah Steel",
         "city":  "Salt Lake Valley (Wasatch Front)",
-        "size":  "Mid-to-large — est. 2006",
+        "size":  "Mid-to-large - est. 2006",
         "services":  "20kW Eagle fiber laser cutting (up to 1.5\"), plasma cutting (400A, up to 3\"), CNC machining, welding, press brakes, turret punching, bending, finishing",
         "website":  "utahsteel.com",
         "tags":  [
@@ -44,7 +44,7 @@
         "name":  "Critical Laser",
         "city":  "Salt Lake / Wasatch Front",
         "size":  "Independent shop",
-        "services":  "Laser cutting, waterjet cutting, CNC press brake forming, pemming, MIG/TIG welding, powder coating, anodizing, specialty finishes — full in-house process",
+        "services":  "Laser cutting, waterjet cutting, CNC press brake forming, pemming, MIG/TIG welding, powder coating, anodizing, specialty finishes - full in-house process",
         "website":  "criticallaser.com",
         "tags":  [
                      "laser",
@@ -64,7 +64,7 @@
         "id":  4,
         "name":  "H\u0026R Precision",
         "city":  "West Valley City",
-        "size":  "Small independent — 20+ years",
+        "size":  "Small independent - 20+ years",
         "services":  "CNC machining, manual machining, de-burring; specializes in defense and aerospace components",
         "website":  "MFG.com listing",
         "tags":  [
@@ -132,7 +132,7 @@
         "id":  8,
         "name":  "Symetrx Machine, LLC",
         "city":  "Ogden (also serves SL Valley)",
-        "size":  "Full-service independent — 35+ years",
+        "size":  "Full-service independent - 35+ years",
         "services":  "Precision CNC turning, EDM (wire and die-sink), precision CNC milling, Swiss/screw machining, prototyping; all metals including exotics",
         "website":  "MFG.com listing",
         "tags":  [
@@ -185,7 +185,7 @@
         "id":  11,
         "name":  "Wasatch Tool \u0026 Die, Inc.",
         "city":  "West Salt Lake City (1130 Swaner Rd)",
-        "size":  "Small-to-mid — est. 1973, ISO 9001",
+        "size":  "Small-to-mid - est. 1973, ISO 9001",
         "services":  "Tool \u0026 die, heavy equipment parts, oil/gas pipeline components, aerospace; 8,000 sq ft shop",
         "website":  "wasatchtool.com",
         "tags":  [
@@ -202,7 +202,7 @@
         "id":  12,
         "name":  "The CNC Pros",
         "city":  "West Valley City (3329 W 2555 S)",
-        "size":  "Small independent — est. 2012, veteran-owned",
+        "size":  "Small independent - est. 2012, veteran-owned",
         "services":  "CNC milling, turning, 5-axis machining, prototypes, tool \u0026 die, aerospace parts; in-house firearm accessories",
         "website":  "thecncpros.com",
         "tags":  [
@@ -219,7 +219,7 @@
         "id":  13,
         "name":  "Dynamic Machining, Inc.",
         "city":  "South Salt Lake",
-        "size":  "Small independent — est. 2018",
+        "size":  "Small independent - est. 2018",
         "services":  "Precision CNC machining, prototyping, quick-turn job shop work",
         "website":  "https://www.dynamach.com",
         "tags":  [
@@ -251,7 +251,7 @@
         "id":  15,
         "name":  "A \u0026 M Tool and Cutter Grinding",
         "city":  "Midvale / Salt Lake Valley (also Provo \u0026 Logan locations)",
-        "size":  "Small family-owned — est. 1978, 45+ years",
+        "size":  "Small family-owned - est. 1978, 45+ years",
         "services":  "CNC milling, CNC turning, Swiss-style screw machining, tool grinding and sharpening; restores OEM-level accuracy to cutting tools; tight-tolerance medical parts; agricultural reverse engineering (Logan)",
         "website":  "amtoolandcuttergrinding.com",
         "tags":  [
@@ -285,7 +285,7 @@
         "id":  17,
         "name":  "Owens Industries (SLC branch)",
         "city":  "Salt Lake City",
-        "size":  "Large operation — national firm with SLC presence",
+        "size":  "Large operation - national firm with SLC presence",
         "services":  "Ultra-precision 5-axis CNC milling, wire and plunge EDM, micro-machining; defense, aerospace, medical, optics, tool/die; ISO/AS certified",
         "website":  "owensindustries.com",
         "tags":  [
@@ -302,7 +302,7 @@
         "id":  18,
         "name":  "Motorhead Machine",
         "city":  "West Valley City (2366 S Redwood Rd)",
-        "size":  "Small locally owned — 30+ years",
+        "size":  "Small locally owned - 30+ years",
         "services":  "Automotive machining (engine, performance parts), general machine work",
         "website":  "Facebook / Yelp: Motorhead Machine WVC",
         "tags":  [
@@ -335,7 +335,7 @@
         "id":  20,
         "name":  "Lightning Forge",
         "city":  "Salt Lake Valley",
-        "size":  "Small family-owned blacksmith — 35+ years",
+        "size":  "Small family-owned blacksmith - 35+ years",
         "services":  "Custom ornamental ironwork, hot forging, blacksmithing, stair rails, fireplaces, light fixtures, fences, decorative art pieces; MIG, TIG, bolting, riveting, collaring, wrapping",
         "website":  "lightning-forge.com",
         "tags":  [
@@ -369,7 +369,7 @@
         "id":  22,
         "name":  "TEFCO of Utah",
         "city":  "Ogden (also serves SL Valley)",
-        "size":  "Independent — est. 1942, 80+ years",
+        "size":  "Independent - est. 1942, 80+ years",
         "services":  "Custom ornamental iron: railings, gates, security doors, staircases, planters; powder coating; sandblasting/shot blasting; welding and metal fabrication",
         "website":  "tefcofab.com",
         "tags":  [
@@ -404,7 +404,7 @@
         "id":  24,
         "name":  "Sugar Metal Customs",
         "city":  "Salt Lake City (916 W South Temple)",
-        "size":  "Small independent — founder-led",
+        "size":  "Small independent - founder-led",
         "services":  "Custom metal art and fabrication (thrones, furniture, decor, art installations), MIG/TIG welding, hands-on welding workshops, private events and commissioned pieces",
         "website":  "sugarmetalcustoms.com | @sugarmetalcustoms",
         "tags":  [
@@ -489,7 +489,7 @@
         "id":  29,
         "name":  "salt made co.",
         "city":  "Salt Lake City",
-        "size":  "Small independent — design-forward",
+        "size":  "Small independent - design-forward",
         "services":  "Design and fabrication of metal home furnishings, custom interior/exterior metal accents, architectural metalwork",
         "website":  "Search: salt made co. SLC",
         "tags":  [
@@ -557,7 +557,7 @@
         "id":  33,
         "name":  "American Eagle Welding Inc.",
         "city":  "North Salt Lake",
-        "size":  "Owner-operated — 50+ years experience",
+        "size":  "Owner-operated - 50+ years experience",
         "services":  "Custom architectural railings, gates, fences, stairs, spiral staircases, ornamental iron",
         "website":  "https://www.americaneaglewelding.com",
         "tags":  [
@@ -574,7 +574,7 @@
         "id":  34,
         "name":  "BC MetalWorks Utah",
         "city":  "Tremonton/Elwood (serves SLC/Ogden corridor)",
-        "size":  "Family-owned — 30+ years",
+        "size":  "Family-owned - 30+ years",
         "services":  "Custom steel/iron gates, fences, railings, ornamental metal (residential and commercial); end-to-end installation",
         "website":  "https://metalworksbc.com",
         "tags":  [
@@ -608,7 +608,7 @@
         "id":  36,
         "name":  "FireFoxx Automotive (Metal Fab)",
         "city":  "Salt Lake City",
-        "size":  "Small-to-mid shop — 10+ years",
+        "size":  "Small-to-mid shop - 10+ years",
         "services":  "TIG/MIG welding for custom exhaust, brackets, rust repair, full restorations; general engine work; ASE-certified technicians",
         "website":  "firefoxxautomotive.com",
         "tags":  [
@@ -625,7 +625,7 @@
         "id":  37,
         "name":  "Mat\u0027s Rods \u0026 Restorations",
         "city":  "Salt Lake Valley",
-        "size":  "Large — 35,000 sq ft, largest custom shop in Utah",
+        "size":  "Large - 35,000 sq ft, largest custom shop in Utah",
         "services":  "Full hot rod building, classic car modification, restoration, custom motorcycles, frame-off builds, engine building, custom fabrication, paint",
         "website":  "matsrodsandrestorations.com",
         "tags":  [
@@ -658,7 +658,7 @@
         "id":  39,
         "name":  "Kindig-It Design",
         "city":  "Millcreek / Salt Lake City (164 E Hill Ave)",
-        "size":  "Large dedicated facility — ~27,000 sq ft",
+        "size":  "Large dedicated facility - ~27,000 sq ft",
         "services":  "High-end custom car building, resto-mods, hot rods, full in-house metal fab, body/paint, suspension, interiors, mechanical",
         "website":  "kindigit.com",
         "tags":  [
@@ -707,7 +707,7 @@
         "id":  42,
         "name":  "Impulse Offroad",
         "city":  "Murray",
-        "size":  "Small community-based — 30+ years",
+        "size":  "Small community-based - 30+ years",
         "services":  "Custom fab, 4x4 suspension, overland gear, alignments, off-road builds",
         "website":  "impulseoffroad.com",
         "tags":  [
@@ -773,7 +773,7 @@
         "id":  46,
         "name":  "Sandworks Off-Road",
         "city":  "Salt Lake City area",
-        "size":  "Small independent — industry leader in UTV cages",
+        "size":  "Small independent - industry leader in UTV cages",
         "services":  "Heavy-duty UTV roll cage fabrication, off-road accessories, custom fab",
         "website":  "sandworks-utv.com",
         "tags":  [
@@ -839,7 +839,7 @@
         "id":  50,
         "name":  "Salt City Builds",
         "city":  "Salt Lake City",
-        "size":  "Small independent — vintage specialist",
+        "size":  "Small independent - vintage specialist",
         "services":  "Vintage motorcycle repair, custom restorations, custom metal shaping for classic two-wheelers",
         "website":  "saltcitybuilds.com",
         "tags":  [
@@ -855,7 +855,7 @@
         "id":  51,
         "name":  "Taylor-Made Custom Exhaust",
         "city":  "Bluffdale",
-        "size":  "Small independent — 30+ years",
+        "size":  "Small independent - 30+ years",
         "services":  "Performance exhaust fabrication using mandrel benders; custom tube routing, top-quality materials; enthusiast-driven builds",
         "website":  "taylor-madecustomexhaust.com",
         "tags":  [
@@ -872,7 +872,7 @@
         "id":  52,
         "name":  "Wasatch Customs",
         "city":  "Layton (Weber/Davis County border)",
-        "size":  "Specialty shop — medium",
+        "size":  "Specialty shop - medium",
         "services":  "Vehicle restoration, custom body kits, hot rods and muscle cars (specialty: 1960s-70s classics)",
         "website":  "wasatchcustoms.com",
         "tags":  [
@@ -888,7 +888,7 @@
         "id":  53,
         "name":  "Warfighter Fabrication",
         "city":  "Salt Lake Valley",
-        "size":  "Small independent — veteran-owned",
+        "size":  "Small independent - veteran-owned",
         "services":  "Custom metal fabrication, structural builds, off-road and specialty fab",
         "website":  "warfighterfabrication.com",
         "tags":  [
@@ -905,7 +905,7 @@
         "id":  54,
         "name":  "Blanchard Metals Processing",
         "city":  "Salt Lake City",
-        "size":  "Mid-size — NADCAP Accredited, ISO 9001/AS9100D",
+        "size":  "Mid-size - NADCAP Accredited, ISO 9001/AS9100D",
         "services":  "Heat treating, cryogenic deep freezing, gas nitriding, martempering, anodizing; 50+ microprocessor-controlled ovens",
         "website":  "bmproc.com",
         "tags":  [
@@ -922,7 +922,7 @@
         "id":  55,
         "name":  "Pioneer Metal Finishing",
         "city":  "Salt Lake City",
-        "size":  "Large — NADCAP Accredited",
+        "size":  "Large - NADCAP Accredited",
         "services":  "Type II/III hardcoat anodize, powder coating, heat treating; one-stop aerospace/defense finishing; high-mix complexity capability",
         "website":  "pioneermetal.com",
         "tags":  [
@@ -939,8 +939,8 @@
     {
         "id":  56,
         "name":  "Quality Plating",
-        "city":  "Salt Lake City — est. 1957",
-        "size":  "Independent specialty plater — 65+ years",
+        "city":  "Salt Lake City - est. 1957",
+        "size":  "Independent specialty plater - 65+ years",
         "services":  "Hard anodizing, military-spec plating; unsealed hard anodize for maximum Rockwell hardness (military specifications)",
         "website":  "qualityplating.com",
         "tags":  [
@@ -956,7 +956,7 @@
         "id":  57,
         "name":  "Advanced Metal Finishing Inc. (AMFI)",
         "city":  "North Salt Lake",
-        "size":  "Small independent — 31+ years",
+        "size":  "Small independent - 31+ years",
         "services":  "Plating, anodizing, powder coating; complete coating coverage for commercial clients",
         "website":  "advmetal.com",
         "tags":  [
@@ -972,7 +972,7 @@
     {
         "id":  58,
         "name":  "Anodizing \u0026 Metal Coatings",
-        "city":  "Salt Lake City — est. 1986",
+        "city":  "Salt Lake City - est. 1986",
         "size":  "Independent specialty shop",
         "services":  "Aluminum finishing, anodizing; robust oxide layer formation for durability and corrosion resistance",
         "website":  "anodizingmetalcoatings.com",
@@ -1021,7 +1021,7 @@
         "id":  61,
         "name":  "Utah Powder Werks",
         "city":  "Kaysville (527 Market St Unit A)",
-        "size":  "Small independent — family-owned",
+        "size":  "Small independent - family-owned",
         "services":  "Powder coating, media blasting, metal prep (edge rounding, weld crack repair, dent filling); multi-coat processes; masking of machined surfaces",
         "website":  "utahpowderwerks.com",
         "tags":  [
@@ -1069,7 +1069,7 @@
         "id":  64,
         "name":  "Make Salt Lake",
         "city":  "Salt Lake City (downtown)",
-        "size":  "Non-profit community makerspace — 400+ members",
+        "size":  "Non-profit community makerspace - 400+ members",
         "services":  "CNC routing (Tormach for metal), laser cutting/engraving (two large-bed units), metal shop (MIG/TIG/oxy-acetylene welding, plasma cutter), manual machining (Bridgeport), 3D printing, woodshop, electronics bench, prototype lab; classes and certifications",
         "website":  "makesaltlake.org | @makesaltlake",
         "tags":  [
@@ -1124,7 +1124,7 @@
         "id":  67,
         "name":  "Orion Machining",
         "city":  "Lindon",
-        "size":  "Small independent — est. 2007",
+        "size":  "Small independent - est. 2007",
         "services":  "5-axis CNC machining, prototypes, full production runs; drag racing, food processing, mining, medical industries",
         "website":  "https://www.orion-machining-utah.com",
         "tags":  [
@@ -1140,7 +1140,7 @@
         "id":  68,
         "name":  "Utah Valley University Machine Shop",
         "city":  "Orem",
-        "size":  "University facility — open to public",
+        "size":  "University facility - open to public",
         "services":  "CNC machining (Fusion 360 based), fabrication/welding, plasma cutting, band saws, heat treat, casting (limited); available for student training and external projects",
         "website":  "uvu.edu/cet/machineshop",
         "tags":  [
@@ -1212,7 +1212,7 @@
         "id":  72,
         "name":  "TMR Customs",
         "city":  "Utah County",
-        "size":  "Small manufacturer — est. 2008, family-founded",
+        "size":  "Small manufacturer - est. 2008, family-founded",
         "services":  "CNC machined off-road fab components (roll cage clamps, tube clamps, recovery mounts, steering clamps); TIG rod holders; welding cart accessories; in-house CNC and testing",
         "website":  "tmrcustoms.com",
         "tags":  [
@@ -1296,7 +1296,7 @@
     {
         "id":  77,
         "name":  "Mission Iron Works",
-        "city":  "Spanish Fork — est. 2013",
+        "city":  "Spanish Fork - est. 2013",
         "size":  "Medium construction contractor",
         "services":  "Structural welding and heavy fabrication; steel framing, supports, corrugated metal decking for churches, gyms, warehouses",
         "website":  "https://www.missionironworks.com",
@@ -1314,7 +1314,7 @@
         "id":  78,
         "name":  "A \u0026 M Tool and Cutter Grinding (Provo)",
         "city":  "Provo",
-        "size":  "Small family-owned — est. 1978",
+        "size":  "Small family-owned - est. 1978",
         "services":  "CNC milling, tool and cutter grinding, precision tool restoration; serving local manufacturing for 45+ years",
         "website":  "amtoolandcuttergrinding.com",
         "tags":  [
@@ -1348,7 +1348,7 @@
         "id":  80,
         "name":  "KC Iron Work",
         "city":  "Lindon",
-        "size":  "Small independent — certified craftsmen",
+        "size":  "Small independent - certified craftsmen",
         "services":  "Custom ironwork, structural and ornamental iron, high-end fabrication",
         "website":  "https://kcironwork.com",
         "tags":  [
@@ -1383,7 +1383,7 @@
         "id":  82,
         "name":  "Metal Arts Foundry",
         "city":  "Lehi",
-        "size":  "Small independent — artistic specialty",
+        "size":  "Small independent - artistic specialty",
         "services":  "Bronze sculpture casting, artistic metal foundry work; bridges industrial metal melting with fine arts",
         "website":  "mtlarts.com",
         "tags":  [
@@ -1398,7 +1398,7 @@
     {
         "id":  83,
         "name":  "TRA Snow and Sun",
-        "city":  "American Fork — est. 1996",
+        "city":  "American Fork - est. 1996",
         "size":  "Established independent",
         "services":  "Custom powder coating with continuous chain conveyor system for high-volume commercial runs; wide color selection",
         "website":  "trasnowandsun.com",
@@ -1449,7 +1449,7 @@
         "id":  86,
         "name":  "Ultimate 4X4 \u0026 Accessories",
         "city":  "Orem",
-        "size":  "Small independent — 25+ years",
+        "size":  "Small independent - 25+ years",
         "services":  "Off-road suspension, custom 4x4 work, accessories; trail preparation builds",
         "website":  "https://ultimate4x4utah.com",
         "tags":  [
@@ -1500,7 +1500,7 @@
         "id":  89,
         "name":  "JD Machine",
         "city":  "Ogden",
-        "size":  "Large family-owned — est. 1979, multi-generational",
+        "size":  "Large family-owned - est. 1979, multi-generational",
         "services":  "Precision CNC milling (4 and 5-axis), CNC turning, sheet metal fabrication, assembly/testing, logistics; aerospace, defense, nuclear, medical, energy, mining, communication",
         "website":  "jdmachine.com | 2744 N Parkland Blvd, Ogden | 801-782-4394",
         "tags":  [
@@ -1509,7 +1509,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1526,7 +1526,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1543,7 +1543,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1551,7 +1551,7 @@
         "id":  92,
         "name":  "Symetrx Machine LLC",
         "city":  "Ogden",
-        "size":  "Full-service independent — 35+ years",
+        "size":  "Full-service independent - 35+ years",
         "services":  "Precision CNC turning, wire EDM, die-sink EDM, precision CNC milling, Swiss/screw machining, prototyping; all metals including exotics",
         "website":  "MFG.com listing",
         "tags":  [
@@ -1560,7 +1560,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1577,7 +1577,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1594,7 +1594,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1611,7 +1611,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1628,15 +1628,15 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
     {
         "id":  97,
         "name":  "Richards Sheet Metal",
-        "city":  "Ogden — est. 1928, 90,000 sq ft",
-        "size":  "Large full-service plant — nearly 100-year institution",
+        "city":  "Ogden - est. 1928, 90,000 sq ft",
+        "size":  "Large full-service plant - nearly 100-year institution",
         "services":  "Tube and plate laser cutting, CNC punching and stamping, CNC bending, welding (including orbital), architectural metal; mining, waste, food, government, industrial clients",
         "website":  "https://www.richards-fab.com",
         "tags":  [
@@ -1646,7 +1646,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1662,7 +1662,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1678,7 +1678,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1695,7 +1695,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1711,7 +1711,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1727,7 +1727,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1746,7 +1746,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1754,7 +1754,7 @@
         "id":  104,
         "name":  "TEFCO of Utah (Primary Location)",
         "city":  "Ogden",
-        "size":  "Established independent — est. 1942",
+        "size":  "Established independent - est. 1942",
         "services":  "Custom ornamental iron: railings, gates, security doors, staircases, planters; powder coating; sandblasting; welding and metal fabrication",
         "website":  "tefcofab.com",
         "tags":  [
@@ -1764,7 +1764,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
@@ -1772,7 +1772,7 @@
         "id":  105,
         "name":  "Intermountain Lift",
         "city":  "Weber / Ogden area",
-        "size":  "Family-owned steel fabrication — est. 1969",
+        "size":  "Family-owned steel fabrication - est. 1969",
         "services":  "Tube and pipe laser cutting, blasting, painting, rolling, bending, welding, powder coating; full steel fabrication",
         "website":  "https://intermountainlift.com",
         "tags":  [
@@ -1782,7 +1782,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
@@ -1798,7 +1798,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
@@ -1815,15 +1815,15 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
     {
         "id":  108,
         "name":  "Powder Coatings of Utah",
-        "city":  "Ogden — 2951 S Pennsylvania Ave",
-        "size":  "Mid-size regional — est. 2002",
+        "city":  "Ogden - 2951 S Pennsylvania Ave",
+        "size":  "Mid-size regional - est. 2002",
         "services":  "Powder coating, industrial liquid painting, sandblasting, packaging and logistics services",
         "website":  "Search: Powder Coatings of Utah Ogden",
         "tags":  [
@@ -1831,7 +1831,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Powder Coating \u0026 Finishing",
         "maps_url":  ""
     },
@@ -1847,7 +1847,7 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Powder Coating \u0026 Finishing",
         "maps_url":  ""
     },
@@ -1855,7 +1855,7 @@
         "id":  110,
         "name":  "Weber County Library MakerSpace",
         "city":  "Ogden / multiple Weber County branches",
-        "size":  "Public library facility — free community access",
+        "size":  "Public library facility - free community access",
         "services":  "CNC cutting, CO2 laser engraving (FSL Muse 2D; SVG/DXF files), 3D printing (Makerbot), 12-color SWF embroidery machine; digital fabrication tools; free/low-cost to patrons",
         "website":  "weberpl.lib.ut.us/makerspaces",
         "tags":  [
@@ -1866,15 +1866,15 @@
                  ],
         "region":  "weber-ogden",
         "regionTitle":  "Weber / Ogden Area",
-        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace \u0026 Defense Corridor",
+        "regionSubtitle":  "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace \u0026 Defense Corridor",
         "category":  "Digital Fabrication \u0026 Community Spaces",
         "maps_url":  ""
     },
     {
         "id":  111,
         "name":  "Mountain View Machine \u0026 Welding",
-        "city":  "Logan — 2485 S 1350th W",
-        "size":  "Small independent full-service — grew from 2-machine garage",
+        "city":  "Logan - 2485 S 1350th W",
+        "size":  "Small independent full-service - grew from 2-machine garage",
         "services":  "CNC milling, CNC lathes, welding, wire EDM, CMM inspection, waterjet cutting, prototyping, heat treatment",
         "website":  "mvmwinc.com",
         "tags":  [
@@ -1885,7 +1885,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1893,7 +1893,7 @@
         "id":  112,
         "name":  "A \u0026 M Tool and Cutter Grinding (Logan)",
         "city":  "Logan",
-        "size":  "Small family-owned — est. 1978",
+        "size":  "Small family-owned - est. 1978",
         "services":  "CNC milling, tool and cutter grinding, reverse engineering of agricultural parts; replicates obsolete parts for legacy farm machinery using modern CNC precision",
         "website":  "amtoolandcuttergrinding.com",
         "tags":  [
@@ -1901,15 +1901,15 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
     {
         "id":  113,
         "name":  "Dutro Custom Fab",
-        "city":  "Logan — est. 1945",
-        "size":  "Independent — 80-year institution",
+        "city":  "Logan - est. 1945",
+        "size":  "Independent - 80-year institution",
         "services":  "Metal fabrication, engineering and design, custom structural and decorative metalwork",
         "website":  "dutrocustomfab.com",
         "tags":  [
@@ -1918,7 +1918,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1936,7 +1936,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1953,7 +1953,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1969,7 +1969,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -1986,7 +1986,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -2003,7 +2003,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -2011,7 +2011,7 @@
         "id":  119,
         "name":  "HS Customs",
         "city":  "North Logan",
-        "size":  "Small independent — world-renowned builder",
+        "size":  "Small independent - world-renowned builder",
         "services":  "High-end custom car builds, resto-mods, custom airbrushing, in-house upholstery, electrical/wiring, chassis dyno tuning; frame-off restorations",
         "website":  "hscustoms.com",
         "tags":  [
@@ -2019,7 +2019,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Specialty",
         "maps_url":  ""
     },
@@ -2035,7 +2035,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Finishing \u0026 Community",
         "maps_url":  ""
     },
@@ -2051,7 +2051,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Finishing \u0026 Community",
         "maps_url":  ""
     },
@@ -2061,13 +2061,13 @@
         "city":  "Logan",
         "size":  "University institutional shop",
         "services":  "Machining services, fabrication support for research; available to university affiliates and some external clients",
-        "website":  "usu.edu — search facilities/machine shop",
+        "website":  "usu.edu - search facilities/machine shop",
         "tags":  [
                      "makerspace"
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Finishing \u0026 Community",
         "maps_url":  ""
     },
@@ -2083,7 +2083,7 @@
                  ],
         "region":  "cache-valley",
         "regionTitle":  "Cache Valley",
-        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+        "regionSubtitle":  "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
         "category":  "Finishing \u0026 Community",
         "maps_url":  ""
     },
@@ -2091,7 +2091,7 @@
         "id":  124,
         "name":  "Alphaeus Manufacturing",
         "city":  "Washington / Hurricane (2410 W 350 N #2)",
-        "size":  "Small independent — est. 2014, garage startup to 5,000 sq ft+",
+        "size":  "Small independent - est. 2014, garage startup to 5,000 sq ft+",
         "services":  "Precision CNC 4-axis and high-speed milling, turning, mill-turn, Swiss machining, saw cutting; prototype to production; medical, biotech, motorsport industries",
         "website":  "alphaeusmfg.com",
         "tags":  [
@@ -2099,7 +2099,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -2115,15 +2115,15 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
     {
         "id":  126,
         "name":  "Cedar Welding \u0026 Fabrication, Inc.",
-        "city":  "Cedar City (642 N 1070 W) — est. 1993",
-        "size":  "Established independent — 30+ years",
+        "city":  "Cedar City (642 N 1070 W) - est. 1993",
+        "size":  "Established independent - 30+ years",
         "services":  "CNC cutting, ornamental iron, general manufacturing, farm equipment fabrication, custom truck racks and agricultural machinery; prototype through production",
         "website":  "cedarwelding.com",
         "tags":  [
@@ -2132,7 +2132,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Fabrication \u0026 Machining",
         "maps_url":  ""
     },
@@ -2149,7 +2149,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
@@ -2166,7 +2166,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
@@ -2182,7 +2182,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
@@ -2199,7 +2199,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
@@ -2216,7 +2216,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
@@ -2224,7 +2224,7 @@
         "id":  132,
         "name":  "Forbes Welding \u0026 Fabrication (Metal Madness)",
         "city":  "St. George | (435) 673-5733",
-        "size":  "Small family-owned — 30+ year legacy",
+        "size":  "Small family-owned - 30+ year legacy",
         "services":  "Ornamental iron and custom metal fab: railings, gates (standard and ornamental), motorcycle accessories, trailer hitches, spiral staircases, custom brackets",
         "website":  "Contact: forbeswelding@yahoo.com",
         "tags":  [
@@ -2233,15 +2233,15 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
     {
         "id":  133,
         "name":  "Elevated Fab Industries (EFI)",
-        "city":  "St. George — est. 2020",
-        "size":  "Small owner-operated — mobile and shop",
+        "city":  "St. George - est. 2020",
+        "size":  "Small owner-operated - mobile and shop",
         "services":  "Heavy equipment welding and repair; custom excavator/loader bucket fabrication, boom and crack repairs, wear-plate installations, screening buckets; mobile on-site welding",
         "website":  "https://elevatedfabindustries.com",
         "tags":  [
@@ -2249,7 +2249,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
@@ -2266,7 +2266,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Welding \u0026 Metalwork",
         "maps_url":  ""
     },
@@ -2282,15 +2282,15 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Specialty Automotive \u0026 Off-Road",
         "maps_url":  ""
     },
     {
         "id":  136,
         "name":  "Dixie 4 Wheel Drive",
-        "city":  "St. George — 12,000 sq ft facility",
-        "size":  "Established shop — nationally acclaimed",
+        "city":  "St. George - 12,000 sq ft facility",
+        "size":  "Established shop - nationally acclaimed",
         "services":  "Suspension mods, armor, extreme 4x4 modifications; fundamental suspension geometry changes (4-link mounts, long-arm kits, custom skid plates) for Sand Hollow and Zion terrain",
         "website":  "https://dixie4wheeldrive.com",
         "tags":  [
@@ -2299,7 +2299,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Specialty Automotive \u0026 Off-Road",
         "maps_url":  ""
     },
@@ -2316,7 +2316,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Specialty Automotive \u0026 Off-Road",
         "maps_url":  ""
     },
@@ -2333,7 +2333,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Specialty Automotive \u0026 Off-Road",
         "maps_url":  ""
     },
@@ -2349,7 +2349,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Powder Coating \u0026 Finishing",
         "maps_url":  ""
     },
@@ -2365,7 +2365,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Powder Coating \u0026 Finishing",
         "maps_url":  ""
     },
@@ -2381,7 +2381,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Powder Coating \u0026 Finishing",
         "maps_url":  ""
     },
@@ -2397,7 +2397,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Powder Coating \u0026 Finishing",
         "maps_url":  ""
     },
@@ -2405,7 +2405,7 @@
         "id":  143,
         "name":  "Utah Tech University Makerspace (Innovation Plaza)",
         "city":  "St. George (453 S 600 E)",
-        "size":  "University makerspace — ~8,000 sq ft, open to public",
+        "size":  "University makerspace - ~8,000 sq ft, open to public",
         "services":  "Laser cutting, laser etching/engraving, electronics, 3D printing, CNC routers and mills, digital fabrication tools; training and open hours for community/business; also runs Jr Makerspace for K-12 STEM",
         "website":  "innovation.utahtech.edu/makerspace",
         "tags":  [
@@ -2416,14 +2416,14 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Digital Fabrication \u0026 Community Spaces",
         "maps_url":  ""
     },
     {
         "id":  144,
         "name":  "Thunderworks Makerspace (SUU)",
-        "city":  "Cedar City — Southern Utah University",
+        "city":  "Cedar City - Southern Utah University",
         "size":  "Academic / community facility",
         "services":  "Industrial waterjet cutting (cuts titanium and steel without heat-affected zone), MIG/TIG welding, CNC routing, 3D printing; open to community and students",
         "website":  "suu.edu/thunderworks",
@@ -2436,7 +2436,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Digital Fabrication \u0026 Community Spaces",
         "maps_url":  ""
     },
@@ -2454,7 +2454,7 @@
                  ],
         "region":  "southern-utah",
         "regionTitle":  "St. George / Southern Utah",
-        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub \u0026 Growing Custom Scene",
+        "regionSubtitle":  "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub \u0026 Growing Custom Scene",
         "category":  "Digital Fabrication \u0026 Community Spaces",
         "maps_url":  ""
     },
@@ -2481,7 +2481,7 @@
         "id":  147,
         "name":  "Utah Fabrication Inc.",
         "city":  "Utah (Wasatch Front)",
-        "size":  "Established industrial fabricator — 50 years",
+        "size":  "Established industrial fabricator - 50 years",
         "services":  "Custom steel fabrication for mining, energy, industrial, municipalities, manufacturing; CNC plasma cutting, bending, welding, finishing; carbon steel, stainless, aluminum",
         "website":  "https://www.utahfab.com",
         "tags":  [
@@ -2513,7 +2513,7 @@
     {
         "id":  149,
         "name":  "M\u0026M Cut-O-Matic Inc.",
-        "city":  "Utah — est. 1963, 60+ years in business",
+        "city":  "Utah - est. 1963, 60+ years in business",
         "size":  "Long-established cutting service",
         "services":  "Waterjet cutting (square/round stock, plate, titanium, plastics, marble); metal cutting specialty",
         "website":  "https://m-mcutomatic.com",
@@ -2530,7 +2530,7 @@
     {
         "id":  150,
         "name":  "Crenshaw Die and Manufacturing",
-        "city":  "Utah — est. 1972, 50+ years",
+        "city":  "Utah - est. 1972, 50+ years",
         "size":  "Mid-size established manufacturer",
         "services":  "Precision manufacturing, metal fabrication, waterjet cutting; aerospace, defense, automotive, medical industries",
         "website":  "https://crenshawdiemfg.com",
@@ -2548,7 +2548,7 @@
     {
         "id":  151,
         "name":  "Advance Manufacturing Technology",
-        "city":  "Utah (Wasatch Front) — 45+ years",
+        "city":  "Utah (Wasatch Front) - 45+ years",
         "size":  "Established mid-size shop",
         "services":  "CNC machining, CMM precision inspection, CNC prototype machining, large-quantity CNC production, design consultation",
         "website":  "https://www.advancemfgtech.com",
@@ -2582,7 +2582,7 @@
     {
         "id":  153,
         "name":  "Iron Pine",
-        "city":  "Ogden — The Monarch Building",
+        "city":  "Ogden - The Monarch Building",
         "size":  "Small artisan/digital fab shop",
         "services":  "Custom metal printing/laser engraving/etching; decorative metal work; custom signage",
         "website":  "ironpine.company",
@@ -2600,7 +2600,7 @@
         "id":  154,
         "name":  "Red Dot Engineering",
         "city":  "Moab, UT",
-        "size":  "Small independent — ground-zero for rock crawling engineering",
+        "size":  "Small independent - ground-zero for rock crawling engineering",
         "services":  "Off-road chassis fabrication, welded suspension mounts, complete tube-chassis buggies, custom shock towers; hardcore rock crawling structural design",
         "website":  "reddotengineering.com",
         "tags":  [
@@ -2702,7 +2702,7 @@
         "id":  160,
         "name":  "LR Customs",
         "city":  "Lapoint, UT (Uinta Basin)",
-        "size":  "Micro shop — certified small business",
+        "size":  "Micro shop - certified small business",
         "services":  "Milling and turning (manual and CNC); partnerships with local CNC/engraving shops; R\u0026D background machinists",
         "website":  "MFG.com listing",
         "tags":  [

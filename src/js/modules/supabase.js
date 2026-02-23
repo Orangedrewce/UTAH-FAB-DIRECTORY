@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: supabase.js — Supabase Client Initialisation
+ * MODULE: supabase.js - Supabase Client Initialisation
  * ═══════════════════════════════════════════════════════════════════════
  *
  * PURPOSE:

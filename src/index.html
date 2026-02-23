@@ -6,12 +6,12 @@
 
   <!-- SEO -->
   <title>Andrew Losee | CAD Design & Utah Fab Directory – Salt Lake City, UT</title>
-  <meta name="description" content="CAD design and reverse engineering services in Salt Lake City, UT — plus the Utah Fabrication Directory, a searchable index of Utah machine shops, welders, laser cutters, and specialty fabricators.">
+  <meta name="description" content="CAD design and reverse engineering services in Salt Lake City, UT - plus the Utah Fabrication Directory, a searchable index of Utah machine shops, welders, laser cutters, and specialty fabricators.">
   <meta name="keywords" content="CAD design, Fusion 360, reverse engineering, blueprint, machinist, fabrication, Salt Lake City, Utah, Utah fabrication directory, machine shops Utah, laser cutting Utah, welding Utah">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Andrew Losee | CAD Design & Utah Fab Directory">
-  <meta property="og:description" content="CAD drafting services in Salt Lake City — napkin sketch to production-ready files. Also home of the Utah Fabrication Directory: machine shops, welders, laser cutters, and more across Utah.">
+  <meta property="og:description" content="CAD drafting services in Salt Lake City - napkin sketch to production-ready files. Also home of the Utah Fabrication Directory: machine shops, welders, laser cutters, and more across Utah.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://utahfabdirectory.com">
   <meta property="og:image" content="https://utahfabdirectory.com/og-preview.png">
@@ -57,6 +57,7 @@
         <div class="name-block">
           <h1>Andrew<br><span>Losee</span></h1>
           <div class="tagline">CAD Design</div>
+          <a href="portfolio.html" class="pricing-nav-link">Portfolio &#8594;</a>
           <a href="pricing.html" class="pricing-nav-link">Services &amp; Pricing &#8594;</a>
           <a href="direct.html" class="pricing-nav-link">Utah Fab Directory &#8594;</a>
         </div>
@@ -79,6 +80,12 @@
             </div>
             <div class="cf-feedback" id="cfFeedback"></div>
           </form>
+          <div id="quoteConfirmation" class="quote-confirmation" style="display:none">
+            <div class="quote-msg">RECEIVED - I'LL REVIEW YOUR PROJECT &amp; SEND A QUOTE WITHIN 24 HRS</div>
+            <p class="quote-deposit-note">Once we agree on scope and price, pay your deposit securely below.</p>
+            <a href="https://paypal.me/UtahFabDirectory?country.x=US&amp;locale.x=en_US" target="_blank" rel="noopener noreferrer" class="quote-paypal-btn">Pay Deposit via PayPal</a>
+            <button type="button" class="quote-reset-btn" id="quoteResetBtn">← SEND ANOTHER MESSAGE</button>
+          </div>
           <div class="header-location">SALT LAKE<br>CITY, UT</div>
         </div>
       </header>
@@ -87,6 +94,7 @@
       <section class="process-portfolio-section">
         <div class="section-label">Process</div>
         <div class="timeline">
+
           <article class="timeline-step">
             <div class="timeline-media thumb" onclick="openLightbox(this)" data-label="INTAKE · Rusty Driveshaft">
               <img src="assets/rusty driveshaft.png" alt="Rusty driveshaft on a workbench" loading="lazy">
@@ -94,9 +102,9 @@
             </div>
             <div class="timeline-content">
               <div class="step-num">01</div>
-              <div class="step-title">You Bring It</div>
-              <div class="step-desc">Napkin sketch, broken part, or existing component.</div>
-              <div class="step-caption">Example: measurements + reference photos for reverse engineering.</div>
+              <div class="step-title">Intake</div>
+              <div class="step-desc">Napkin sketch, a broken part, or an existing CAD file.</div>
+              <div class="step-caption">We define the scope: 2D blueprints, 3D modeling, or vendor sourcing.</div>
             </div>
           </article>
 
@@ -107,9 +115,9 @@
             </div>
             <div class="timeline-content">
               <div class="step-num">02</div>
-              <div class="step-title">I Model It</div>
-              <div class="step-desc">Parametric DFM for CNC milling/turning and sla/fdm 3D printing.</div>
-              <div class="step-caption">Example: digital clone, assemblies, joints.</div>
+              <div class="step-title">Design</div>
+              <div class="step-desc">I create the files machinists need to cut your parts.</div>
+              <div class="step-caption">Parametric 3D models, GD&amp;T, fit and clearance checks.</div>
             </div>
           </article>
 
@@ -120,31 +128,23 @@
             </div>
             <div class="timeline-content">
               <div class="step-num">03</div>
-              <div class="step-title">You Cut It</div>
-              <div class="step-desc">Upload-ready files for online fab houses, plus technical drawings for the local <a href="direct.html" class="inline-link">Utah Fab Directory</a>.</div>
-              <div class="step-caption">Example: clean STEP + drawing package with notes.</div>
+              <div class="step-title">Manufacture</div>
+              <div class="step-desc">Upload files to an online fab, or I connect you with a local shop.</div>
+              <div class="step-caption">I built the <a href="direct.html" class="inline-link">Utah Fab Directory</a> network to get your parts made.</div>
             </div>
           </article>
+
         </div>
       </section>
 
-      <!-- ── CAPABILITIES & DELIVERABLES ── 
-      <section class="skills-section">
-        <div class="section-label">Capabilities &amp; Deliverables</div>
-        <div class="skills-list">
-          <div class="skill-pill">Production-Ready 3D Models (STEP/IGES/STL)</div>
-          <div class="skill-pill">Assembly &amp; Multi-Body STEP Export</div>
-          <div class="skill-pill">GD&amp;T Callouts</div>
-          <div class="skill-pill">DFM: CNC Milling/Turning</div>
-          <div class="skill-pill">DFM: Sheet Metal</div>
-          <div class="skill-pill">DFM: 3D Printing</div>
-          <div class="skill-pill">Software: Fusion 360, SolidWorks</div>
-          <div class="skill-pill">Ferrous and non ferrous</div>
-        </div>
-      </section> -->
-
       <!-- ── FOOTER / CONTACT ── -->
-      <footer class="footer"></footer>
+      <footer class="footer">
+        <div class="footer-sig">
+          <span class="footer-initials">AL</span>
+          <span class="footer-copy">&copy; 2026 Andrew Losee &middot; Salt Lake City, UT</span>
+        </div>
+        <div class="footer-tagline">Real manufacturing.</div>
+      </footer>
 
     </div><!-- end .flyer -->
   </div><!-- end .page-wrap -->

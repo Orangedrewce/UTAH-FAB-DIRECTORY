@@ -1,72 +1,36 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: script.js — Portfolio Page Logic (Lightbox + Contact Form)
- * ═══════════════════════════════════════════════════════════════════════
- *
- * PURPOSE:
- *   Powers the portfolio / landing page with two independent features:
- *     1. An image lightbox overlay
- *     2. A contact form that uploads an optional photo to Supabase
- *        Storage and inserts a message row into the `contact_messages`
- *        table.
- *
- * FEATURE 1 — LIGHTBOX:
- *   • `openLightbox(element)` — Called from inline `onclick` handlers in
- *     the HTML.  Reads the child <img>'s `src` and the element's
- *     `data-label` attribute, then shows the #lightbox overlay.
- *   • `closeLightbox()` — Hides the overlay, clears the image source.
- *   • Both functions are attached to `window` so inline HTML event
- *     handlers can call them.
- *   • Pressing Escape while the lightbox is open closes it.
- *
- * FEATURE 2 — CONTACT FORM:
- *   • On submit, validates the email (basic regex) and message length
- *     (max 1 000 characters).
- *   • If a photo file is attached, validates its type (JPEG, PNG, GIF,
- *     WEBP) and size (max 5 MB), then uploads it to the Supabase
- *     "contact-photos" storage bucket.  A unique filename is generated
- *     with a timestamp + UUID.
- *   • Inserts { email, message, photo_url } into the `contact_messages`
- *     table.
- *   • Shows success / error feedback via the #cfFeedback element.
- *   • `initContactForm()` is called at module load; it no-ops silently
- *     if the form element doesn't exist (i.e. on non-portfolio pages).
- *
- * HOW TO ADD FEATURES / MODIFY:
- *   • ADDITIONAL FILE TYPES — Add MIME → extension entries to the
- *     `ALLOWED_TYPES` map inside `initContactForm()`.
- *   • LARGER UPLOADS — Increase `MAX_FILE_SIZE` (in bytes).
- *   • NEW FORM FIELDS — Add the field to the HTML, read its value
- *     inside the submit handler, and include it in the insert payload.
- *     Make sure the matching column exists in the `contact_messages`
- *     Supabase table.
- *   • LIGHTBOX NAVIGATION (prev/next) — Track all portfolio items in
- *     an array, store the current index, and add prev/next button
- *     handlers that update `lightboxImg.src`.
+ * MODULE: script.js - Shared Page Logic
+ *   1. Image lightbox overlay (with alt-text propagation)
+ *   2. Contact form → Supabase
+ *   3. Dynamic portfolio grid (portfolio.html only)
+ *      - Image items: static thumbnail + lightbox
+ *      - 3D model items: inline interactive viewport (same card dimensions)
+ *   4. Portfolio filter bar (portfolio.html, shown only when 2+ distinct tags)
  * ═══════════════════════════════════════════════════════════════════════
  */
 
 import { supabase as sb } from "./supabase.js";
+import { fetchPortfolioItems } from "./api.js";
 
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
 const lightboxLabel = document.getElementById("lightbox-label");
 
 // ── Lightbox navigation state ───────────────────────────────────────────
-const thumbs = [...document.querySelectorAll(".thumb")];
+let thumbs = [...document.querySelectorAll(".thumb")];
 let currentIndex = 0;
 
+/** Refresh thumb list (call after dynamic DOM inserts) */
+function refreshThumbs() {
+  thumbs = [...document.querySelectorAll(".thumb")];
+}
+
 export function openLightbox(element) {
-  if (!lightbox || !lightboxImg || !lightboxLabel) {
-    return;
-  }
-
+  if (!lightbox || !lightboxImg || !lightboxLabel) return;
   const image = element.querySelector("img");
-  if (!image) {
-    return;
-  }
+  if (!image) return;
 
-  // Track which thumb was clicked so arrow keys know where we are
   const idx = thumbs.indexOf(element);
   if (idx !== -1) currentIndex = idx;
 
@@ -76,7 +40,6 @@ export function openLightbox(element) {
   lightbox.classList.add("open");
 }
 
-/** Navigate the lightbox by a delta (−1 = prev, +1 = next), wrapping at boundaries */
 function navigateLightbox(delta) {
   if (!thumbs.length || !lightbox?.classList.contains("open")) return;
   currentIndex = (currentIndex + delta + thumbs.length) % thumbs.length;
@@ -89,18 +52,10 @@ function navigateLightbox(delta) {
 }
 
 export function closeLightbox() {
-  if (!lightbox) {
-    return;
-  }
-
+  if (!lightbox) return;
   lightbox.classList.remove("open");
-  if (lightboxImg) {
-    lightboxImg.src = "";
-    lightboxImg.alt = "";
-  }
-  if (lightboxLabel) {
-    lightboxLabel.textContent = "";
-  }
+  if (lightboxImg) { lightboxImg.src = ""; lightboxImg.alt = ""; }
+  if (lightboxLabel) lightboxLabel.textContent = "";
 }
 
 // Expose to window for inline HTML handlers
@@ -111,24 +66,129 @@ window.navigateLightbox = navigateLightbox;
 document.addEventListener("keydown", (event) => {
   if (!lightbox?.classList.contains("open")) return;
   switch (event.key) {
-    case "Escape":
-      closeLightbox();
-      break;
-    case "ArrowLeft":
-      navigateLightbox(-1);
-      break;
-    case "ArrowRight":
-      navigateLightbox(1);
-      break;
+    case "Escape":     closeLightbox(); break;
+    case "ArrowLeft":  navigateLightbox(-1); break;
+    case "ArrowRight": navigateLightbox(1); break;
   }
 });
 
 /* ═══════════════════════════════════════════════════════════════════════
-   CONTACT FORM — Supabase submission + photo upload
+   DYNAMIC PORTFOLIO - portfolio.html only (not homepage)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/** Escape HTML to prevent XSS */
+function esc(str) {
+  const d = document.createElement("div");
+  d.textContent = str || "";
+  return d.innerHTML;
+}
+
+/**
+ * Build HTML for a single portfolio <figure>.
+ * Items with model_url render as interactive inline 3D viewports.
+ * Items with image_url render as static thumbnails with lightbox.
+ */
+function portfolioItemHTML(item) {
+  const tag = esc(item.tag || "RENDER");
+  const title = esc(item.title);
+  const desc = esc(item.description || "");
+  const label = `${tag} · ${title}`;
+
+  let embedSrc = item.model_url || "";
+  if (embedSrc && !embedSrc.includes("3dviewer.net") && !embedSrc.includes("embed")) {
+    embedSrc = `https://3dviewer.net/embed.html#model=${encodeURIComponent(embedSrc)}`;
+  }
+
+  const mediaHtml = embedSrc
+    ? `<div class="port-thumb port-thumb--model">
+        <iframe class="port-model-frame" src="${esc(embedSrc)}" allow="fullscreen" loading="lazy" title="${title}"></iframe>
+        <span class="port-model-badge">3D</span>
+       </div>`
+    : `<div class="port-thumb thumb" onclick="openLightbox(this)" data-label="${esc(label)}">
+        <img src="${esc(item.image_url || 'assets/Render.png')}" alt="${title}" loading="lazy">
+        <div class="thumb-overlay">[ VIEW ]</div>
+       </div>`;
+
+  return `<figure class="port-item${embedSrc ? ' port-item--model' : ''}" data-tag="${tag}">
+    ${mediaHtml}
+    <figcaption class="port-caption">
+      <span class="port-tag">${tag}</span>
+      <span class="port-title">${title}</span>
+      ${desc ? `<span class="port-meta">${desc}</span>` : ""}
+    </figcaption>
+  </figure>`;
+}
+
+/**
+ * Render portfolio grid on portfolio.html (full gallery with filters).
+ * The homepage portfolio grid is hardcoded HTML - no DB query needed.
+ */
+async function renderPortfolioPage() {
+  const grid = document.getElementById("portfolioGrid");
+  const filterBar = document.getElementById("portFilterBar");
+  const loading = document.getElementById("portLoading");
+  const emptyState = document.getElementById("portEmpty");
+  if (!grid || !filterBar) return;
+
+  // Only runs on portfolio.html
+  if (!document.querySelector(".port-filter-bar")) return;
+
+  if (loading) loading.classList.remove("hidden");
+
+  try {
+    const items = await fetchPortfolioItems(false);
+
+    grid.innerHTML = "";
+
+    if (!items.length) {
+      if (loading) loading.classList.add("hidden");
+      if (emptyState) emptyState.classList.remove("hidden");
+      return;
+    }
+
+    // Show filter bar only when there are 2+ distinct tags
+    const tags = [...new Set(items.map((i) => i.tag || "RENDER"))];
+    tags.sort();
+    if (tags.length >= 2) {
+      tags.forEach((tag) => {
+        const btn = document.createElement("button");
+        btn.className = "port-filter-btn";
+        btn.dataset.filter = tag;
+        btn.textContent = tag;
+        filterBar.appendChild(btn);
+      });
+      filterBar.style.display = "flex";
+    }
+
+    grid.innerHTML = items.map(portfolioItemHTML).join("");
+    refreshThumbs();
+
+    if (loading) loading.classList.add("hidden");
+
+    // Filter handler
+    filterBar.addEventListener("click", (e) => {
+      const btn = e.target.closest(".port-filter-btn");
+      if (!btn) return;
+      filterBar.querySelectorAll(".port-filter-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      const filter = btn.dataset.filter;
+      grid.querySelectorAll(".port-item").forEach((item) => {
+        item.style.display = (filter === "all" || item.dataset.tag === filter) ? "" : "none";
+      });
+    });
+  } catch (err) {
+    console.warn("Portfolio load failed:", err);
+    if (loading) loading.classList.add("hidden");
+    if (emptyState) emptyState.classList.remove("hidden");
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CONTACT FORM - Supabase submission + photo upload
    ═══════════════════════════════════════════════════════════════════════ */
 function initContactForm() {
   const form = document.getElementById("contactForm");
-  if (!form) return; // Not on the portfolio page
+  if (!form) return;
 
   const cfEmail = document.getElementById("cfEmail");
   const cfMessage = document.getElementById("cfMessage");
@@ -137,11 +197,19 @@ function initContactForm() {
   const cfFileLabel = document.getElementById("cfFileLabel");
   const submitBtn = document.getElementById("cfSubmitBtn");
   const feedback = document.getElementById("cfFeedback");
+  const quoteConfirmation = document.getElementById("quoteConfirmation");
+  const quoteResetBtn = document.getElementById("quoteResetBtn");
 
   if (!cfFile || !cfFileName || !cfFileLabel || !feedback || !submitBtn) return;
 
-  // Constants
-  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+  if (quoteResetBtn) {
+    quoteResetBtn.addEventListener("click", () => {
+      if (quoteConfirmation) quoteConfirmation.style.display = "none";
+      form.style.display = "";
+    });
+  }
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024;
   const ALLOWED_TYPES = {
     "image/jpeg": "jpg",
     "image/png": "png",
@@ -156,7 +224,6 @@ function initContactForm() {
     if (type) feedback.classList.add(type);
   }
 
-  // Show selected file name
   cfFile.addEventListener("change", () => {
     if (cfFile.files.length > 0) {
       cfFileName.textContent = cfFile.files[0].name;
@@ -173,7 +240,6 @@ function initContactForm() {
     const email = cfEmail.value.trim();
     const message = cfMessage.value.trim();
 
-    // Basic validation
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       showFeedback("VALID EMAIL REQUIRED", "error");
       return;
@@ -187,7 +253,6 @@ function initContactForm() {
       return;
     }
 
-    // Validate file before touching the button
     if (cfFile.files.length > 0) {
       const file = cfFile.files[0];
       if (file.size > MAX_FILE_SIZE) {
@@ -208,11 +273,9 @@ function initContactForm() {
     let photoUrl = null;
 
     try {
-      // Upload photo if present (already validated above)
       if (cfFile.files.length > 0) {
         const file = cfFile.files[0];
         const fileType = (file.type || "").toLowerCase();
-
         const ext = ALLOWED_TYPES[fileType];
         const uniqueId = crypto.randomUUID
           ? crypto.randomUUID()
@@ -228,29 +291,23 @@ function initContactForm() {
         if (uploadErr)
           throw new Error("Photo upload failed: " + uploadErr.message);
 
-        // Get public URL
         const { data: urlData } = sb.storage
           .from("contact-photos")
           .getPublicUrl(path);
         photoUrl = urlData.publicUrl;
       }
 
-      // Insert contact message
       const { error: insertErr } = await sb.from("contact_messages").insert([
-        {
-          email,
-          message,
-          photo_url: photoUrl || null,
-        },
+        { email, message, photo_url: photoUrl || null },
       ]);
 
       if (insertErr) throw new Error("Submit failed: " + insertErr.message);
 
-      // Success
-      showFeedback("MESSAGE SENT — I'LL BE IN TOUCH", "success");
       form.reset();
       cfFileName.textContent = "Attach photo";
       cfFileLabel.classList.remove("has-file");
+      form.style.display = "none";
+      if (quoteConfirmation) quoteConfirmation.style.display = "block";
     } catch (err) {
       console.error("Contact form error:", err);
       showFeedback(err.message || "SOMETHING WENT WRONG", "error");
@@ -261,4 +318,8 @@ function initContactForm() {
   });
 }
 
+/* ═════════════════════════════════════════════════════════════════════
+   INITIALISE
+   ═════════════════════════════════════════════════════════════════════ */
 initContactForm();
+renderPortfolioPage();

@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: constants.js — Shared Application Constants
+ * MODULE: constants.js - Shared Application Constants
  * ═══════════════════════════════════════════════════════════════════════
  *
  * PURPOSE:
@@ -26,17 +26,17 @@
  *                       on the public directory page.
  *
  * HOW TO ADD FEATURES / MODIFY:
- *   • NEW TAG — Append a string to ALL_TAGS.  The admin tag-picker and
+ *   • NEW TAG - Append a string to ALL_TAGS.  The admin tag-picker and
  *     "Join" form tag-picker will automatically include it.
- *   • NEW CATEGORY — Append a string to CATEGORIES.  The <datalist> in
+ *   • NEW CATEGORY - Append a string to CATEGORIES.  The <datalist> in
  *     the admin edit modal will show it as a suggestion.
- *   • NEW REGION — Do all four:
+ *   • NEW REGION - Do all four:
  *       1. Add a bounding-box entry to REGION_BOUNDS.
  *       2. Add a { title, subtitle } entry to REGION_META.
  *       3. Insert the slug into REGION_ORDER at the desired position.
  *       4. Insert a matching row in the Supabase `regions` table so
  *          the admin region filter picks it up.
- *   • RENAME A REGION — Update the slug everywhere it appears in this
+ *   • RENAME A REGION - Update the slug everywhere it appears in this
  *     file, then update the Supabase `regions` row to match.
  * ═══════════════════════════════════════════════════════════════════════
  */
@@ -134,17 +134,17 @@ export const REGION_META = {
   "weber-ogden": {
     title: "Weber / Ogden Area",
     subtitle:
-      "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset — Hill AFB Aerospace & Defense Corridor",
+      "Ogden · Roy · Layton · Clearfield · Riverdale · Kaysville · Sunset - Hill AFB Aerospace & Defense Corridor",
   },
   "cache-valley": {
     title: "Cache Valley",
     subtitle:
-      "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond — Home of Utah State University",
+      "Logan · North Logan · Providence · Smithfield · Hyrum · Richmond - Home of Utah State University",
   },
   "southern-utah": {
     title: "St. George / Southern Utah",
     subtitle:
-      "St. George · Washington · Ivins · Hurricane · Cedar City — Off-Road Hub & Growing Custom Scene",
+      "St. George · Washington · Ivins · Hurricane · Cedar City - Off-Road Hub & Growing Custom Scene",
   },
   other: {
     title: "Other: Statewide, Rural & Specialty",

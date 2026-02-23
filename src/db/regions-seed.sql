@@ -1,5 +1,5 @@
 -- ============================================================================
--- UTAH FAB DIRECTORY — Regions Seed Data
+-- UTAH FAB DIRECTORY - Regions Seed Data
 -- Run this in your Supabase SQL Editor to fix the Foreign Key Error
 -- ============================================================================
 
