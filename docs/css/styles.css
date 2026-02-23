@@ -11,6 +11,7 @@
   --amber: var(--brand-amber-light);
   --light: var(--text-main);
   --muted: var(--text-muted);
+  --radius: 0;
   --card-bg: rgba(255, 255, 255, 0.03);
   --card-border: var(--border-color);
 
@@ -235,7 +236,7 @@ body {
   top: 22px;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--iron);
   border: 1px solid var(--orange);
   box-shadow: 0 0 0 3px rgba(255, 107, 43, 0.08);
@@ -1382,7 +1383,7 @@ body {
   color: var(--muted);
   text-decoration: none;
   border: 1px solid var(--card-border);
-  border-radius: 4px;
+  border-radius: 0;
   padding: 5px 12px;
   transition: color 0.2s, border-color 0.2s;
   white-space: nowrap;
@@ -1713,7 +1714,7 @@ body {
   color: #fff;
   background: var(--orange);
   border: 1px solid var(--orange);
-  border-radius: 4px;
+  border-radius: 0;
   padding: 0.65rem 2rem;
   transition: background 0.2s, border-color 0.2s;
 }
