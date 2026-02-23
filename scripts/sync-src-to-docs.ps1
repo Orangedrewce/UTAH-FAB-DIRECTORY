@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "major additions, portfolio site, 3d model gallery v1 started"
+  git commit -m "Admin preview window i frame, multi file upload"
 
   # 5) Publish to live site
   git pull origin dev --rebase

@@ -1010,6 +1010,10 @@ body.modal-open {
   border-color: var(--danger);
   color: var(--danger);
 }
+.port-admin-flag--size {
+  border-color: rgba(0, 184, 148, .3);
+  color: rgba(0, 184, 148, .8);
+}
 .port-admin-3d-badge {
   font-family: var(--font-mono);
   font-size: .62rem;

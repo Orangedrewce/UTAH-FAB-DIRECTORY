@@ -83,11 +83,21 @@ const pModelUrl = $("#pModelUrl");
 const pFeatured = $("#pFeatured");
 const pVisible = $("#pVisible");
 const pExistingImageUrl = $("#pExistingImageUrl");
+const pImageSizeBytes = $("#pImageSizeBytes");
+const pModelSizeBytes = $("#pModelSizeBytes");
 
 // ── State ───────────────────────────────────────────────────────────────
 let allItems = [];
 let filtered = [];
 let _ready = false;
+
+// ── HELPERS ─────────────────────────────────────────────────────────────
+function formatBytes(bytes) {
+  if (!bytes || bytes <= 0) return null;
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+}
 
 // ── TAB SWITCHING ───────────────────────────────────────────────────────
 if (adminTabs) {
@@ -267,6 +277,8 @@ function renderGrid() {
           ${item.is_featured ? '<span class="port-admin-flag port-admin-flag--feat">FEATURED</span>' : ""}
           ${!item.is_visible ? '<span class="port-admin-flag port-admin-flag--hidden">HIDDEN</span>' : ""}
           <span class="port-admin-flag port-admin-flag--order">#${item.sort_order}</span>
+          ${item.image_size_bytes ? `<span class="port-admin-flag port-admin-flag--size" title="Image file size">IMG ${formatBytes(item.image_size_bytes)}</span>` : ""}
+          ${item.model_size_bytes ? `<span class="port-admin-flag port-admin-flag--size" title="3D model file size">3D ${formatBytes(item.model_size_bytes)}</span>` : ""}
         </div>
       </div>
       <div class="port-admin-card-actions">
@@ -306,6 +318,8 @@ function openModal(item = null) {
     pFeatured.checked = !!item.is_featured;
     pVisible.checked = item.is_visible !== false;
     pExistingImageUrl.value = item.image_url || "";
+    if (pImageSizeBytes) pImageSizeBytes.value = item.image_size_bytes || 0;
+    if (pModelSizeBytes) pModelSizeBytes.value = item.model_size_bytes || 0;
 
     // Show existing image in preview
     if (item.image_url) {
@@ -370,6 +384,7 @@ async function handleModelFileSelected() {
   try {
     const urls = await Promise.all(files.map((f) => uploadPortfolioAsset(f)));
     pModelUrl.value = urls.join(",");
+    if (pModelSizeBytes) pModelSizeBytes.value = files.reduce((sum, f) => sum + f.size, 0);
     pModelPreview.innerHTML = `<span class="port-upload-placeholder" style="color:var(--brand-orange-dim)">${esc(names)}</span>`;
     updateLivePreview();
   } catch (err) {
@@ -422,11 +437,15 @@ async function handleSave(e) {
 
   try {
     let imageUrl = pExistingImageUrl?.value || null;
+    let imageSizeBytes = parseInt(pImageSizeBytes?.value, 10) || null;
 
     // Upload new image if selected
     if (pImage?.files?.length > 0) {
+      imageSizeBytes = pImage.files[0].size;
       imageUrl = await uploadPortfolioAsset(pImage.files[0]);
     }
+
+    const modelSizeBytes = parseInt(pModelSizeBytes?.value, 10) || null;
 
     const payload = {
       title,
@@ -434,16 +453,27 @@ async function handleSave(e) {
       tag: pTag?.value || "RENDER",
       sort_order: parseInt(pSortOrder?.value, 10) || 0,
       image_url: imageUrl,
+      image_size_bytes: imageSizeBytes || null,
       model_url: pModelUrl?.value?.trim() || null,
+      model_size_bytes: modelSizeBytes || null,
       is_featured: !!pFeatured?.checked,
       is_visible: pVisible?.checked !== false,
     };
 
     const id = pId?.value;
-    if (id) {
-      await updatePortfolioItem(id, payload);
-    } else {
-      await insertPortfolioItem(payload);
+    const save = (p) => id ? updatePortfolioItem(id, p) : insertPortfolioItem(p);
+
+    try {
+      await save(payload);
+    } catch (schemaErr) {
+      // If the size columns haven't been migrated yet, retry without them
+      if (schemaErr.message?.includes("image_size_bytes") || schemaErr.message?.includes("model_size_bytes") || schemaErr.message?.includes("schema cache")) {
+        console.warn("Size columns not found in DB — retrying without them. Run the migration SQL to enable file size tracking.");
+        const { image_size_bytes, model_size_bytes, ...fallbackPayload } = payload;
+        await save(fallbackPayload);
+      } else {
+        throw schemaErr;
+      }
     }
 
     closeModal();
