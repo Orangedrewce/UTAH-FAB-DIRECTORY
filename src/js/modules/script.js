@@ -69,6 +69,19 @@ window.closeLightbox = closeLightbox;
 window.navigateLightbox = navigateLightbox;
 
 document.addEventListener("keydown", (event) => {
+  const openModelCard = document.querySelector(".port-thumb--model.is-model-open");
+  if (event.key === "Escape" && openModelCard) {
+    event.preventDefault();
+    const exitFullscreenAndClose = async () => {
+      if (document.fullscreenElement) {
+        try { await document.exitFullscreen?.(); } catch (_) { /* no-op */ }
+      }
+      setModelCardOpen(openModelCard, false);
+    };
+    exitFullscreenAndClose();
+    return;
+  }
+
   const fsEl = document.fullscreenElement;
   if (event.key === "Escape" && fsEl?.closest?.(".port-thumb--model")) {
     event.preventDefault();
@@ -102,6 +115,7 @@ function getPrimaryModelUrl(rawUrl) {
 /** @type {Map<string, {viewer: object, hostEl: HTMLElement}>} */
 const viewerRegistry = new Map();
 const fullscreenTargets = new Set();
+const orbitToastTimers = new WeakMap();
 
 function syncViewerFullscreenButtons() {
   for (const target of fullscreenTargets) {
@@ -226,18 +240,6 @@ function initCardViewer(hostEl, modelUrl) {
     fullscreenTarget.appendChild(fullscreenBtn);
   }
 
-  fullscreenBtn.onclick = async () => {
-    try {
-      if (document.fullscreenElement === fullscreenTarget) {
-        await document.exitFullscreen?.();
-      } else {
-        await fullscreenTarget.requestFullscreen?.();
-      }
-    } catch (err) {
-      console.warn("Fullscreen toggle failed:", err);
-    }
-  };
-
   syncViewerFullscreenButtons();
 
   if (typeof OV === "undefined") {
@@ -285,6 +287,129 @@ function disposeAllCardViewers() {
   }
 }
 
+function ensureCardViewer(cardEl) {
+  const hostEl = cardEl?.querySelector(".model-viewer-host");
+  if (!hostEl || hostEl.dataset.viewerReady === "true") return;
+
+  const url = hostEl.dataset.modelUrl;
+  if (!url) {
+    hostEl.innerHTML = '<span class="model-viewer-fallback">NO MODEL</span>';
+    hostEl.dataset.viewerReady = "true";
+    return;
+  }
+
+  initCardViewer(hostEl, url);
+  hostEl.dataset.viewerReady = "true";
+}
+
+function showModelOrbitToast(cardEl) {
+  if (!cardEl) return;
+  let toastEl = cardEl.querySelector(".model-orbit-toast");
+  if (!toastEl) {
+    toastEl = document.createElement("div");
+    toastEl.className = "model-orbit-toast";
+    toastEl.textContent = "Middle click to orbit";
+    cardEl.appendChild(toastEl);
+  }
+
+  toastEl.classList.add("is-visible");
+  const existingTimer = orbitToastTimers.get(cardEl);
+  if (existingTimer) window.clearTimeout(existingTimer);
+
+  const hideTimer = window.setTimeout(() => {
+    toastEl.classList.remove("is-visible");
+  }, 2200);
+
+  orbitToastTimers.set(cardEl, hideTimer);
+}
+
+function setModelCardOpen(cardEl, isOpen) {
+  if (!cardEl) return;
+  cardEl.classList.toggle("is-model-open", isOpen);
+
+  const hostEl = cardEl.querySelector(".model-viewer-host");
+  const curtainEl = cardEl.querySelector(".model-render-curtain");
+  const toggleBtn = cardEl.querySelector(".model-toggle-btn");
+
+  if (hostEl) hostEl.setAttribute("aria-hidden", String(!isOpen));
+  if (curtainEl) curtainEl.setAttribute("aria-hidden", String(isOpen));
+  if (toggleBtn) {
+    toggleBtn.textContent = isOpen ? "View Render" : "View 3D";
+    toggleBtn.setAttribute(
+      "aria-label",
+      isOpen ? "Switch back to render" : "Open interactive 3D model"
+    );
+  }
+}
+
+function openModelCard(cardEl) {
+  const openCard = document.querySelector(".port-thumb--model.is-model-open");
+  if (openCard && openCard !== cardEl) {
+    setModelCardOpen(openCard, false);
+  }
+
+  ensureCardViewer(cardEl);
+  setModelCardOpen(cardEl, true);
+  showModelOrbitToast(cardEl);
+}
+
+function closeModelCard(cardEl) {
+  setModelCardOpen(cardEl, false);
+  const toastEl = cardEl?.querySelector(".model-orbit-toast");
+  if (toastEl) toastEl.classList.remove("is-visible");
+}
+
+function toggleModelCard(cardEl) {
+  if (!cardEl) return;
+  const wasOpen = cardEl.classList.contains("is-model-open");
+  if (wasOpen) {
+    closeModelCard(cardEl);
+  } else {
+    openModelCard(cardEl);
+  }
+}
+
+document.addEventListener("click", (event) => {
+  const fullscreenBtn = event.target.closest(".model-fullscreen-btn");
+  if (fullscreenBtn) {
+    const card = fullscreenBtn.closest(".port-thumb--model");
+    if (!card) return;
+    event.preventDefault();
+
+    const toggleFullscreen = async () => {
+      try {
+        if (document.fullscreenElement === card) {
+          await document.exitFullscreen?.();
+        } else {
+          await card.requestFullscreen?.();
+        }
+      } catch (err) {
+        console.warn("Fullscreen toggle failed:", err);
+      }
+    };
+
+    toggleFullscreen();
+    return;
+  }
+
+  const actionBtn = event.target.closest("[data-model-action]");
+  if (actionBtn) {
+    const card = actionBtn.closest(".port-thumb--model");
+    if (!card) return;
+    event.preventDefault();
+
+    if (actionBtn.dataset.modelAction === "toggle") {
+      toggleModelCard(card);
+    }
+    return;
+  }
+
+  const openCard = document.querySelector(".port-thumb--model.is-model-open");
+  if (openCard && !openCard.contains(event.target)) {
+    closeModelCard(openCard);
+  }
+});
+
 /**
  * Build HTML for a single portfolio <figure>.
  * Cards with a model_url render a host <div> for the OV viewer;
@@ -307,7 +432,12 @@ function portfolioItemHTML(item) {
   if (modelUrl) {
     return `<figure class="port-item port-item--model" data-tag="${tag}">
     <div class="port-thumb port-thumb--model">
-      <div class="model-viewer-host" data-item-id="${esc(String(item.id || title))}" data-model-url="${esc(modelUrl)}"></div>
+      <div class="model-viewer-host" data-item-id="${esc(String(item.id || title))}" data-model-url="${esc(modelUrl)}" aria-hidden="true"></div>
+      <div class="model-render-curtain" aria-hidden="false">
+        <img class="model-render-thumb" src="${esc(imgUrl)}" alt="${title}" loading="lazy">
+      </div>
+      <button type="button" class="model-fullscreen-btn" aria-label="Enter fullscreen">FULL</button>
+      <button type="button" class="model-toggle-btn" data-model-action="toggle" aria-label="Open interactive 3D model">View 3D</button>
       <span class="port-model-badge">3D</span>
     </div>
     ${caption}
@@ -359,16 +489,6 @@ async function renderPortfolioPage() {
     // Render all items
     grid.innerHTML = items.map(portfolioItemHTML).join("");
     refreshThumbs();
-
-    // Initialise per-card OV viewers
-    grid.querySelectorAll(".model-viewer-host").forEach((hostEl) => {
-      const url = hostEl.dataset.modelUrl;
-      if (url) {
-        initCardViewer(hostEl, url);
-      } else {
-        hostEl.innerHTML = '<span class="model-viewer-fallback">NO MODEL</span>';
-      }
-    });
 
     if (loading) loading.classList.add("hidden");
 

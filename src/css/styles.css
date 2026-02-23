@@ -772,6 +772,51 @@ body {
   width: 100%;
   height: 100%;
   position: relative;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.port-thumb--model.is-model-open .model-viewer-host {
+  opacity: 1;
+  pointer-events: auto;
+}
+.model-render-curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+}
+.port-thumb--model.is-model-open .model-render-curtain {
+  opacity: 0;
+  pointer-events: none;
+}
+.model-render-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.model-toggle-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 6;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(13, 17, 23, 0.78);
+  color: var(--light);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  padding: 6px 12px;
+  cursor: pointer;
+  text-transform: none;
+}
+.model-toggle-btn:hover {
+  border-color: var(--orange);
+  color: var(--orange);
 }
 .model-fullscreen-btn {
   position: absolute;
@@ -786,11 +831,34 @@ body {
   letter-spacing: 1.5px;
   padding: 3px 7px;
   cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 .model-fullscreen-btn:hover,
 .model-fullscreen-btn.is-active {
   border-color: var(--orange);
   color: var(--orange);
+}
+.model-orbit-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%) translateY(6px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 7;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--light);
+  background: rgba(13, 17, 23, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  white-space: nowrap;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.model-orbit-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 .port-thumb--model:fullscreen {
   width: 100vw;
@@ -829,9 +897,10 @@ body {
   display: block;
 }
 .port-model-badge {
+  display: none;
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 8px;
+  right: 98px;
   font-family: var(--font-mono);
   font-size: 8px;
   letter-spacing: 1.5px;
@@ -840,7 +909,7 @@ body {
   padding: 2px 7px;
   font-weight: 600;
   pointer-events: none;
-  z-index: 1;
+  z-index: 5;
 }
 /* Orbit-centre XYZ gizmo overlay (Fusion 360-style) */
 .ov-pivot-gizmo {

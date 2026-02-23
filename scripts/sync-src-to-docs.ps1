@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "Description change"
+  git commit -m "full screen"
 
   # 5) Publish to live site
   git pull origin dev --rebase
