@@ -369,26 +369,41 @@ function toggleModelCard(cardEl) {
   }
 }
 
+function toggleCardFullscreen(cardEl) {
+  if (!cardEl) return;
+
+  const toggleFullscreen = async () => {
+    try {
+      if (document.fullscreenElement === cardEl) {
+        await document.exitFullscreen?.();
+      } else {
+        await cardEl.requestFullscreen?.();
+      }
+    } catch (err) {
+      console.warn("Fullscreen toggle failed:", err);
+    }
+  };
+
+  toggleFullscreen();
+}
+
 document.addEventListener("click", (event) => {
+  const renderWindow = event.target.closest(".model-render-curtain");
+  if (renderWindow) {
+    const card = renderWindow.closest(".port-thumb--model");
+    if (!card) return;
+    event.preventDefault();
+    toggleCardFullscreen(card);
+    return;
+  }
+
   const fullscreenBtn = event.target.closest(".model-fullscreen-btn");
   if (fullscreenBtn) {
     const card = fullscreenBtn.closest(".port-thumb--model");
     if (!card) return;
     event.preventDefault();
 
-    const toggleFullscreen = async () => {
-      try {
-        if (document.fullscreenElement === card) {
-          await document.exitFullscreen?.();
-        } else {
-          await card.requestFullscreen?.();
-        }
-      } catch (err) {
-        console.warn("Fullscreen toggle failed:", err);
-      }
-    };
-
-    toggleFullscreen();
+    toggleCardFullscreen(card);
     return;
   }
 
