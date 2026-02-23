@@ -114,6 +114,25 @@ body {
 
   .count-badge strong { color: var(--brand-orange-dim); }
 
+  /* ── DIRECTORY FOOTER ── */
+  .dir-footer {
+    text-align: center;
+    padding: 20px 32px;
+    border-top: 1px solid var(--border-neutral);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    opacity: 0.55;
+  }
+  .dir-footer-sep { margin: 0 8px; }
+  .dir-footer-link {
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .dir-footer-link:hover { color: var(--brand-orange-dim); }
+
   /* ── SUPPORT / DONATE LINK ── */
   .support-link {
     display: inline-flex;

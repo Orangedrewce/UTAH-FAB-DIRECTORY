@@ -758,12 +758,21 @@ body.modal-open {
   }
   .modal-preview-pane {
     flex: 1;
+    min-width: 0; /* prevent flex overflow */
     padding: 1.5rem;
     background: rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-y: auto;
+    max-height: 80vh;
   }
+}
+
+/* Mobile: cap preview height so it doesn't balloon the modal */
+.modal-preview-pane {
+  max-height: 260px;
+  overflow-y: auto;
 }
 
 .preview-title {
@@ -835,12 +844,12 @@ body.modal-open {
 
 #liveCardPreview .tag {
   display: inline-block;
-  background: rgba(255, 107, 43, 0.1);
+  background: color-mix(in srgb, var(--brand-orange) 12%, transparent);
   color: var(--brand-orange);
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
   font-size: 0.7rem;
   margin-right: 0.3rem;
   margin-bottom: 0.3rem;
-  border: 1px solid rgba(255, 107, 43, 0.3);
+  border: 1px solid color-mix(in srgb, var(--brand-orange) 30%, transparent);
 }
