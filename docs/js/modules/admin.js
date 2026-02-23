@@ -70,7 +70,7 @@
 
 import { supabase as _supabase } from "./supabase.js";
 import { ALL_TAGS, CATEGORIES, REGION_BOUNDS } from "./constants.js";
-import { esc, parseMapsUrl, debounce } from "./utils.js";
+import { esc, parseMapsUrl, websiteLink, debounce } from "./utils.js";
 import { fetchShops, fetchRegions, fetchRequests } from "./api.js";
 
 // ── Canonical regions (loaded from DB, fallback hardcoded) ─────────────
@@ -533,8 +533,42 @@ function buildTagPicker(selectedTags = []) {
   }).join("");
 
   tagPicker.querySelectorAll(".tag-chip").forEach((chip) => {
-    chip.addEventListener("click", () => chip.classList.toggle("selected"));
+    chip.addEventListener("click", () => {
+      chip.classList.toggle("selected");
+      updateLivePreview();
+    });
   });
+}
+
+/** Reads the current form values and renders a live preview card */
+function updateLivePreview() {
+  const previewContainer = $("#liveCardPreview");
+  if (!previewContainer) return;
+
+  const shop = {
+    name: fName.value.trim() || "Shop Name",
+    city: fCity.value.trim() || "City",
+    size: fSize.value.trim() || "",
+    services: fServices.value.trim() || "Services listed here…",
+    website: fWebsite.value.trim() || "",
+    maps_url: fMapsUrl.value.trim() || "",
+    tags: getSelectedTags(),
+  };
+
+  const tagsHtml = shop.tags
+    .map((t) => `<span class="tag">${esc(t)}</span>`)
+    .join(" ");
+
+  previewContainer.innerHTML = `
+    <div class="card">
+      <div class="card-top"><span class="card-name">${esc(shop.name)}</span></div>
+      <div class="card-city">${esc(shop.city)}</div>
+      <div class="card-size">${esc(shop.size)}</div>
+      <div class="card-services">${esc(shop.services)}</div>
+      <div style="margin-top:.5rem;margin-bottom:1rem;">${tagsHtml}</div>
+      <div class="card-website">${websiteLink(shop)}</div>
+    </div>
+  `;
 }
 
 function getSelectedTags() {
@@ -559,6 +593,7 @@ function openAddModal() {
   fMapsUrl.value = "";
   fIsActive.checked = true;
   buildTagPicker([]);
+  updateLivePreview();
   openModal();
 }
 
@@ -573,12 +608,13 @@ function openEditModal(id) {
   fCity.value = shop.city || "";
   fRegion.value = shop.region || "";
   fCategory.value = shop.category || "";
-  fSize.value = shop.size_desc || "";
+  fSize.value = shop.size || "";
   fServices.value = shop.services || "";
   fWebsite.value = shop.website || "";
   fMapsUrl.value = shop.maps_url || "";
   fIsActive.checked = shop.is_active !== false;
   buildTagPicker(shop.tags || []);
+  updateLivePreview();
   openModal();
 }
 
@@ -601,6 +637,9 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && !modalBackdrop.classList.contains("hidden"))
     closeModal();
 });
+
+// Live preview updates on any form input
+shopForm.addEventListener("input", updateLivePreview);
 
 /* ═══════════════════════════════════════════════════════════════════════
    SAVE  (INSERT or UPDATE)

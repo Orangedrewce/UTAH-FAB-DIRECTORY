@@ -52,6 +52,10 @@ const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
 const lightboxLabel = document.getElementById("lightbox-label");
 
+// ── Lightbox navigation state ───────────────────────────────────────────
+const thumbs = [...document.querySelectorAll(".thumb")];
+let currentIndex = 0;
+
 export function openLightbox(element) {
   if (!lightbox || !lightboxImg || !lightboxLabel) {
     return;
@@ -62,10 +66,26 @@ export function openLightbox(element) {
     return;
   }
 
+  // Track which thumb was clicked so arrow keys know where we are
+  const idx = thumbs.indexOf(element);
+  if (idx !== -1) currentIndex = idx;
+
   lightboxImg.src = image.src;
   lightboxImg.alt = image.alt || "";
   lightboxLabel.textContent = element.getAttribute("data-label") || "";
   lightbox.classList.add("open");
+}
+
+/** Navigate the lightbox by a delta (−1 = prev, +1 = next), wrapping at boundaries */
+function navigateLightbox(delta) {
+  if (!thumbs.length || !lightbox?.classList.contains("open")) return;
+  currentIndex = (currentIndex + delta + thumbs.length) % thumbs.length;
+  const thumb = thumbs[currentIndex];
+  const image = thumb.querySelector("img");
+  if (!image) return;
+  lightboxImg.src = image.src;
+  lightboxImg.alt = image.alt || "";
+  lightboxLabel.textContent = thumb.getAttribute("data-label") || "";
 }
 
 export function closeLightbox() {
@@ -86,10 +106,20 @@ export function closeLightbox() {
 // Expose to window for inline HTML handlers
 window.openLightbox = openLightbox;
 window.closeLightbox = closeLightbox;
+window.navigateLightbox = navigateLightbox;
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && lightbox?.classList.contains("open")) {
-    closeLightbox();
+  if (!lightbox?.classList.contains("open")) return;
+  switch (event.key) {
+    case "Escape":
+      closeLightbox();
+      break;
+    case "ArrowLeft":
+      navigateLightbox(-1);
+      break;
+    case "ArrowRight":
+      navigateLightbox(1);
+      break;
   }
 });
 
@@ -187,7 +217,8 @@ function initContactForm() {
         const uniqueId = crypto.randomUUID
           ? crypto.randomUUID()
           : Array.from(crypto.getRandomValues(new Uint8Array(16)))
-              .map((b) => b.toString(16).padStart(2, "0")).join("");
+              .map((b) => b.toString(16).padStart(2, "0"))
+              .join("");
         const path = `${Date.now()}_${uniqueId}.${ext}`;
 
         const { data: uploadData, error: uploadErr } = await sb.storage

@@ -736,3 +736,111 @@ body.modal-open {
   color: var(--text-muted);
   white-space: nowrap;
 }
+
+/* ── MODAL SPLIT LAYOUT ── */
+.modal--wide {
+  max-width: 900px;
+  width: 95%;
+}
+
+.modal-split {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .modal-split {
+    flex-direction: row;
+  }
+  .modal-split > .modal-body {
+    flex: 1.5;
+    border-right: 1px dashed var(--border-neutral);
+  }
+  .modal-preview-pane {
+    flex: 1;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.preview-title {
+  font-family: var(--font-title);
+  color: var(--text-dim);
+  margin-top: 0;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+  align-self: flex-start;
+}
+
+/* ── LIVE PREVIEW CARD STYLES ── */
+#liveCardPreview {
+  width: 100%;
+}
+
+#liveCardPreview .card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-neutral);
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+#liveCardPreview .card-top {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: var(--brand-orange);
+  margin-bottom: 0.25rem;
+}
+
+#liveCardPreview .card-city {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+#liveCardPreview .card-size {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+#liveCardPreview .card-services {
+  font-size: 0.85rem;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+#liveCardPreview .card-link {
+  color: var(--brand-orange);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+#liveCardPreview .card-link:hover {
+  text-decoration: underline;
+}
+
+#liveCardPreview .tag {
+  display: inline-block;
+  background: rgba(255, 107, 43, 0.1);
+  color: var(--brand-orange);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  margin-right: 0.3rem;
+  margin-bottom: 0.3rem;
+  border: 1px solid rgba(255, 107, 43, 0.3);
+}

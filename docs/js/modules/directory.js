@@ -239,6 +239,14 @@ function applyFilters() {
   } else {
     googleFallback.style.display = "none";
   }
+
+  // ── Shareable URL — push current filter state into the address bar ──
+  const params = new URLSearchParams();
+  if (regionVal) params.set("region", regionVal);
+  if (activeFilter !== "all") params.set("service", activeFilter);
+  if (searchTerm) params.set("q", searchTerm);
+  const qs = params.toString();
+  history.replaceState(null, "", qs ? "?" + qs : window.location.pathname);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -268,6 +276,20 @@ regionFilter.addEventListener("change", applyFilters);
     }
 
     buildDirectory(allShops);
+
+    // ── Restore filters from URL query params (shareable links) ──
+    const params = new URLSearchParams(window.location.search);
+    const urlRegion = params.get("region");
+    const urlService = params.get("service");
+    const urlQuery = params.get("q");
+
+    if (urlRegion && regionFilter) regionFilter.value = urlRegion;
+    if (urlService && serviceFilter) {
+      serviceFilter.value = urlService;
+      activeFilter = urlService;
+    }
+    if (urlQuery && searchInput) searchInput.value = urlQuery;
+
     applyFilters();
   } catch (err) {
     console.error("Directory load error:", err);

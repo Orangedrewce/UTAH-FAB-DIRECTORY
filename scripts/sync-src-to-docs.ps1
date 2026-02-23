@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "experemental js hardening"
+  git commit -m "experemental js hardening, css scrollbar html"
 
   # 5) Publish to live site
   git pull origin dev --rebase

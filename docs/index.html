@@ -33,7 +33,9 @@
   <!-- ── LIGHTBOX ── -->
   <div class="lightbox" id="lightbox" role="dialog" aria-label="Portfolio image viewer" aria-modal="true">
     <button class="lightbox-close" onclick="closeLightbox()">[ CLOSE ]</button>
+    <button class="lightbox-arrow lightbox-prev" onclick="navigateLightbox(-1)" aria-label="Previous image">&#8249;</button>
     <img id="lightbox-img" src="" alt="">
+    <button class="lightbox-arrow lightbox-next" onclick="navigateLightbox(1)" aria-label="Next image">&#8250;</button>
     <div class="lightbox-label" id="lightbox-label"></div>
   </div>
 
@@ -85,7 +87,7 @@
         <div class="timeline">
           <article class="timeline-step">
             <div class="timeline-media thumb" onclick="openLightbox(this)" data-label="INTAKE · Rusty Driveshaft">
-              <img src="assets/rusty driveshaft.png" alt="Rusty driveshaft on a workbench">
+              <img src="assets/rusty driveshaft.png" alt="Rusty driveshaft on a workbench" loading="lazy">
               <div class="thumb-overlay">[ VIEW ]</div>
             </div>
             <div class="timeline-content">
@@ -98,7 +100,7 @@
 
           <article class="timeline-step">
             <div class="timeline-media thumb" onclick="openLightbox(this)" data-label="MODEL · Render">
-              <img src="assets/Render.png" alt="CAD render of a driveshaft">
+              <img src="assets/Render.png" alt="CAD render of a driveshaft" loading="lazy">
               <div class="thumb-overlay">[ VIEW ]</div>
             </div>
             <div class="timeline-content">
@@ -111,7 +113,7 @@
 
           <article class="timeline-step">
             <div class="timeline-media thumb" onclick="openLightbox(this)" data-label="OUTPUT · Blueprint">
-              <img src="assets/Driveshaft blueprint.png" alt="Blueprint drawing of the driveshaft">
+              <img src="assets/Driveshaft blueprint.png" alt="Blueprint drawing of the driveshaft" loading="lazy">
               <div class="thumb-overlay">[ VIEW ]</div>
             </div>
             <div class="timeline-content">

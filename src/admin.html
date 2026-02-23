@@ -123,12 +123,14 @@
      SHOP EDIT MODAL
 ═══════════════════════════════════════════════════ -->
 <div class="modal-backdrop hidden" id="modalBackdrop">
-  <div class="modal" id="shopModal" role="dialog" aria-labelledby="modalTitle">
+  <div class="modal modal--wide" id="shopModal" role="dialog" aria-labelledby="modalTitle">
     <div class="modal-header">
       <h2 id="modalTitle">Add Shop</h2>
       <button class="modal-close" id="modalCloseBtn">&times;</button>
     </div>
-    <form id="shopForm" class="modal-body" autocomplete="off">
+
+    <div class="modal-split">
+      <form id="shopForm" class="modal-body" autocomplete="off">
 
       <div class="form-row">
         <div class="form-group flex-2">
@@ -194,6 +196,14 @@
         <button type="submit" class="btn btn-primary" id="saveBtn">Save Shop</button>
       </div>
     </form>
+
+      <div class="modal-preview-pane">
+        <h3 class="preview-title">Live Preview</h3>
+        <div id="liveCardPreview" class="card-grid">
+          <!-- Rendered reactively by JS -->
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
