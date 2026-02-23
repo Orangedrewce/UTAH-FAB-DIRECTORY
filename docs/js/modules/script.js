@@ -81,73 +81,197 @@ document.addEventListener("keydown", (event) => {
    DYNAMIC PORTFOLIO - portfolio.html only (not homepage)
    ═══════════════════════════════════════════════════════════════════════ */
 
+// ── Model URL normalisation ─────────────────────────────────────────────
 /**
- * Build HTML for a single portfolio <figure>.
+ * Split comma-separated model URLs, trim, return the first valid URL or null.
  */
-function buildEmbedSrc(modelUrl) {
-  if (!modelUrl) return "";
-  if (modelUrl.includes("3dviewer.net")) return modelUrl;
-  return `https://3dviewer.net/embed.html#model=${modelUrl}`;
+function getPrimaryModelUrl(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== "string") return null;
+  const urls = rawUrl.split(",").map((u) => u.trim()).filter(Boolean);
+  return urls.length > 0 ? urls[0] : null;
 }
 
+// ── Per-card OV viewer registry & lifecycle ─────────────────────────────
+/** @type {Map<string, {viewer: object, hostEl: HTMLElement}>} */
+const viewerRegistry = new Map();
+
+/**
+ * Monkey-patch OV navigation so controls match Fusion 360:
+ *   MMB = orbit,  Shift+MMB = pan,  Scroll = zoom,  LMB = no nav
+ *
+ * In both OV and Fusion 360 the *camera* moves around a fixed pivot
+ * (camera.center) — the object stays put. OV.Orbit() already does this:
+ * it rotates camera.eye around camera.center. So no inversion is needed;
+ * we only remap which mouse button triggers each action.
+ */
+function patchFusion360Controls(embeddedViewer) {
+  try {
+    const iv = embeddedViewer.GetViewer();
+    if (!iv || !iv.navigation || !iv.navigation.mouse) return;
+    const mouseObj = iv.navigation.mouse;
+    const origGetButton = mouseObj.GetButton.bind(mouseObj);
+    mouseObj.GetButton = function () {
+      const btn = origGetButton();
+      if (btn === 2) return 1;  // MMB → treated as LMB → orbit path
+      if (btn === 1) return 0;  // LMB → no navigation match
+      return btn;
+    };
+  } catch (_) { /* default OV controls still functional */ }
+}
+
+// ── XYZ orbit-axis gizmo settings ───────────────────────────────────────
+const AXIS_LENGTH  = 18;   // px – half-length of each axis line
+const AXIS_WIDTH   = 1.5;  // px – stroke width
+const AXIS_COLORS  = { x: "#ff3333", y: "#33cc33", z: "#3388ff" }; // standard RGB
+
+/**
+ * Draw a tiny XYZ axis indicator at the orbit centre while MMB is held.
+ * Uses a transparent <canvas> overlay sized to match the viewer canvas.
+ */
+function addPivotGizmo(embeddedViewer, hostEl) {
+  try {
+    const iv = embeddedViewer.GetViewer();
+    if (!iv || !iv.canvas) return;
+
+    const overlay = document.createElement("canvas");
+    overlay.className = "ov-pivot-gizmo";
+    hostEl.appendChild(overlay);
+    const ctx = overlay.getContext("2d");
+
+    function drawAxes() {
+      const w = iv.canvas.clientWidth;
+      const h = iv.canvas.clientHeight;
+      overlay.width  = w * (window.devicePixelRatio || 1);
+      overlay.height = h * (window.devicePixelRatio || 1);
+      overlay.style.width  = w + "px";
+      overlay.style.height = h + "px";
+      ctx.setTransform(window.devicePixelRatio || 1, 0, 0, window.devicePixelRatio || 1, 0, 0);
+
+      const cx = w / 2;
+      const cy = h / 2;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.lineWidth = AXIS_WIDTH;
+      ctx.lineCap = "round";
+
+      // X axis → right (red)
+      ctx.strokeStyle = AXIS_COLORS.x;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + AXIS_LENGTH, cy); ctx.stroke();
+      // Y axis → up (green)
+      ctx.strokeStyle = AXIS_COLORS.y;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy - AXIS_LENGTH); ctx.stroke();
+      // Z axis → diagonal towards viewer (blue)
+      ctx.strokeStyle = AXIS_COLORS.z;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx - AXIS_LENGTH * 0.6, cy + AXIS_LENGTH * 0.6); ctx.stroke();
+    }
+
+    const show = () => { drawAxes(); overlay.classList.add("visible"); };
+    const hide = () => { overlay.classList.remove("visible"); ctx.clearRect(0, 0, overlay.width, overlay.height); };
+
+    let mmbDown = false;
+    let rafId = null;
+
+    function tick() {
+      if (!mmbDown) return;
+      drawAxes();
+      rafId = requestAnimationFrame(tick);
+    }
+
+    iv.canvas.addEventListener("mousedown", (e) => {
+      if (e.button === 1) { mmbDown = true; show(); tick(); }
+    });
+    // Listen on document so release is caught even if cursor leaves the canvas
+    document.addEventListener("mouseup", (e) => {
+      if (e.button === 1) { mmbDown = false; if (rafId) cancelAnimationFrame(rafId); hide(); }
+    });
+  } catch (_) { /* non-critical — orbit still works without gizmo */ }
+}
+
+/** Create an OV.EmbeddedViewer inside a host element. */
+function initCardViewer(hostEl, modelUrl) {
+  const id = hostEl.dataset.itemId;
+  if (!id || !modelUrl) return;
+  disposeCardViewer(id);
+
+  if (typeof OV === "undefined") {
+    console.warn("Online3DViewer (OV) not loaded — falling back.");
+    hostEl.innerHTML = '<span class="model-viewer-fallback">3D PREVIEW UNAVAILABLE</span>';
+    return;
+  }
+
+  try {
+    const viewer = new OV.EmbeddedViewer(hostEl, {
+      backgroundColor: new OV.RGBAColor(13, 17, 23, 255),
+      defaultColor: new OV.RGBColor(200, 200, 200),
+      onModelLoaded: () => {
+        patchFusion360Controls(viewer);
+        addPivotGizmo(viewer, hostEl);
+      },
+      onModelLoadFailed: () => {
+        hostEl.innerHTML = '<span class="model-viewer-fallback">LOAD FAILED</span>';
+        viewerRegistry.delete(id);
+      }
+    });
+    viewer.LoadModelFromUrlList([modelUrl]);
+    viewerRegistry.set(id, { viewer, hostEl });
+  } catch (err) {
+    console.warn(`Viewer init failed [${id}]:`, err);
+    hostEl.innerHTML = '<span class="model-viewer-fallback">3D PREVIEW UNAVAILABLE</span>';
+  }
+}
+
+/** Tear down a single card viewer and release its WebGL context. */
+function disposeCardViewer(id) {
+  const entry = viewerRegistry.get(id);
+  if (!entry) return;
+  try { entry.viewer.Destroy(); } catch (_) { /* best-effort */ }
+  entry.hostEl.innerHTML = "";
+  viewerRegistry.delete(id);
+}
+
+/** Tear down every registered card viewer. */
+function disposeAllCardViewers() {
+  for (const id of [...viewerRegistry.keys()]) {
+    disposeCardViewer(id);
+  }
+}
+
+/**
+ * Build HTML for a single portfolio <figure>.
+ * Cards with a model_url render a host <div> for the OV viewer;
+ * all other cards keep the existing image/lightbox path.
+ */
 function portfolioItemHTML(item) {
   const tag = esc(item.tag || "RENDER");
   const title = esc(item.title);
   const desc = esc(item.description || "");
   const label = `${tag} · ${title}`;
+  const imgUrl = item.image_url || "assets/Render.png";
+  const modelUrl = getPrimaryModelUrl(item.model_url);
 
-  // 3D model with no image → embed viewer directly; no lightbox
-  if (!item.image_url && item.model_url) {
-    return `<figure class="port-item port-item--model" data-tag="${tag}">
-    <div class="port-thumb--model">
-      <iframe class="port-model-frame" src="${esc(buildEmbedSrc(item.model_url))}" loading="lazy" tabindex="-1"></iframe>
-      <span class="port-model-badge">3D</span>
-    </div>
-    <figcaption class="port-caption">
+  const caption = `<figcaption class="port-caption">
       <span class="port-tag">${tag}</span>
       <span class="port-title">${title}</span>
       ${desc ? `<span class="port-meta">${desc}</span>` : ""}
-    </figcaption>
+    </figcaption>`;
+
+  if (modelUrl) {
+    return `<figure class="port-item port-item--model" data-tag="${tag}">
+    <div class="port-thumb port-thumb--model">
+      <div class="model-viewer-host" data-item-id="${esc(String(item.id || title))}" data-model-url="${esc(modelUrl)}"></div>
+      <span class="port-model-badge">3D</span>
+    </div>
+    ${caption}
   </figure>`;
   }
 
-  const imgUrl = item.image_url || "assets/Render.png";
   return `<figure class="port-item" data-tag="${tag}">
     <div class="port-thumb thumb" onclick="openLightbox(this)" data-label="${esc(label)}">
       <img src="${esc(imgUrl)}" alt="${title}" loading="lazy">
-      ${item.model_url ? '<span class="port-model-badge">3D</span>' : ""}
       <div class="thumb-overlay">[ VIEW ]</div>
     </div>
-    <figcaption class="port-caption">
-      <span class="port-tag">${tag}</span>
-      <span class="port-title">${title}</span>
-      ${desc ? `<span class="port-meta">${desc}</span>` : ""}
-    </figcaption>
+    ${caption}
   </figure>`;
-}
-
-/**
- * Initialise the 3D viewer iframe with the first model_url found.
- * Only runs on portfolio.html (viewer elements don't exist on index.html).
- */
-function init3DViewer(items) {
-  const wrap = document.getElementById("viewer3dWrap");
-  const frame = document.getElementById("viewer3dFrame");
-  const titleEl = document.getElementById("viewer3dTitle");
-  if (!wrap || !frame) return;
-
-  const modelItem = items.find((i) => i.model_url);
-  if (!modelItem) return;
-
-  let src = modelItem.model_url;
-  // If it's a raw file URL (not already a 3dviewer embed), wrap it
-  if (!src.includes("3dviewer.net") && !src.includes("embed")) {
-    src = `https://3dviewer.net/embed.html#model=${encodeURIComponent(src)}`;
-  }
-
-  frame.src = src;
-  if (titleEl) titleEl.textContent = modelItem.title || "3D Model";
-  wrap.style.display = "";
 }
 
 /**
@@ -180,10 +304,22 @@ async function renderPortfolioPage() {
       filterBar.appendChild(btn);
     });
 
+    // Dispose existing viewers before replacing DOM
+    disposeAllCardViewers();
+
     // Render all items
     grid.innerHTML = items.map(portfolioItemHTML).join("");
     refreshThumbs();
-    init3DViewer(items);
+
+    // Initialise per-card OV viewers
+    grid.querySelectorAll(".model-viewer-host").forEach((hostEl) => {
+      const url = hostEl.dataset.modelUrl;
+      if (url) {
+        initCardViewer(hostEl, url);
+      } else {
+        hostEl.innerHTML = '<span class="model-viewer-fallback">NO MODEL</span>';
+      }
+    });
 
     if (loading) loading.classList.add("hidden");
 
@@ -356,6 +492,12 @@ function initCollapsible() {
     grid.classList.toggle("collapsed");
   });
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   PAGE-LEVEL CLEANUP (release WebGL contexts on navigation)
+   ═════════════════════════════════════════════════════════════════════ */
+window.addEventListener("pagehide", disposeAllCardViewers);
+window.addEventListener("beforeunload", disposeAllCardViewers);
 
 /* ═════════════════════════════════════════════════════════════════════
    INITIALISE

@@ -873,9 +873,40 @@ body {
 .port-thumb--model {
   aspect-ratio: 4/3;
   overflow: hidden;
-  background: #000;
+  background: #0d1117;
   border: 1px solid rgba(255,255,255,0.08);
   position: relative;
+}
+/* OV embedded viewer host */
+.model-viewer-host {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.model-viewer-host canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+/* OV progress/loading text inherits site styling */
+.model-viewer-host > div:not(:has(canvas)) {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-align: center;
+  padding-top: 35%;
+}
+.model-viewer-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 2px;
+  color: var(--muted);
 }
 .port-model-frame {
   width: 100%;
@@ -895,8 +926,22 @@ body {
   padding: 2px 7px;
   font-weight: 600;
   pointer-events: none;
+  z-index: 1;
 }
-/* 3D cards don't lift - the iframe needs stable pointer events */
+/* Orbit-centre XYZ gizmo overlay (Fusion 360-style) */
+.ov-pivot-gizmo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+.ov-pivot-gizmo.visible {
+  opacity: 1;
+}
+/* 3D cards don't lift - the canvas needs stable pointer events */
 .port-item--model:hover { transform: none; }
 
 /* ── EMPTY STATE ── */
