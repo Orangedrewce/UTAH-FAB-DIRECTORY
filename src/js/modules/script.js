@@ -95,7 +95,7 @@ function portfolioItemHTML(item) {
   const label = `${tag} · ${title}`;
 
   let embedSrc = item.model_url || "";
-  if (embedSrc && !embedSrc.includes("3dviewer.net") && !embedSrc.includes("embed")) {
+  if (embedSrc && !embedSrc.includes("3dviewer.net")) {
     embedSrc = `https://3dviewer.net/embed.html#model=${embedSrc}`;
   }
 

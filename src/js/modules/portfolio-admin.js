@@ -220,6 +220,14 @@ function applyFilters() {
 }
 
 // ── RENDERING ───────────────────────────────────────────────────────────
+function buildEmbedSrc(modelUrl) {
+  if (!modelUrl) return "";
+  // Already a 3dviewer.net embed — use as-is
+  if (modelUrl.includes("3dviewer.net")) return modelUrl;
+  // Raw file URL(s) — wrap in 3dviewer embed
+  return `https://3dviewer.net/embed.html#model=${modelUrl}`;
+}
+
 function esc(str) {
   const d = document.createElement("div");
   d.textContent = str || "";
@@ -245,7 +253,9 @@ function renderGrid() {
         ${
           item.image_url
             ? `<img src="${esc(item.image_url)}" alt="${esc(item.title)}" loading="lazy">`
-            : `<div class="port-admin-card-placeholder">NO IMAGE</div>`
+            : item.model_url
+              ? `<iframe class="port-admin-card-preview-frame" src="${esc(buildEmbedSrc(item.model_url))}" loading="lazy" tabindex="-1"></iframe>`
+              : `<div class="port-admin-card-placeholder">NO IMAGE</div>`
         }
         ${item.model_url ? '<span class="port-admin-3d-badge">3D</span>' : ""}
       </div>
@@ -351,15 +361,16 @@ function updateImagePreview() {
 // ── MODEL UPLOAD ───────────────────────────────────────────────────────────────────────
 async function handleModelFileSelected() {
   if (!pModelFile?.files?.length || !pModelPreview || !pModelUrl) return;
-  const file = pModelFile.files[0];
+  const files = Array.from(pModelFile.files);
 
-  pModelPreview.innerHTML = `<span class="port-upload-placeholder">UPLOADING ${esc(file.name)}…</span>`;
+  const names = files.map((f) => f.name).join(" + ");
+  pModelPreview.innerHTML = `<span class="port-upload-placeholder">UPLOADING ${esc(names)}\u2026</span>`;
   pModelZone?.classList.add("dragover");
 
   try {
-    const url = await uploadPortfolioAsset(file);
-    pModelUrl.value = url;
-    pModelPreview.innerHTML = `<span class="port-upload-placeholder" style="color:var(--brand-orange-dim)">${esc(file.name)}</span>`;
+    const urls = await Promise.all(files.map((f) => uploadPortfolioAsset(f)));
+    pModelUrl.value = urls.join(",");
+    pModelPreview.innerHTML = `<span class="port-upload-placeholder" style="color:var(--brand-orange-dim)">${esc(names)}</span>`;
     updateLivePreview();
   } catch (err) {
     console.error("Model upload failed:", err);

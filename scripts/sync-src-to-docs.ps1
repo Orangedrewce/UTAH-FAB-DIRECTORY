@@ -26,12 +26,13 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "major additions, portfolio site"
+  git commit -m "major additions, portfolio site, 3d model gallery v1 started"
 
   # 5) Publish to live site
   git pull origin dev --rebase
   git pull origin main --rebase
   git push origin dev
+  git push origin dev:main
 #>
 
 $ErrorActionPreference = 'Stop'
