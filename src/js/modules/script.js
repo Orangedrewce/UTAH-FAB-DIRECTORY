@@ -1,17 +1,22 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: script.js - Shared Page Logic
+ * MODULE: script.js - Portfolio Page Logic
  *   1. Image lightbox overlay (with alt-text propagation)
  *   2. Contact form → Supabase
  *   3. Dynamic portfolio grid (portfolio.html only)
- *      - Image items: static thumbnail + lightbox
- *      - 3D model items: inline interactive viewport (same card dimensions)
- *   4. Portfolio filter bar (portfolio.html, shown only when 2+ distinct tags)
+ *   4. 3D viewer initialisation (portfolio.html only)
+ *   5. Portfolio filter bar (portfolio.html)
+ *   6. Collapsible "What I Do" section (index.html)
+ *
+ * NOTE: The homepage portfolio grid is hardcoded HTML - no DB query.
+ * Supabase dynamic loading is reserved for portfolio.html where
+ * filtering and the 3D viewer add real value.
  * ═══════════════════════════════════════════════════════════════════════
  */
 
 import { supabase as sb } from "./supabase.js";
 import { fetchPortfolioItems } from "./api.js";
+import { esc } from "./utils.js";
 
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
@@ -76,47 +81,51 @@ document.addEventListener("keydown", (event) => {
    DYNAMIC PORTFOLIO - portfolio.html only (not homepage)
    ═══════════════════════════════════════════════════════════════════════ */
 
-/** Escape HTML to prevent XSS */
-function esc(str) {
-  const d = document.createElement("div");
-  d.textContent = str || "";
-  return d.innerHTML;
-}
-
 /**
  * Build HTML for a single portfolio <figure>.
- * Items with model_url render as interactive inline 3D viewports.
- * Items with image_url render as static thumbnails with lightbox.
  */
 function portfolioItemHTML(item) {
   const tag = esc(item.tag || "RENDER");
   const title = esc(item.title);
   const desc = esc(item.description || "");
   const label = `${tag} · ${title}`;
+  const imgUrl = item.image_url || "assets/Render.png";
 
-  let embedSrc = item.model_url || "";
-  if (embedSrc && !embedSrc.includes("3dviewer.net")) {
-    embedSrc = `https://3dviewer.net/embed.html#model=${embedSrc}`;
-  }
-
-  const mediaHtml = embedSrc
-    ? `<div class="port-thumb port-thumb--model">
-        <iframe class="port-model-frame" src="${esc(embedSrc)}" allow="fullscreen" loading="lazy" title="${title}"></iframe>
-        <span class="port-model-badge">3D</span>
-       </div>`
-    : `<div class="port-thumb thumb" onclick="openLightbox(this)" data-label="${esc(label)}">
-        <img src="${esc(item.image_url || 'assets/Render.png')}" alt="${title}" loading="lazy">
-        <div class="thumb-overlay">[ VIEW ]</div>
-       </div>`;
-
-  return `<figure class="port-item${embedSrc ? ' port-item--model' : ''}" data-tag="${tag}">
-    ${mediaHtml}
+  return `<figure class="port-item" data-tag="${tag}">
+    <div class="port-thumb thumb" onclick="openLightbox(this)" data-label="${esc(label)}">
+      <img src="${esc(imgUrl)}" alt="${title}" loading="lazy">
+      <div class="thumb-overlay">[ VIEW ]</div>
+    </div>
     <figcaption class="port-caption">
       <span class="port-tag">${tag}</span>
       <span class="port-title">${title}</span>
       ${desc ? `<span class="port-meta">${desc}</span>` : ""}
     </figcaption>
   </figure>`;
+}
+
+/**
+ * Initialise the 3D viewer iframe with the first model_url found.
+ * Only runs on portfolio.html (viewer elements don't exist on index.html).
+ */
+function init3DViewer(items) {
+  const wrap = document.getElementById("viewer3dWrap");
+  const frame = document.getElementById("viewer3dFrame");
+  const titleEl = document.getElementById("viewer3dTitle");
+  if (!wrap || !frame) return;
+
+  const modelItem = items.find((i) => i.model_url);
+  if (!modelItem) return;
+
+  let src = modelItem.model_url;
+  // If it's a raw file URL (not already a 3dviewer embed), wrap it
+  if (!src.includes("3dviewer.net") && !src.includes("embed")) {
+    src = `https://3dviewer.net/embed.html#model=${encodeURIComponent(src)}`;
+  }
+
+  frame.src = src;
+  if (titleEl) titleEl.textContent = modelItem.title || "3D Model";
+  wrap.style.display = "";
 }
 
 /**
@@ -127,41 +136,32 @@ async function renderPortfolioPage() {
   const grid = document.getElementById("portfolioGrid");
   const filterBar = document.getElementById("portFilterBar");
   const loading = document.getElementById("portLoading");
-  const emptyState = document.getElementById("portEmpty");
   if (!grid || !filterBar) return;
-
-  // Only runs on portfolio.html
-  if (!document.querySelector(".port-filter-bar")) return;
 
   if (loading) loading.classList.remove("hidden");
 
   try {
-    const items = await fetchPortfolioItems(false);
-
-    grid.innerHTML = "";
-
+    const items = await fetchPortfolioItems(false); // all visible
     if (!items.length) {
       if (loading) loading.classList.add("hidden");
-      if (emptyState) emptyState.classList.remove("hidden");
-      return;
+      return; // keep static fallback
     }
 
-    // Show filter bar only when there are 2+ distinct tags
+    // Populate filter buttons from tags
     const tags = [...new Set(items.map((i) => i.tag || "RENDER"))];
     tags.sort();
-    if (tags.length >= 2) {
-      tags.forEach((tag) => {
-        const btn = document.createElement("button");
-        btn.className = "port-filter-btn";
-        btn.dataset.filter = tag;
-        btn.textContent = tag;
-        filterBar.appendChild(btn);
-      });
-      filterBar.style.display = "flex";
-    }
+    tags.forEach((tag) => {
+      const btn = document.createElement("button");
+      btn.className = "port-filter-btn";
+      btn.dataset.filter = tag;
+      btn.textContent = tag;
+      filterBar.appendChild(btn);
+    });
 
+    // Render all items
     grid.innerHTML = items.map(portfolioItemHTML).join("");
     refreshThumbs();
+    init3DViewer(items);
 
     if (loading) loading.classList.add("hidden");
 
@@ -169,17 +169,23 @@ async function renderPortfolioPage() {
     filterBar.addEventListener("click", (e) => {
       const btn = e.target.closest(".port-filter-btn");
       if (!btn) return;
+
+      // Update active state
       filterBar.querySelectorAll(".port-filter-btn").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
+
       const filter = btn.dataset.filter;
       grid.querySelectorAll(".port-item").forEach((item) => {
-        item.style.display = (filter === "all" || item.dataset.tag === filter) ? "" : "none";
+        if (filter === "all" || item.dataset.tag === filter) {
+          item.style.display = "";
+        } else {
+          item.style.display = "none";
+        }
       });
     });
   } catch (err) {
-    console.warn("Portfolio load failed:", err);
+    console.warn("Portfolio load failed, keeping static fallback:", err);
     if (loading) loading.classList.add("hidden");
-    if (emptyState) emptyState.classList.remove("hidden");
   }
 }
 
@@ -318,8 +324,24 @@ function initContactForm() {
   });
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   COLLAPSIBLE "WHAT I DO" SECTION (index.html)
+   ═════════════════════════════════════════════════════════════════════ */
+function initCollapsible() {
+  const toggle = document.getElementById("valuePropToggle");
+  const grid = document.getElementById("valuePropGrid");
+  if (!toggle || !grid) return;
+
+  toggle.addEventListener("click", () => {
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!expanded));
+    grid.classList.toggle("collapsed");
+  });
+}
+
 /* ═════════════════════════════════════════════════════════════════════
    INITIALISE
    ═════════════════════════════════════════════════════════════════════ */
 initContactForm();
+initCollapsible();
 renderPortfolioPage();

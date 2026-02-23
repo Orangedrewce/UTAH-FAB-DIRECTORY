@@ -85,7 +85,6 @@ const contentRoot = document.getElementById("directoryContent");
    HELPERS
 ═══════════════════════════════════════════════════ */
 
-/** Turn the website field into a clickable link or a Google-search fallback */
 /** Build a Google Maps link if maps_url is present */
 function mapsLink(shop) {
   const url = (shop.maps_url || "").trim();

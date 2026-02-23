@@ -32,6 +32,9 @@
  *                           shops.json or Supabase) into a consistent
  *                           shape with guaranteed string `id`, default
  *                           values, and unified key names.
+ *   • debounce(fn, wait)   – Returns a debounced version of `fn` that
+ *                           delays invocation until `wait` ms after the
+ *                           last call. Used by directory.js search/filter.
  *
  * HOW TO ADD FEATURES / MODIFY:
  *   • NEW CONTACT TYPE - To support a new contact format (e.g. Instagram
