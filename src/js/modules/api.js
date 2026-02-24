@@ -1,51 +1,72 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: api.js - Data-Fetching Layer (Supabase + JSON Fallback)
+ * MODULE: api.js — API/Data Access Layer (Supabase + JSON Fallback)
  * ═══════════════════════════════════════════════════════════════════════
  *
- * PURPOSE:
- *   Centralises every Supabase query and the static JSON fallback into
- *   one file so that both admin.js and directory.js share identical
- *   data-loading logic.  All functions are async and return plain arrays
- *   of normalised objects.
+ * SCOPE:
+ *   This module is the canonical boundary for browser-side data I/O.
+ *   Calling modules (e.g., directory/admin/portfolio controllers) should
+ *   consume these exports instead of issuing raw Supabase calls directly.
  *
- * EXPORTS:
- *   • fetchShops(onlyActive = true)
- *       Queries the `fab_shops` table, ordered by region → sort_order →
- *       name.  When `onlyActive` is true (default), only rows with
- *       `is_active = true` are returned - this is used by the public
- *       directory.  The admin dashboard passes `false` to get every row.
- *       Each row is enriched with regionTitle / regionSubtitle from
- *       REGION_META, then normalised via `normaliseShop()`.
+ * RUNTIME CONTRACT:
+ *   1) Client precondition:
+ *      - Every Supabase-backed export uses `requireClient()`.
+ *      - If the SDK client is unavailable, the function throws a
+ *        descriptive error immediately (except `fetchJSONShops()`, which
+ *        does not depend on Supabase).
  *
- *   • fetchRegions()
- *       Queries the `regions` table ordered by `sort_order`.  Returns
- *       the raw rows.  Falls back to REGION_ORDER + REGION_META if the
- *       query fails, so the admin dashboard still renders region
- *       dropdowns even without a DB connection.
+ *   2) Directory/shop data:
+ *      - `fetchShops(onlyActive = true)` reads `fab_shops`, ordered by
+ *        `region`, `sort_order`, then `name`.
+ *      - When `onlyActive` is true, it filters `is_active = true`.
+ *      - Each row is enriched with `regionTitle`/`regionSubtitle` from
+ *        `REGION_META` and then normalized through `normaliseShop()`.
  *
- *   • fetchRequests()
- *       Queries `directory_requests` for all rows with
- *       `status = 'pending'`, ordered newest-first.  Used by admin.js
- *       to populate the Requests panel.
+ *   3) Region data:
+ *      - `fetchRegions()` reads `regions` ordered by `sort_order`.
+ *      - On query failure, it logs and returns a deterministic fallback
+ *        list derived from `REGION_ORDER` + `REGION_META`.
  *
- *   • fetchJSONShops()
- *       Fetches `data/shops.json` via plain HTTP, normalises each shop
- *       object, and returns the array.  This is the offline / fallback
- *       data source used when Supabase is unreachable.
+ *   4) Join-request data:
+ *      - `fetchRequests()` returns only `directory_requests` rows where
+ *        `status = 'pending'`, newest first by `created_at` desc.
  *
- * HOW TO ADD FEATURES / MODIFY:
- *   • NEW TABLE QUERY - Export a new async function that calls
- *     `supabase.from("<table>").select(...)`, handles errors, and
- *     returns the data array.  Import it into whichever page module
- *     needs the data.
- *   • ADD COLUMNS - If you add columns to `fab_shops`, update the
- *     `normaliseShop()` function in utils.js so the new column has a
- *     default value and consistent key name.
- *   • CHANGE SORT ORDER - Adjust the `.order()` calls inside
- *     `fetchShops()`.
- *   • PAGINATION - Chain `.range(from, to)` on the Supabase query
- *     inside `fetchShops()` if the table grows large.
+ *   5) Static JSON fallback:
+ *      - `fetchJSONShops()` fetches `data/shops.json`, validates HTTP OK,
+ *        parses JSON, and normalizes each entry via `normaliseShop()`.
+ *      - Invalid JSON throws a descriptive parsing error.
+ *
+ *   6) Portfolio data:
+ *      - `fetchPortfolioItems(onlyFeatured = false)` returns visible
+ *        items (`is_visible = true`), sorted by `sort_order`, then
+ *        newest `created_at`.
+ *      - `fetchAllPortfolioItems()` returns all items (including hidden)
+ *        with the same ordering for admin use.
+ *      - `insertPortfolioItem(payload)` and `updatePortfolioItem(id,
+ *        payload)` return the single inserted/updated row.
+ *      - `deletePortfolioItem(id)` removes a row and returns no value.
+ *
+ *   7) Portfolio asset upload:
+ *      - `uploadPortfolioAsset(file)` enforces a fixed extension allowlist
+ *        (CAD + image formats), writes to storage bucket
+ *        `portfolio-assets`, and returns a public URL.
+ *      - MIME type is inferred from extension map first, then `file.type`,
+ *        then fallback `application/octet-stream`.
+ *
+ * ERROR SEMANTICS:
+ *   • Supabase failures throw `Error` with function-prefixed messages
+ *     (e.g., `fetchShops: ...`) for traceability at call sites.
+ *   • Region lookup intentionally degrades gracefully with fallback data
+ *     instead of throwing.
+ *
+ * MAINTENANCE CHECKLIST (when extending):
+ *   • New DB query: add a dedicated export here; keep consumers thin.
+ *   • New `fab_shops` fields: update `normaliseShop()` to preserve stable
+ *     shape/defaults used by UI modules.
+ *   • New sort/filter contract: encode it here (not in page modules).
+ *   • New upload format: update both extension allowlist and MIME map.
+ *   • Schema evolution: keep thrown error prefixes consistent so existing
+ *     UI-level error handling remains actionable.
  * ═══════════════════════════════════════════════════════════════════════
  */
 

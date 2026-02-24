@@ -1,16 +1,77 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: script.js - Portfolio Page Logic
- *   1. Image lightbox overlay (with alt-text propagation)
- *   2. Contact form → Supabase
- *   3. Dynamic portfolio grid (portfolio.html only)
- *   4. 3D viewer initialisation (portfolio.html only)
- *   5. Portfolio filter bar (portfolio.html)
- *   6. Collapsible "What I Do" section (index.html)
+ * MODULE: script.js — Public Site Runtime Orchestrator (Portfolio + Contact)
+ * ═══════════════════════════════════════════════════════════════════════
  *
- * NOTE: The homepage portfolio grid is hardcoded HTML - no DB query.
- * Supabase dynamic loading is reserved for portfolio.html where
- * filtering and the 3D viewer add real value.
+ * SCOPE:
+ *   This module coordinates client-side behavior across public pages,
+ *   primarily:
+ *   • Portfolio gallery rendering/filtering and 3D viewer lifecycle
+ *   • Lightbox state machine (card-level and media-level navigation)
+ *   • Contact form validation, optional image upload, and submission
+ *   • Homepage collapsible section behavior
+ *
+ * RUNTIME CONTRACT:
+ *   1) Lightbox subsystem:
+ *      - Maintains two-level navigation state:
+ *        `currentCardIndex` (portfolio card) and `currentMediaIndex`
+ *        (visual asset within card).
+ *      - `openLightbox()` requires valid `data-card-index` and optional
+ *        `data-media-index`; invalid indices are ignored.
+ *      - Keyboard bindings when open:
+ *        Left/Right => media cycle, Up/Down => card cycle, Escape => close.
+ *      - Exposes `openLightbox`, `closeLightbox`, and navigation helpers
+ *        on `window` for inline HTML handlers.
+ *
+ *   2) Portfolio page rendering (`portfolio.html`):
+ *      - `renderPortfolioPage()` no-ops if required DOM roots are absent.
+ *      - Loads visible items via `fetchPortfolioItems(false)`.
+ *      - Builds dynamic filter buttons from tag set (plus fixed `ALL`).
+ *      - Rebuilds grid HTML and refreshes lightbox card registry to keep
+ *        click targets index-aligned.
+ *      - Handles loading/empty/error states with deterministic messaging.
+ *
+ *   3) 3D model viewer lifecycle:
+ *      - Per-card viewer instances are tracked in `viewerRegistry`.
+ *      - Embedded viewer initialization supports:
+ *        (a) external embed URLs, or
+ *        (b) OV.EmbeddedViewer for hosted model URLs.
+ *      - Includes control remapping for Fusion-like navigation, orbit
+ *        helper gizmo, fullscreen toggling (native + pseudo fallback),
+ *        and teardown on page lifecycle events.
+ *      - Guarantees viewer cleanup via `disposeAllCardViewers()` on
+ *        `pagehide` and `beforeunload`.
+ *
+ *   4) Contact form flow:
+ *      - Validates email syntax, non-empty message, max message length,
+ *        and optional file constraints (<=5MB, image MIME allowlist).
+ *      - If file present: uploads to `contact-photos` storage bucket,
+ *        retrieves public URL, then inserts row in `contact_messages`.
+ *      - UI state transitions: disable button while submitting, show
+ *        success/error feedback, and swap to confirmation screen on success.
+ *
+ *   5) Collapsible section:
+ *      - `initCollapsible()` binds ARIA-expanded toggle + class switch
+ *        for index-page value-prop grid.
+ *
+ * OPERATIONAL CAVEATS:
+ *   • This file intentionally runs on multiple pages; each feature must
+ *     guard on DOM presence before binding or rendering.
+ *   • Portfolio homepage tiles remain static HTML by design; dynamic
+ *     portfolio loading is scoped to `portfolio.html`.
+ *   • Lightbox card/media indices rely on stable render order; altering
+ *     item filtering/rendering must preserve index alignment.
+ *   • Viewer functionality degrades gracefully when `OV` is unavailable.
+ *
+ * MAINTENANCE CHECKLIST:
+ *   • New portfolio card fields: update card HTML builder + lightbox card
+ *     mapping consistently.
+ *   • New viewer behavior: update open/close/fullscreen + cleanup paths
+ *     together to avoid leaking WebGL contexts.
+ *   • Contact schema changes: update insert payload and file validation
+ *     rules in lockstep.
+ *   • New page-level features: include strict DOM guards so non-target
+ *     pages remain unaffected.
  * ═══════════════════════════════════════════════════════════════════════
  */
 

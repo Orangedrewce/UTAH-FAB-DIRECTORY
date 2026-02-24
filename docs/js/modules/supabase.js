@@ -1,36 +1,49 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: supabase.js - Supabase Client Initialisation
+ * MODULE: supabase.js — Shared Supabase Client Bootstrap
  * ═══════════════════════════════════════════════════════════════════════
  *
- * PURPOSE:
- *   Creates and exports the single, shared Supabase client instance used
- *   by every other module in the app (api.js, admin.js, directory.js,
- *   script.js).  All database queries, auth calls, and storage uploads
- *   flow through this client.
+ * SCOPE:
+ *   Provides one shared Supabase client export for browser modules.
+ *   This file is intentionally minimal and handles only client bootstrap
+ *   and graceful failure fallback.
  *
- * HOW IT WORKS:
- *   1. Defines the project URL and anonymous (public) API key.
- *   2. Checks that the Supabase JS SDK has already been loaded via a
- *      <script> tag in the HTML (it attaches `window.supabase`).
- *   3. Calls `window.supabase.createClient()` with the URL + key and
- *      exports the resulting client as `supabase`.
+ * RUNTIME CONTRACT:
+ *   1) Static configuration:
+ *      - Defines project URL and anon key constants used to initialize
+ *        the browser client.
  *
- * PREREQUISITES:
- *   The Supabase CDN script must be included in the HTML *before* this
- *   module is imported:
- *     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ *   2) SDK precondition:
+ *      - Expects the Supabase JS SDK to be present on `window.supabase`
+ *        (typically loaded via CDN script before module execution).
  *
- * HOW TO ADD FEATURES / MODIFY:
- *   • To change the Supabase project, update SUPABASE_URL and
- *     SUPABASE_ANON with values from your new project's Settings → API.
- *   • To add Supabase options (e.g. custom headers, localStorage key),
- *     pass an options object as the third argument to `createClient()`:
- *       export const supabase = window.supabase.createClient(
- *         SUPABASE_URL, SUPABASE_ANON, { auth: { persistSession: true } }
- *       );
- *   • To add Realtime subscriptions, import `supabase` in a new module
- *     and call `supabase.channel(...)`.
+ *   3) Initialization path:
+ *      - Attempts `window.supabase.createClient(SUPABASE_URL,
+ *        SUPABASE_ANON)` inside a guarded `try/catch`.
+ *      - On success: exports live client instance.
+ *      - On failure: logs a descriptive error and exports `null`.
+ *
+ *   4) Consumer expectation:
+ *      - Downstream modules must tolerate `supabase === null` and either
+ *        short-circuit features or surface user-facing degraded-mode
+ *        messaging.
+ *
+ * OPERATIONAL CAVEATS:
+ *   • This module does not itself enforce secret management; anon key is
+ *     public by design and relies on Supabase RLS/policies for protection.
+ *   • SDK load-order mistakes (script missing/blocked by adblock/CSP)
+ *     resolve to `null` client rather than throwing uncaught exceptions.
+ *   • No custom `createClient` options are passed currently; auth/storage
+ *     behavior is default Supabase JS v2 behavior.
+ *
+ * MAINTENANCE CHECKLIST:
+ *   • Project migration: update URL + anon key together.
+ *   • If adding `createClient` options, keep all consumer assumptions
+ *     (auth persistence, storage key behavior, headers) documented.
+ *   • If changing failure behavior, coordinate with modules that currently
+ *     branch on falsy client availability.
+ *   • If moving away from CDN globals, replace `window.supabase` contract
+ *     and update bootstrap checks accordingly.
  * ═══════════════════════════════════════════════════════════════════════
  */
 

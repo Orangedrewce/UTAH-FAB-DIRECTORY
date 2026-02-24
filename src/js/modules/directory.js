@@ -1,61 +1,73 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: directory.js - Public Directory Page Controller
+ * MODULE: directory.js — Public Directory Controller (Runtime Contract)
  * ═══════════════════════════════════════════════════════════════════════
  *
- * PURPOSE:
- *   Drives the public-facing Utah Fab Directory page.  Loads shop data,
- *   renders the card grid grouped by region → category, and exposes
- *   search / filter controls.  Also handles the "Join the Directory"
- *   submission form.
+ * SCOPE:
+ *   This module owns the public directory page runtime: data load,
+ *   region/category card rendering, client-side filtering, query-string
+ *   state sync, and "Join the Directory" request submission.
  *
- * DATA FLOW:
- *   1. On page load, the IIFE at the bottom tries to fetch shops from
- *      Supabase via `fetchShops(true)` (active shops only).
- *   2. If Supabase fails (offline, CORS, etc.), it falls back to the
- *      local static file `data/shops.json` via `fetchJSONShops()`.
- *   3. `buildDirectory(shops)` groups the array by region (in the order
- *      defined by REGION_ORDER), then by category, and injects the HTML
- *      into `#directoryContent`.  Card entrance animations are staggered.
- *   4. `applyFilters()` runs on every user interaction (search input,
- *      service/tag dropdown, region dropdown) and toggles `.hidden` on
- *      each card, hiding empty category headers and region sections.
+ * RUNTIME CONTRACT:
+ *   1) Data bootstrap:
+ *      - Initialization IIFE first attempts `fetchShops(true)` (active
+ *        shops from Supabase).
+ *      - On Supabase failure, it falls back to `fetchJSONShops()` from
+ *        `data/shops.json`.
+ *      - Successful load always sets `allShops`, then calls
+ *        `buildDirectory(allShops)`, restores URL filters, and runs
+ *        `applyFilters()`.
  *
- * KEY SECTIONS:
- *   • STATE          - `allShops` (full dataset) and `activeFilter`
- *                      (currently selected service tag, default "all").
- *   • DOM REFERENCES - Cached element references for performance.
- *   • HELPERS        - `mapsLink()` builds a Google Maps link icon;
- *                      `renderCard()` builds one card's HTML.
- *   • BUILD DOM      - `buildDirectory()` constructs the entire card
- *                      grid from the shop array.
- *   • FILTER ENGINE  - `applyFilters()` shows/hides cards and sections
- *                      based on the current search, region, and tag.
- *   • JOIN FORM      - Handles the "Request to join the directory"
- *                      form submission, inserting a row into the
- *                      `directory_requests` Supabase table.  Includes
- *                      detailed error handling for common Supabase
- *                      error codes (duplicate, null constraint, RLS,
- *                      missing table, network errors, JWT expiry).
+ *   2) State ownership:
+ *      - `allShops` is the authoritative in-memory dataset for filtering.
+ *      - `activeFilter` tracks current tag/service filter (`"all"` means
+ *        no tag gate).
  *
- * HOW TO ADD FEATURES / MODIFY:
- *   • NEW CARD FIELD - Add the field to `renderCard()`, then make sure
- *     the field exists in the normalised shop object (update
- *     `normaliseShop()` in utils.js and the shop's column in Supabase).
- *   • NEW FILTER - Add an `<input>` or `<select>` to the HTML, cache
- *     its reference up top, read its value inside `applyFilters()`,
- *     and add an event listener at the bottom that calls
- *     `applyFilters()`.
- *   • CATEGORY SORT ORDER - Currently categories render in insertion
- *     order.  To sort alphabetically, call
- *     `[...rObj.categories.entries()].sort((a,b) => a[0].localeCompare(b[0]))`
- *     inside `buildDirectory()` before iterating.
- *   • PAGINATION / VIRTUAL SCROLL - Replace the `contentRoot.innerHTML`
- *     approach with an incremental rendering strategy if the shop count
- *     grows beyond ~500.
- *   • NEW JOIN-FORM FIELD - Add the input to the HTML, read its value
- *     inside the submit handler's `payload` object, and add the
- *     matching column to the `directory_requests` table in Supabase.
+ *   3) Rendering model:
+ *      - `buildDirectory()` groups shops by region, then category.
+ *      - Region section order is governed strictly by `REGION_ORDER`.
+ *      - Cards are rendered via HTML strings and injected once into
+ *        `#directoryContent`; entrance animation delay is assigned per
+ *        card after render.
+ *
+ *   4) Filter semantics (`applyFilters()`):
+ *      - Applies region gate, tag gate, and case-insensitive free-text
+ *        matching against name/city/size/services/website/tags.
+ *      - Toggles `.hidden` on cards by visibility ID set.
+ *      - Hides category headers and region sections with zero visible
+ *        descendant cards.
+ *      - Updates visible count and no-results UX.
+ *      - Synchronizes active filters into URL query params via
+ *        `history.replaceState` (`region`, `service`, `q`).
+ *
+ *   5) Join request submission:
+ *      - Collects form fields + selected tag chips and inserts one row
+ *        into `directory_requests` through Supabase.
+ *      - On success: shows success message, resets form, clears chip
+ *        selections.
+ *      - On failure: maps common DB/network/auth error signatures to
+ *        user-readable feedback (duplicate, required fields, RLS,
+ *        schema drift, network, JWT/session expiry).
+ *
+ * OPERATIONAL CAVEATS:
+ *   • `applyFilters()` early-returns if required DOM nodes are missing;
+ *     this avoids crashes on partial/non-directory pages.
+ *   • Fallback JSON path assumes deployment serves `data/shops.json`
+ *     relative to the page root.
+ *   • Region rendering depends on shop `region` values matching entries
+ *     in `REGION_ORDER`; unmatched regions are omitted from output.
+ *
+ * MAINTENANCE CHECKLIST:
+ *   • New card field: update `renderCard()` and ensure field is produced
+ *     by `normaliseShop()` + backend schema.
+ *   • New filter control: add DOM ref, integrate gate into
+ *     `applyFilters()`, and register listener.
+ *   • Region behavior change: update `REGION_ORDER`/region metadata and
+ *     verify grouping + URL restore behavior.
+ *   • Join form field: extend payload and apply matching DB migration in
+ *     `directory_requests`.
+ *   • Filtering URL contract change: update both write path
+ *     (`replaceState`) and restore path (init query parsing).
  * ═══════════════════════════════════════════════════════════════════════
  */
 

@@ -1,70 +1,67 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: admin.js - Admin Dashboard Controller
+ * MODULE: admin.js — Admin Dashboard Controller (Authoritative Runtime Notes)
  * ═══════════════════════════════════════════════════════════════════════
  *
- * PURPOSE:
- *   Full CRUD admin interface for managing the Utah Fab Directory.
- *   Behind a Supabase email/password auth gate; once logged in the admin
- *   can search, filter, add, edit, delete, and bulk-toggle shops, as
- *   well as approve or reject community-submitted "Join the Directory"
- *   requests.
+ * SCOPE:
+ *   This module owns all client-side behavior for `admin.html`.
+ *   It is the orchestration layer between:
+ *   • Supabase Auth (`auth.signInWithPassword`, session checks, sign-out)
+ *   • Supabase data tables (`fab_shops`, `directory_requests`)
+ *   • Admin dashboard DOM (filters, table, bulk actions, modal, requests)
  *
- * ARCHITECTURE:
- *   • Imports the shared Supabase client, constants, utils, and API
- *     helpers - no Supabase query strings are hard-coded here.
- *   • All DOM references are cached once at module load via the `$()`
- *     shorthand.
- *   • The table body, tag picker, and requests list are rendered by
- *     building HTML strings and assigning to `.innerHTML` for
- *     performance.  Event delegation on parent elements handles clicks.
+ * RUNTIME CONTRACT:
+ *   1) Authentication gate:
+ *      - No dashboard data is loaded until a valid session exists.
+ *      - `checkSession()` and `onAuthStateChange()` can both trigger
+ *        `showDashboard(user)`; `_dashboardLoading` prevents double-init.
  *
- * KEY SECTIONS (in source order):
- *   1. AUTH - `checkSession()`, login form handler, logout handler,
- *      `showDashboard(user)`.  Uses Supabase Auth with
- *      `signInWithPassword`.  Also listens for `onAuthStateChange`
- *      to handle token refresh / external sign-out.
- *   2. DATA LOADING - `loadRegions()`, `loadShops()`, `loadRequests()`.
- *      Populates global arrays (`REGIONS`, `allShops`, `pendingRequests`)
- *      and fills filter dropdowns.
- *   3. FILTERING - `applyFilters()` runs on every search/filter change
- *      and rebuilds the visible `filtered` array from `allShops`.
- *   4. TABLE RENDERING - `renderRow()` builds one <tr>, `renderTable()`
- *      assembles all rows with Active / Inactive section headers.
- *   5. BULK SELECTION - Select-all checkbox with tri-state
- *      (checked / indeterminate / unchecked), bulk-toggle active status.
- *   6. MODAL (Add / Edit) - Tag picker, form population, open/close,
- *      keyboard Escape support.
- *   7. SAVE - INSERT or UPDATE to `fab_shops` via Supabase, with
- *      user-friendly error messages for unique-constraint and
- *      foreign-key violations.
- *   8. DELETE - Soft confirmation → hard delete from `fab_shops`.
- *   9. REQUESTS PANEL - Collapsible panel listing pending
- *      `directory_requests`.  Each card has a region dropdown, Approve,
- *      and Reject button.  Approving inserts a new `fab_shops` row and
- *      marks the request as "approved"; rejecting marks it "dismissed".
- *  10. DEEP-LINK - `handleApproveDeepLink()` reads `?approve_id=<uuid>`
- *      from the URL (sent via Discord webhook), opens the requests panel,
- *      and highlights the matching card.
- *  11. LAYOUT - `syncLayoutHeights()` measures header/toolbar and sets
- *      CSS custom properties for sticky positioning.
- *  12. INIT - Calls `checkSession()` and registers `onAuthStateChange`.
+ *   2) Data sources and state:
+ *      - `REGIONS` is loaded from `fetchRegions()`.
+ *      - `allShops` stores the full admin dataset from `fetchShops(false)`.
+ *      - `filtered` is derived-only view state from `applyFilters()`.
+ *      - `pendingRequests` mirrors pending rows from `fetchRequests()`.
+ *      - `selectedIds` tracks checkbox selection across table re-renders.
  *
- * HOW TO ADD FEATURES / MODIFY:
- *   • NEW TABLE COLUMN - Add the field to the modal form HTML in
- *     admin.html, cache its DOM ref (const fXxx = $("#fXxx")), read /
- *     write it in `openEditModal()` and the save handler's `payload`.
- *   • NEW FILTER - Add the <select>/<input> to admin.html, cache the
- *     ref, read its value in `applyFilters()`, and attach an event
- *     listener that calls `applyFilters()`.
- *   • NEW BULK ACTION - Add a button inside #bulkActions, attach a
- *     click handler that iterates `selectedIds`, performs the Supabase
- *     update, and calls `loadShops()` + `selectedIds.clear()`.
- *   • NEW REQUEST FIELD - Add the column to the `directory_requests`
- *     table, display it in `renderRequestsList()`, and include it in
- *     the `newShop` object inside `handleRequestAction("approve", …)`.
- *   • ROLE-BASED ACCESS - After login, query a `roles` or `profiles`
- *     table and conditionally hide UI elements.
+ *   3) Rendering model:
+ *      - The table and requests panel render via string templates and
+ *        `innerHTML` assignment, then rely on parent-level delegation.
+ *      - Filter controls mutate only `filtered`; source of truth remains
+ *        `allShops`.
+ *
+ *   4) CRUD behavior for shops:
+ *      - Create/Update writes to `fab_shops` from modal form values.
+ *      - Delete is hard delete (`DELETE FROM fab_shops WHERE id = ...`).
+ *      - Bulk toggle groups selected rows into activate/deactivate batches
+ *        and performs up to two update queries.
+ *
+ *   5) Request approval flow:
+ *      - Approve attempts to insert a new `fab_shops` row built from the
+ *        request payload (+ parsed city fallback from maps URL).
+ *      - Duplicate-name-per-region conflicts are treated as non-fatal:
+ *        insert is skipped, request is still marked approved.
+ *      - Reject marks request status as dismissed.
+ *
+ *   6) Deep-link behavior:
+ *      - `?approve_id=<uuid>` opens/highlights a request card for review.
+ *      - Query param is removed from URL immediately after parsing.
+ *
+ * OPERATIONAL DETAILS / CAVEATS:
+ *   • This module expects all queried DOM nodes for admin UI to exist in
+ *     `admin.html`; if IDs/classes change, event wiring can silently break.
+ *   • Region dropdown options come from live `REGIONS`; if region fetch
+ *     fails, UI remains usable but region pickers may be empty.
+ *   • User-facing save errors are normalized for unique and FK violations
+ *     to provide actionable admin guidance.
+ *   • `REGION_BOUNDS` is imported but not used in this module currently.
+ *
+ * MAINTENANCE CHECKLIST (when extending):
+ *   • New form field: update modal HTML + DOM refs + `openEditModal()` +
+ *     submit payload mapping.
+ *   • New filter: add control + read in `applyFilters()` + listener.
+ *   • New requests attribute: surface in `renderRequestsList()` and map to
+ *     `newShop` on approve.
+ *   • Any new async init path must respect `_dashboardLoading` guard.
  * ═══════════════════════════════════════════════════════════════════════
  */
 

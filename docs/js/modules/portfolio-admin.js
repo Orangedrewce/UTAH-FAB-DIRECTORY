@@ -1,33 +1,78 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: portfolio-admin.js - Portfolio Dashboard Controller
+ * MODULE: portfolio-admin.js — Portfolio Admin Controller (Runtime Contract)
  * ═══════════════════════════════════════════════════════════════════════
  *
- * PURPOSE:
- *   Full CRUD admin interface for managing Portfolio items shown on the
- *   public portfolio page and homepage featured section.  Runs inside
- *   the admin dashboard alongside admin.js (directory management).
+ * SCOPE:
+ *   This module owns all client-side behavior for the portfolio admin tab
+ *   embedded in `admin.html`: tab activation, list loading, filtering,
+ *   card rendering, modal editing, asset management, upload flows,
+ *   persistence, and delete operations.
  *
- * ARCHITECTURE:
- *   • Shares the Supabase client from supabase.js and API functions
- *     from api.js.
- *   • Manages its own tab panel (#tabPortfolio) and modal
- *     (#portModalBackdrop).
- *   • Renders a responsive card grid of portfolio items with inline
- *     image previews.
- *   • Image uploads go to the "portfolio-assets" Supabase Storage
- *     bucket via api.js helpers.
- *   • Waits for auth state before initializing (listens for a custom
- *     "admin-ready" event dispatched by admin.js, or checks session).
+ * RUNTIME CONTRACT:
+ *   1) Initialization and auth gate:
+ *      - Static UI listeners are bound immediately via `bindStaticUI()`.
+ *      - Data load is lazy: portfolio fetch waits until tab is active and
+ *        a Supabase session exists (`ensurePortfolioReadyFromSession()`).
+ *      - `_ready` prevents duplicate initialization.
  *
- * FEATURES:
- *   • Add / Edit / Delete portfolio items
- *   • Upload PNG/JPG/WebP images
- *   • Set featured flag (homepage), visibility, sort order, tags
- *   • Optional 3D model URL for Online3DViewer embed
- *   • Tab switching between Directory and Portfolio
- *   • Search and tag filter
- *   • Live preview in modal
+ *   2) Data/state ownership:
+ *      - `allItems` stores full admin dataset from `fetchAllPortfolioItems()`.
+ *      - `filtered` is derived view state from toolbar search/tag/visibility.
+ *      - `currentMediaAssets` is the modal’s in-memory source of truth for
+ *        multi-asset editing and payload serialization.
+ *
+ *   3) Rendering model:
+ *      - Grid HTML is regenerated from `filtered` and injected into the
+ *        portfolio container.
+ *      - Card previews are driven by normalized visual assets and legacy
+ *        fallback fields (`image_url`, `model_url`).
+ *      - Fullscreen preview supports native Fullscreen API with CSS
+ *        pseudo-fullscreen fallback.
+ *
+ *   4) Modal and asset editor semantics:
+ *      - Add/Edit mode toggles title, delete visibility, and form defaults.
+ *      - Asset editor rows are normalized via `media-assets.js` helpers;
+ *        cover invariants and positions are re-established after edits.
+ *      - Live preview reflects form values + current asset selection.
+ *
+ *   5) Upload behavior:
+ *      - Image upload max: 10MB per file.
+ *      - Model upload max: 25MB total for selected files.
+ *      - Uploads use `uploadPortfolioAsset()` and write returned URLs back
+ *        into modal state; model multi-file uploads are stored as comma-
+ *        separated URL string for embed consumption.
+ *
+ *   6) Save behavior (`handleSave`):
+ *      - Validates required title and media asset contract before write.
+ *      - Merges legacy URLs/uploads into `currentMediaAssets`, then derives
+ *        both modern payload (`media_assets`) and legacy columns
+ *        (`image_url`, `model_url`, sizes, `cover_index`).
+ *      - Resolves `sort_order` collisions by shifting conflicting rows
+ *        upward before saving; reverts shifts if save fails.
+ *      - Includes schema-compat retry path when newer columns are missing,
+ *        retrying without size/media fields.
+ *      - Supports "Apply" (save and keep modal open) and "Save & Close".
+ *
+ *   7) Delete behavior:
+ *      - Requires explicit confirmation, deletes by item id, reloads grid.
+ *
+ * OPERATIONAL CAVEATS:
+ *   • Sort shifting performs multiple sequential updates; concurrent admin
+ *     sessions can still race on ordering.
+ *   • External model mode enforces 3dviewer.net embed URL requirement.
+ *   • Persistence supports mixed legacy/new schema, but migration should be
+ *     completed to preserve file-size and multi-asset data.
+ *
+ * MAINTENANCE CHECKLIST:
+ *   • New form field: wire DOM ref + openModal population + payload map +
+ *     live preview representation.
+ *   • Asset contract changes: update `media-assets.js` usage and any save/
+ *     validation assumptions here.
+ *   • New filter: extend `applyFilters()` and toolbar listeners.
+ *   • Ordering rules: update collision resolution + rollback behavior as one
+ *     unit to avoid partial reorder writes.
+ *   • Upload constraints: keep UI copy, constants, and enforcement aligned.
  * ═══════════════════════════════════════════════════════════════════════
  */
 

@@ -1,43 +1,63 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: constants.js - Shared Application Constants
+ * MODULE: constants.js — Shared Application Constants (Source of Truth)
  * ═══════════════════════════════════════════════════════════════════════
  *
- * PURPOSE:
- *   Single source of truth for every hard-coded list used across the
- *   admin dashboard, public directory, and API layer.  Keeping these
- *   values in one file prevents drift between pages.
+ * SCOPE:
+ *   This module defines immutable, shared configuration primitives used
+ *   across UI modules and utility functions. It contains no runtime side
+ *   effects and no environment-dependent behavior.
  *
- * EXPORTS:
- *   • ALL_TAGS        – String[] of every service/capability tag a shop
- *                       can have (e.g. "cnc", "welding", "laser").
- *                       Used by the tag-picker in both admin and the
- *                       "Join the Directory" form.
- *   • CATEGORIES      – String[] of display names for shop categories
- *                       shown in the admin modal's <datalist>.
- *   • REGION_BOUNDS   – Array of { slug, label, latMin, latMax, lngMin,
- *                       lngMax } objects.  Used by `parseMapsUrl()` in
- *                       utils.js to auto-detect which geographic region
- *                       a Google Maps URL falls in.
- *   • REGION_META     – Object keyed by region slug, mapping each region
- *                       to a human-readable { title, subtitle } pair for
- *                       display in region headers on the public directory.
- *   • REGION_ORDER    – String[] defining the display order of regions
- *                       on the public directory page.
+ * RUNTIME CONTRACT:
+ *   1) `ALL_TAGS`:
+ *      - Canonical tag vocabulary for shop capabilities/services.
+ *      - Consumed by admin tag selection and request intake flows.
+ *      - Values are machine slugs (lowercase, no spaces) used as stable
+ *        identifiers in persisted `tags` arrays.
  *
- * HOW TO ADD FEATURES / MODIFY:
- *   • NEW TAG - Append a string to ALL_TAGS.  The admin tag-picker and
- *     "Join" form tag-picker will automatically include it.
- *   • NEW CATEGORY - Append a string to CATEGORIES.  The <datalist> in
- *     the admin edit modal will show it as a suggestion.
- *   • NEW REGION - Do all four:
- *       1. Add a bounding-box entry to REGION_BOUNDS.
- *       2. Add a { title, subtitle } entry to REGION_META.
- *       3. Insert the slug into REGION_ORDER at the desired position.
- *       4. Insert a matching row in the Supabase `regions` table so
- *          the admin region filter picks it up.
- *   • RENAME A REGION - Update the slug everywhere it appears in this
- *     file, then update the Supabase `regions` row to match.
+ *   2) `CATEGORIES`:
+ *      - Human-readable category labels used as UI suggestions.
+ *      - Intended for display/autocomplete; not a strict enum validator.
+ *
+ *   3) `REGION_BOUNDS`:
+ *      - Bounding-box heuristics for region inference from map URLs.
+ *      - Each entry requires `{ slug, label, latMin, latMax, lngMin,
+ *        lngMax }` and is interpreted by utility parsers.
+ *      - This list is heuristic support, not authoritative DB taxonomy.
+ *
+ *   4) `REGION_META`:
+ *      - Presentation metadata keyed by region slug.
+ *      - Supplies `{ title, subtitle }` used in public/admin rendering.
+ *      - Must include a resilient fallback key `other` for unmatched or
+ *        cross-region/statewide entries.
+ *
+ *   5) `REGION_ORDER`:
+ *      - Preferred display ordering for region-grouped presentation.
+ *      - Slugs here should correspond to keys in `REGION_META`.
+ *
+ * CONSISTENCY REQUIREMENTS:
+ *   • Region slug parity should be maintained across:
+ *       - `REGION_BOUNDS[].slug`
+ *       - `REGION_META` keys
+ *       - `REGION_ORDER` entries
+ *       - Supabase `regions.slug` records
+ *   • Divergence is allowed only when intentional and documented (e.g.,
+ *     temporary migration states), otherwise UI grouping may degrade.
+ *
+ * OPERATIONAL CAVEATS:
+ *   • Changing tag or region slugs can orphan existing DB records unless
+ *     corresponding data migrations are performed.
+ *   • Category text changes are display-level only, but may affect admin
+ *     data-entry consistency if labels are substantially renamed.
+ *
+ * MAINTENANCE CHECKLIST:
+ *   • New tag: append to `ALL_TAGS`; confirm UI pickers still sort/render.
+ *   • New category: append to `CATEGORIES`; verify modal datalist UX.
+ *   • New region: update `REGION_BOUNDS`, `REGION_META`, and
+ *     `REGION_ORDER`, then add matching DB seed/row in `regions`.
+ *   • Region rename: update all slug references plus DB data migration.
+ *   • Region removal: remove from all region structures and migrate any
+ *     affected shops/requests to a valid fallback slug.
  * ═══════════════════════════════════════════════════════════════════════
  */
 

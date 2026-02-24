@@ -1,3 +1,92 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════
+ * MODULE: media-assets.js — Media Asset Normalization + Validation Rules
+ * ═══════════════════════════════════════════════════════════════════════
+ *
+ * SCOPE:
+ *   This module defines the canonical client-side contract for media
+ *   asset objects used by portfolio/admin UI and persistence payloads.
+ *   It is pure data-shaping/validation logic (no DOM operations).
+ *
+ * CANONICAL ASSET SHAPE:
+ *   {
+ *     id: string,
+ *     type: "image" | "gif" | "model",
+ *     url: string (http/https only; empty string allowed in drafts),
+ *     alt: string,
+ *     size_bytes: number|null,
+ *     position: number,
+ *     is_cover: boolean
+ *   }
+ *
+ * RUNTIME CONTRACT:
+ *   1) URL hygiene:
+ *      - `toSafeUrl()` trims values and accepts only `http://`/`https://`.
+ *      - Non-http(s) or empty inputs normalize to `""`.
+ *
+ *   2) Type inference (`inferAssetType`):
+ *      - Declared `asset.type` wins when valid (`image|gif|model`).
+ *      - Otherwise inferred from URL heuristics (GIF/image/model regex,
+ *        `3dviewer.net`, or comma-containing model-like URLs).
+ *      - Fallback default is `image`.
+ *
+ *   3) Draft creation (`createAssetDraft`):
+ *      - Produces canonical shape with normalized values.
+ *      - `id` is preserved or generated (`crypto.randomUUID` fallback).
+ *      - `size_bytes` is coerced to non-negative number or `null`.
+ *
+ *   4) Normalization pipeline (`normaliseMediaAssets`):
+ *      - Accepts array or JSON string input for `rawAssets`.
+ *      - Invalid JSON degrades to empty list (non-throwing behavior).
+ *      - Drops empty-URL assets unless `options.includeEmpty === true`.
+ *      - Reindexes positions to dense zero-based ordering.
+ *      - If normalized list is empty, attempts legacy fallback from
+ *        `legacyImageUrl`/`legacyModelUrl`.
+ *      - Guarantees one cover assignment when assets exist by selecting
+ *        first visual asset, otherwise first asset.
+ *
+ *   5) Validation (`validateMediaAssets`):
+ *      - Enforces `MEDIA_LIMITS` (`maxAssets`, `maxTotalBytes`).
+ *      - Requires valid URL and valid type per asset.
+ *      - Requires exactly one cover when asset array is non-empty.
+ *      - Returns structured result `{ ok, errors, totalBytes }`.
+ *
+ *   6) Payload shaping (`toMediaAssetsPayload`):
+ *      - Filters out assets without safe URLs.
+ *      - Recomputes `type`, trims `alt`, normalizes `size_bytes`, and
+ *        rewrites sequential `position` values.
+ *
+ *   7) Legacy bridge (`mediaAssetsToLegacy`):
+ *      - Derives legacy fields (`image_url`, `model_url`, sizes,
+ *        `cover_index`) from canonical asset list.
+ *      - If cover is a model, selects first visual as legacy image where
+ *        available.
+ *
+ *   8) Visual extraction (`getCardVisualAssets`):
+ *      - Returns normalized assets plus split subsets:
+ *        `visualAssets` (image/gif) and `modelAssets` (model).
+ *
+ * OPERATIONAL CAVEATS:
+ *   • Validation allows both `http` and `https`, while one user-facing
+ *     error string currently says "https URL"; this text is stricter than
+ *     actual predicate.
+ *   • Type inference is heuristic; uncommon URLs may default to `image`.
+ *   • Cover integrity is guaranteed by normalization, but callers can
+ *     still build invalid arrays manually; run `validateMediaAssets()`
+ *     before persistence.
+ *
+ * MAINTENANCE CHECKLIST:
+ *   • New supported media extension: update regexes and any MIME/consumer
+ *     assumptions in related upload code.
+ *   • New asset type: update inference, validation allowlist, payload map,
+ *     and legacy bridge behavior.
+ *   • Limit changes: adjust `MEDIA_LIMITS` and keep UI copy/messages in
+ *     sync with enforced values.
+ *   • Contract changes: keep normalization and validation aligned so
+ *     saved payloads always satisfy downstream expectations.
+ * ═══════════════════════════════════════════════════════════════════════
+ */
+
 const IMAGE_EXT_RE = /\.(png|jpe?g|webp|avif)(\?|#|$)/i;
 const GIF_EXT_RE = /\.gif(\?|#|$)/i;
 const MODEL_EXT_RE = /\.(glb|gltf|obj|mtl|stl|step|stp|iges|igs)(\?|#|$)/i;

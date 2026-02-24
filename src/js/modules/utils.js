@@ -1,55 +1,74 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════
- * MODULE: utils.js - Shared Utility / Helper Functions
+ * MODULE: utils.js — Shared Utility Primitives (Cross-Module Contract)
  * ═══════════════════════════════════════════════════════════════════════
  *
- * PURPOSE:
- *   Pure, reusable helper functions shared across the admin dashboard,
- *   public directory, and portfolio pages.  None of these functions
- *   touch the DOM directly (except by returning HTML strings); they are
- *   safe to call from any context.
+ * SCOPE:
+ *   Provides shared, low-level helper functions consumed by directory,
+ *   admin, portfolio, and API-adjacent modules. This file centralizes
+ *   formatting, parsing, normalization, and small UX primitives to avoid
+ *   duplicated logic and drift.
  *
- * EXPORTS:
- *   • esc(str)            – Escapes a string for safe insertion into
- *                           HTML (prevents XSS).  Used everywhere HTML
- *                           is built from user data.
- *   • parseMapsUrl(url)   – Extracts { city, region, label } from a
- *                           Google Maps URL by parsing the embedded
- *                           coordinates and /place/ path segment.
- *                           Uses REGION_BOUNDS from constants.js to
- *                           determine which Utah region the coordinates
- *                           fall within.
- *   • websiteLink(shop)   – Given a shop object, returns an HTML string
- *                           for the shop's contact/website link.  Uses
- *                           a priority cascade:
- *                             1. Email → mailto: link
- *                             2. URL   → <a href> link
- *                             3. Phone → tel: link
- *                             4. Fallback → raw text + Google Search
- *                           Any leftover text after extraction is shown
- *                           beside the link as a secondary contact note.
- *   • normaliseShop(s)    – Normalises a raw shop object (from either
- *                           shops.json or Supabase) into a consistent
- *                           shape with guaranteed string `id`, default
- *                           values, and unified key names.
- *   • debounce(fn, wait)   – Returns a debounced version of `fn` that
- *                           delays invocation until `wait` ms after the
- *                           last call. Used by directory.js search/filter.
- *   • generateUUID()       – Returns a v4 UUID string using
- *                           crypto.randomUUID when available, with a
- *                           getRandomValues fallback for older browsers.
+ * RUNTIME CONTRACT:
+ *   1) Timing utility:
+ *      - debounce(fn, wait): delays invocation until no calls occur for
+ *        wait ms. Last-call arguments are used.
  *
- * HOW TO ADD FEATURES / MODIFY:
- *   • NEW CONTACT TYPE - To support a new contact format (e.g. Instagram
- *     handle), add a new regex/match block inside `websiteLink()` before
- *     the fallback section (step 4).
- *   • NEW REGION - If you add a new geographic region, add its bounding
- *     box to REGION_BOUNDS in constants.js; `parseMapsUrl` will pick
- *     it up automatically.
- *   • NEW SHOP FIELD - Add a default value in `normaliseShop()` so
- *     every consumer sees a consistent property.
- *   • NEW HELPER - Export a new function from this file and import it
- *     where needed.  Keep functions pure (no side-effects).
+ *   2) HTML safety:
+ *      - esc(str): escapes &, <, >, and ".
+ *      - Intended for safe interpolation into HTML strings.
+ *
+ *   3) Google Drive normalization:
+ *      - extractDriveFileId(url): extracts Drive/lh3 file IDs from known
+ *        URL patterns or raw ID input.
+ *      - toEmbedUrl(fileId): converts file ID to lh3 direct-serve URL.
+ *      - normalisePortfolioImageUrl(url): rewrites Drive-style inputs to
+ *        stable embed form; passes through non-Drive URLs unchanged.
+ *
+ *   4) Maps parsing:
+ *      - parseMapsUrl(url): returns { city, region, label }.
+ *      - Region is inferred from coordinate bounding boxes in
+ *        REGION_BOUNDS; defaults to region "other".
+ *      - City is inferred from /place/ path pattern when available.
+ *
+ *   5) Contact link rendering:
+ *      - websiteLink(shop): returns HTML using precedence:
+ *        email -> URL -> phone -> text + search fallback.
+ *      - Preserves unmatched contact text as a secondary note.
+ *
+ *   6) Shop normalization:
+ *      - normaliseShop(s): canonicalizes raw shop records from Supabase
+ *        or JSON into a stable object shape for downstream rendering.
+ *      - Ensures string id, defaults for optional fields, and key bridging
+ *        (size vs size_desc, regionTitle vs region_title, etc.).
+ *
+ *   7) Identifier generation:
+ *      - generateUUID(): RFC 4122 v4 via crypto.randomUUID when present,
+ *        with getRandomValues fallback preserving version/variant bits.
+ *
+ *   8) Accessibility helper:
+ *      - trapFocus(container): keeps Tab focus cycling inside modal-like
+ *        container and returns cleanup handler.
+ *
+ *   9) Embed URL classification:
+ *      - isExternalEmbedUrl(url): identifies 3dviewer.net URLs for shared
+ *        model-embed branching logic.
+ *
+ * OPERATIONAL CAVEATS:
+ *   • websiteLink returns HTML strings; callers must treat output as
+ *     trusted utility output and avoid re-escaping/unsafe concatenation.
+ *   • parseMapsUrl cannot resolve short-link redirects client-side; it
+ *     only parses directly available URL structure.
+ *   • trapFocus requires focusable descendants (or focusable container)
+ *     for best keyboard UX.
+ *
+ * MAINTENANCE CHECKLIST:
+ *   • New contact type: extend websiteLink precedence safely.
+ *   • New region geometry: update REGION_BOUNDS in constants module.
+ *   • New shop fields: add defaults/mapping in normaliseShop.
+ *   • New Drive URL patterns: extend extractDriveFileId matcher set.
+ *   • Any helper with side effects should remain explicit and minimal;
+ *     keep pure parsing/formatting functions deterministic.
  * ═══════════════════════════════════════════════════════════════════════
  */
 
