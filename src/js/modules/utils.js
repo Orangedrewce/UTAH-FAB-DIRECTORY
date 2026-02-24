@@ -74,6 +74,39 @@ export function esc(str) {
     .replace(/"/g, "&quot;");
 }
 
+// ============================================
+// GOOGLE DRIVE URL HELPERS (shared)
+// ============================================
+export function extractDriveFileId(url) {
+  if (!url || typeof url !== "string") return null;
+  url = url.trim();
+  let m = url.match(/lh3\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  m = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  m = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{25,}$/.test(url)) return url;
+  return null;
+}
+
+export function toEmbedUrl(fileId) {
+  return `https://lh3.googleusercontent.com/d/${fileId}`;
+}
+
+/**
+ * Normalize portfolio image/media URL.
+ * - Keeps normal URLs untouched
+ * - Converts Google Drive share URLs (or raw IDs) into direct lh3 embed URLs
+ */
+export function normalisePortfolioImageUrl(url) {
+  if (!url || typeof url !== "string") return "";
+  const trimmed = url.trim();
+  if (!trimmed) return "";
+  const driveId = extractDriveFileId(trimmed);
+  return driveId ? toEmbedUrl(driveId) : trimmed;
+}
+
 /**
  * Parse a Google Maps URL and try to extract city name + region.
  * Works with full URLs like:

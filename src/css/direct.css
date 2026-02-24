@@ -19,7 +19,7 @@ body {
     padding: 0;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: var(--z-header);
   }
 
   .header-inner {
@@ -155,7 +155,7 @@ body {
   .support-link:hover {
     opacity: 1;
     background: var(--brand-orange-dim);
-    color: #fff;
+    color: var(--white);
   }
   .support-link svg { flex-shrink: 0; }
 
@@ -174,7 +174,7 @@ body {
   }
   .google-link:hover {
     background: var(--brand-orange-dim);
-    color: #fff;
+    color: var(--white);
   }
 
   /* ── MAIN LAYOUT ── */
@@ -188,12 +188,12 @@ body {
 
   /* Lift content above .bg-grid without creating stacking contexts on every child */
   .main > .bg-grid  { z-index: 0; }
-  .main > .corner   { z-index: 2; }
+  .main > .corner   { z-index: var(--z-corner); }
   #directoryContent,
   .no-results,
   .region {
     position: relative;
-    z-index: 1;
+    z-index: var(--z-content);
   }
 
   /* Future-proof: prevent sticky header from hiding anchor targets */
@@ -218,7 +218,7 @@ body {
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(255,107,43,0.25);
+    background: rgba(var(--brand-orange-rgb), 0.25);
     align-self: center;
   }
 
@@ -297,9 +297,9 @@ body {
   }
 
   .card:hover {
-    border-color: #444;
+    border-color: var(--text-print-muted);
     background: var(--bg-surface-alt);
-    z-index: 1;
+    z-index: var(--z-content);
   }
 
   .card.hidden { display: none; }
@@ -452,7 +452,7 @@ body {
     border: 1px solid var(--border-neutral);
     border-radius: var(--radius);
     position: relative;
-    z-index: 1;
+    z-index: var(--z-content);
   }
   .join-inner { max-width: 640px; margin: 0 auto; }
   .join-title {
@@ -536,7 +536,7 @@ body {
   .join-form .tag-chip.selected {
     background: var(--brand-orange-dim);
     border-color: var(--brand-orange-dim);
-    color: #fff;
+    color: var(--white);
   }
 
   /* Buttons (admin-style) */
@@ -555,10 +555,10 @@ body {
   }
   .join-form .btn-primary {
     background: var(--brand-orange-dim);
-    color: #fff;
+    color: var(--white);
     border-color: var(--brand-orange-dim);
   }
-  .join-form .btn-primary:hover { background: #c84009; }
+  .join-form .btn-primary:hover { background: var(--brand-orange-strong); }
   .join-form .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
 
   .join-actions {
@@ -574,7 +574,7 @@ body {
   .join-feedback.success { color: var(--success); }
   .join-feedback.error   { color: var(--danger); }
 
-  @media (max-width: 700px) {
+  @media (max-width: 680px) {
     .join-section { padding: 1.5rem 1rem; margin-top: 2rem; }
     .join-form .form-row { flex-direction: column; gap: 0; }
   }
@@ -584,7 +584,7 @@ body {
     .card-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 680px) {
     .header-inner { flex-wrap: wrap; padding: 14px 16px; gap: 12px; }
     .main { padding: 20px 16px 48px; }
     .card-grid { grid-template-columns: 1fr; }

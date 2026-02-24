@@ -213,13 +213,14 @@
         </div>
 
         <div class="form-group">
-          <label for="pImage">Image (PNG/JPG/WebP)</label>
+          <label for="pImage">Image (PNG/JPG/GIF/WebP)</label>
           <div class="port-upload-zone" id="pImageZone">
-            <input type="file" id="pImage" accept="image/png,image/jpeg,image/webp" class="sr-only">
+            <input type="file" id="pImage" accept="image/png,image/jpeg,image/gif,image/webp" class="sr-only">
             <div class="port-upload-preview" id="pImagePreview">
               <span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>
             </div>
           </div>
+          <input type="url" id="pImageUrl" placeholder="-- optional: paste hosted image URL (Google Drive supported) --" style="margin-top:6px;">
         </div>
 
         <div class="form-group">

@@ -266,6 +266,14 @@ async function handleApproveDeepLink() {
       alert(`This request has already been ${status}.`);
       return;
     }
+
+    req = data;
+    const exists = pendingRequests.some((r) => r.id === approveId);
+    if (!exists) {
+      pendingRequests = [req, ...pendingRequests];
+      renderRequestsBadge();
+      renderRequestsList();
+    }
   }
 
   // Open the requests panel
@@ -891,7 +899,16 @@ async function handleRequestAction(requestId, action, region = null) {
       const { error: insErr } = await _supabase
         .from("fab_shops")
         .insert([newShop]);
-      if (insErr) throw insErr;
+
+      const isDuplicateNameRegion =
+        insErr &&
+        (insErr.code === "23505" ||
+          (insErr.message &&
+            insErr.message.includes("uq_fab_shops_name_region")));
+
+      if (insErr && !isDuplicateNameRegion) {
+        throw insErr;
+      }
     }
 
     const { error: updErr } = await _supabase
@@ -908,7 +925,6 @@ async function handleRequestAction(requestId, action, region = null) {
   } catch (err) {
     console.error(`Request ${action} failed:`, err);
     alert(`Failed to ${action} request: ` + err.message);
-  } finally {
     if (btn) btn.disabled = false;
   }
 }

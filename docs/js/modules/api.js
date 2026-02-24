@@ -219,6 +219,7 @@ export async function uploadPortfolioAsset(file) {
     png:  "image/png",
     jpg:  "image/jpeg",
     jpeg: "image/jpeg",
+    gif:  "image/gif",
     webp: "image/webp",
   };
   const contentType = MIME[ext] || file.type || "application/octet-stream";

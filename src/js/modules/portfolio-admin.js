@@ -39,7 +39,7 @@ import {
   deletePortfolioItem,
   uploadPortfolioAsset,
 } from "./api.js";
-import { esc } from "./utils.js";
+import { esc, normalisePortfolioImageUrl } from "./utils.js";
 
 // ── DOM refs ────────────────────────────────────────────────────────────
 const $ = (sel) => document.querySelector(sel);
@@ -78,6 +78,7 @@ const pSortOrder = $("#pSortOrder");
 const pImage = $("#pImage");
 const pImageZone = $("#pImageZone");
 const pImagePreview = $("#pImagePreview");
+const pImageUrl = $("#pImageUrl");
 const pModelFile = $("#pModelFile");
 const pModelZone = $("#pModelZone");
 const pModelPreview = $("#pModelPreview");
@@ -166,6 +167,14 @@ function formatBytes(bytes) {
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
+function looksLikeImageUrl(url) {
+  if (!url) return false;
+  const value = String(url).trim();
+  if (!value) return false;
+  if (/\.(png|jpe?g|gif|webp)(\?|#|$)/i.test(value)) return true;
+  return /drive\.google\.com|lh3\.googleusercontent\.com/i.test(value);
+}
+
 // ── TAB SWITCHING ───────────────────────────────────────────────────────
 if (adminTabs) {
   adminTabs.addEventListener("click", (e) => {
@@ -246,7 +255,7 @@ async function initPortfolio() {
   });
 
   // Live preview updates
-  [pTitle, pDesc, pTag, pModelUrl].forEach((el) => {
+  [pTitle, pDesc, pTag, pModelUrl, pImageUrl].forEach((el) => {
     if (el) el.addEventListener("input", updateLivePreview);
   });
   [pFeatured, pVisible].forEach((el) => {
@@ -334,7 +343,7 @@ function renderGrid() {
       <div class="port-admin-card-img">
         ${
           item.image_url
-            ? `<img src="${esc(item.image_url)}" alt="${esc(item.title)}" loading="lazy">`
+            ? `<img src="${esc(normalisePortfolioImageUrl(item.image_url))}" alt="${esc(item.title)}" loading="lazy">`
             : item.model_url
               ? `<iframe class="port-admin-card-preview-frame" src="${esc(buildEmbedSrc(item.model_url))}" loading="lazy" tabindex="-1"></iframe>
                  <button type="button" class="port-admin-fs-btn" aria-label="Enter fullscreen">FULL</button>`
@@ -434,12 +443,13 @@ function openModal(item = null) {
     pFeatured.checked = !!item.is_featured;
     pVisible.checked = item.is_visible !== false;
     pExistingImageUrl.value = item.image_url || "";
+    if (pImageUrl) pImageUrl.value = item.image_url || "";
     if (pImageSizeBytes) pImageSizeBytes.value = item.image_size_bytes || 0;
     if (pModelSizeBytes) pModelSizeBytes.value = item.model_size_bytes || 0;
 
     // Show existing image in preview
     if (item.image_url) {
-      pImagePreview.innerHTML = `<img src="${esc(item.image_url)}" alt="Current image">`;
+      pImagePreview.innerHTML = `<img src="${esc(normalisePortfolioImageUrl(item.image_url))}" alt="Current image">`;
     } else {
       pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
     }
@@ -465,6 +475,7 @@ function openModal(item = null) {
     if (pModelPreview) pModelPreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
     if (pModelFile) pModelFile.value = "";
     if (pModelUrl) pModelUrl.value = "";
+    if (pImageUrl) pImageUrl.value = "";
     if (pModelSourceHosted && pModelSourceExternal) {
       pModelSourceHosted.checked = true;
       pModelSourceExternal.checked = false;
@@ -553,7 +564,7 @@ function updateLivePreview() {
   const imgSrc =
     pImage?.files?.length > 0
       ? URL.createObjectURL(pImage.files[0])
-      : pExistingImageUrl?.value || "";
+      : normalisePortfolioImageUrl(pImageUrl?.value || pExistingImageUrl?.value || "");
   const hasModel = !!pModelUrl?.value;
   const featured = pFeatured?.checked;
 
@@ -584,7 +595,9 @@ async function handleSave(e) {
   portSaveBtn.textContent = "SAVING…";
 
   try {
-    let imageUrl = pExistingImageUrl?.value || null;
+    let imageUrl = normalisePortfolioImageUrl(
+      pImageUrl?.value || pExistingImageUrl?.value || "",
+    ) || null;
     let imageSizeBytes = parseInt(pImageSizeBytes?.value, 10) || null;
     const modelSource = getModelSourceMode();
 
@@ -599,6 +612,13 @@ async function handleSave(e) {
 
     let modelUrl = pModelUrl?.value?.trim() || null;
     let modelSizeBytes = parseInt(pModelSizeBytes?.value, 10) || null;
+
+    if (!imageUrl && looksLikeImageUrl(modelUrl)) {
+      imageUrl = normalisePortfolioImageUrl(modelUrl);
+      modelUrl = null;
+      modelSizeBytes = null;
+      if (pImageUrl && !pImageUrl.value) pImageUrl.value = imageUrl || "";
+    }
 
     if (modelSource === "external") {
       if (modelUrl && !isExternalEmbedUrl(modelUrl)) {

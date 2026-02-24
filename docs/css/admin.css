@@ -25,13 +25,13 @@ body {
 
 /* Lift content above .bg-grid without creating stacking contexts on every child */
 .admin-dash > .bg-grid  { z-index: 0; }
-.admin-dash > .corner   { z-index: 2; }
+.admin-dash > .corner   { z-index: var(--z-corner); }
 .admin-header,
 .toolbar,
 .table-wrap,
 .modal-backdrop {
   position: relative;
-  z-index: 1;
+  z-index: var(--z-content);
 }
 
 /* ── Auth gate ───────────────────── */
@@ -100,10 +100,10 @@ body {
 }
 .btn-primary {
   background: var(--brand-orange-dim);
-  color: #fff;
+  color: var(--white);
   border-color: var(--brand-orange-dim);
 }
-.btn-primary:hover { background: #c84009; }
+.btn-primary:hover { background: var(--brand-orange-strong); }
 .btn-outline {
   background: transparent;
   color: var(--text-main);
@@ -112,10 +112,10 @@ body {
 .btn-outline:hover { border-color: var(--text-muted); }
 .btn-danger {
   background: var(--danger);
-  color: #fff;
+  color: var(--white);
   border-color: var(--danger);
 }
-.btn-danger:hover { background: #b02727; }
+.btn-danger:hover { background: var(--danger-dark); }
 .btn-sm { padding: .35rem .7rem; font-size: .75rem; }
 
 /* ── Admin header ────────────────── */
@@ -124,7 +124,7 @@ body {
   border-bottom: 1px solid var(--border-neutral);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-header);
 }
 .admin-header-inner {
   max-width: 1440px;
@@ -162,7 +162,7 @@ body {
   background: var(--bg-surface);
   position: sticky;
   top: 0;
-  z-index: 45;
+  z-index: var(--z-sticky);
 }
 .admin-tab {
   font-family: var(--font-mono);
@@ -201,7 +201,7 @@ body {
   position: sticky;
   /* top is set dynamically by JS to match actual header height */
   top: 0;
-  z-index: 50;
+  z-index: var(--z-sticky);
 }
 .toolbar-inner {
   max-width: 1440px;
@@ -327,7 +327,7 @@ body {
   white-space: nowrap;
   position: sticky;
   top: 0; /* relative to .table-scroll, which is now the scroll container */
-  z-index: 2;
+  z-index: var(--z-corner);
   background: var(--bg-surface);
 }
 .shop-table td {
@@ -433,11 +433,11 @@ body.modal-open {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.65);
+  background: rgba(var(--black-rgb), 0.65);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 200;
+  z-index: var(--z-modal);
   padding: 1rem;
 }
 .modal {
@@ -538,7 +538,7 @@ body.modal-open {
 .tag-chip.selected {
   background: var(--brand-orange-dim);
   border-color: var(--brand-orange-dim);
-  color: #fff;
+  color: var(--white);
 }
 
 .modal-footer {
@@ -556,7 +556,7 @@ body.modal-open {
 }
 
 /* ── Responsive ──────────────────── */
-@media (max-width: 800px) {
+@media (max-width: 860px) {
   .admin-header-inner { flex-direction: column; gap: .5rem; }
   .toolbar-inner { flex-direction: column; align-items: flex-start; }
   .admin-search { width: 100%; }
@@ -570,7 +570,7 @@ body.modal-open {
   margin: 0 auto;
   padding: 0 1.5rem;
   position: relative;
-  z-index: 1;
+  z-index: var(--z-content);
 }
 .requests-panel-inner {
   border: 1px solid var(--border-neutral);
@@ -608,7 +608,7 @@ body.modal-open {
   padding: 0 .4rem;
   border-radius: 10px;
   background: var(--brand-orange-dim);
-  color: #fff;
+  color: var(--white);
   font-family: var(--font-mono);
   font-size: .68rem;
   font-weight: 600;
@@ -643,12 +643,12 @@ body.modal-open {
 }
 .requests-card--highlight {
   border-color: var(--brand-orange-dim);
-  box-shadow: 0 0 0 2px rgba(255,107,43,.35);
+  box-shadow: 0 0 0 2px rgba(var(--brand-orange-rgb), 0.35);
   animation: card-pulse 1.5s ease-in-out 2;
 }
 @keyframes card-pulse {
-  0%, 100% { box-shadow: 0 0 0 2px rgba(255,107,43,.35); }
-  50%      { box-shadow: 0 0 0 6px rgba(255,107,43,.15); }
+  0%, 100% { box-shadow: 0 0 0 2px rgba(var(--brand-orange-rgb), 0.35); }
+  50%      { box-shadow: 0 0 0 6px rgba(var(--brand-orange-rgb), 0.15); }
 }
 .requests-card-info {
   flex: 1;
@@ -664,7 +664,7 @@ body.modal-open {
   font-weight: 400;
   font-size: .68rem;
   color: var(--brand-orange-dim);
-  background: rgba(255,165,0,.1);
+  background: rgba(var(--amber-rgb), 0.1);
   padding: .1em .45em;
   border-radius: var(--radius);
   margin-left: .35em;
@@ -721,7 +721,7 @@ body.modal-open {
   font-weight: 400;
   font-size: .68rem;
   color: var(--text-muted);
-  background: rgba(255,255,255,.06);
+  background: rgba(var(--white-rgb), 0.06);
   padding: .1em .45em;
   border-radius: var(--radius);
   margin-left: .35em;
@@ -790,7 +790,7 @@ body.modal-open {
   flex-direction: column;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 860px) {
   .modal-split {
     flex-direction: row;
   }
@@ -802,7 +802,7 @@ body.modal-open {
     flex: 1;
     min-width: 0; /* prevent flex overflow */
     padding: 1.5rem;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(var(--black-rgb), 0.2);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -924,7 +924,7 @@ body.modal-open {
 }
 .port-admin-card:hover {
   border-color: var(--text-muted);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, .3);
+  box-shadow: 0 2px 12px rgba(var(--black-rgb), 0.3);
 }
 .port-admin-card--hidden {
   opacity: .45;
@@ -958,9 +958,9 @@ body.modal-open {
   position: absolute;
   top: .4rem;
   left: .4rem;
-  z-index: 4;
+  z-index: var(--z-corner);
   border: 1px solid var(--border-neutral);
-  background: rgba(0, 0, 0, .55);
+  background: rgba(var(--black-rgb), 0.55);
   color: var(--text-main);
   font-family: var(--font-mono);
   font-size: .62rem;
@@ -1038,8 +1038,8 @@ body.modal-open {
   color: var(--danger);
 }
 .port-admin-flag--size {
-  border-color: rgba(0, 184, 148, .3);
-  color: rgba(0, 184, 148, .8);
+  border-color: rgba(var(--success-rgb), 0.3);
+  color: rgba(var(--success-rgb), 0.8);
 }
 .port-admin-3d-badge {
   font-family: var(--font-mono);
@@ -1048,9 +1048,9 @@ body.modal-open {
   text-transform: uppercase;
   padding: .1rem .4rem;
   border-radius: var(--radius);
-  background: rgba(0, 184, 148, .12);
-  color: #00b894;
-  border: 1px solid rgba(0, 184, 148, .3);
+  background: rgba(var(--success-rgb), 0.12);
+  color: var(--success);
+  border: 1px solid rgba(var(--success-rgb), 0.3);
 }
 
 .port-admin-card-actions {
@@ -1072,7 +1072,7 @@ body.modal-open {
 .port-upload-zone:hover,
 .port-upload-zone.dragover {
   border-color: var(--brand-orange-dim);
-  background: rgba(255, 107, 43, .04);
+  background: rgba(var(--brand-orange-rgb), 0.04);
 }
 .port-upload-zone.is-disabled {
   opacity: .45;
@@ -1112,7 +1112,7 @@ body.modal-open {
   aspect-ratio: 4 / 3;
   object-fit: cover;
   display: block;
-  background: rgba(255, 255, 255, .02);
+  background: rgba(var(--white-rgb), 0.02);
 }
 .port-live-preview .port-preview-body {
   padding: .75rem;

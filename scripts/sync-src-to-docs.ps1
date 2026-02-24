@@ -26,7 +26,16 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "policy changes"
+  git commit -m "Portfolio: add explicit loading/error empty states with retry and contact path
+Portfolio 3D cards: render-first flow, View 3D/View Render toggle, outside-click/Escape close
+Portfolio controls: add inactivity fade (3s) with interaction wake on mouse/touch
+Fullscreen behavior: preserve current render/3D state, support render-window click toggle
+Pricing copy: remove ambiguous wording, tighten deliverables/terms, remove competitor mention
+Homepage process copy: tighten buyer-facing language and improve clarity/consistency
+Admin accessibility: add aria-live for auth errors, aria-modal on dialogs, focus trap + focus restore
+Admin portfolio modal: split model source mode (Hosted Asset vs External Embed)
+Upload hardening: add client-side file size caps and clearer upload constraints
+Public model render: support external embed URLs and multi-file model URL lists without brittle guessing"
 
   # 5) Publish to live site
   git pull origin dev --rebase

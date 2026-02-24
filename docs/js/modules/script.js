@@ -16,7 +16,7 @@
 
 import { supabase as sb } from "./supabase.js";
 import { fetchPortfolioItems } from "./api.js";
-import { esc, generateUUID } from "./utils.js";
+import { esc, generateUUID, normalisePortfolioImageUrl } from "./utils.js";
 
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
@@ -162,7 +162,7 @@ function patchFusion360Controls(embeddedViewer) {
 const AXIS_LENGTH  = 18;   // px – half-length of each axis line
 const AXIS_WIDTH   = 1.5;  // px – stroke width
 const AXIS_MARGIN  = 18;   // px – margin from bottom-left corner
-const AXIS_COLORS  = { x: "#ff3333", y: "#33cc33", z: "#3388ff" }; // standard RGB
+const AXIS_COLORS  = { x: "#ff3333", y: "#3388ff", z: "#33cc33" }; // X red, Y blue (up), Z green (depth)
 
 /**
  * Draw a tiny XYZ axis indicator at the orbit centre while MMB is held.
@@ -197,10 +197,10 @@ function addPivotGizmo(embeddedViewer, hostEl) {
       // X axis → right (red)
       ctx.strokeStyle = AXIS_COLORS.x;
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + AXIS_LENGTH, cy); ctx.stroke();
-      // Y axis → up (green)
+      // Y axis → up (blue)
       ctx.strokeStyle = AXIS_COLORS.y;
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy - AXIS_LENGTH); ctx.stroke();
-      // Z axis → diagonal towards viewer (blue)
+      // Z axis → diagonal towards viewer (green)
       ctx.strokeStyle = AXIS_COLORS.z;
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx - AXIS_LENGTH * 0.6, cy + AXIS_LENGTH * 0.6); ctx.stroke();
     }
@@ -488,7 +488,7 @@ function portfolioItemHTML(item) {
   const title = esc(item.title);
   const desc = esc(item.description || "");
   const label = `${tag} · ${title}`;
-  const imgUrl = item.image_url || "assets/Render.png";
+  const imgUrl = normalisePortfolioImageUrl(item.image_url) || "assets/Render.png";
   const modelUrls = getModelUrlList(item.model_url);
   const embedUrl = modelUrls.length === 1 && isExternalEmbedUrl(modelUrls[0]) ? modelUrls[0] : "";
 
