@@ -33,9 +33,11 @@
   <!-- ── LIGHTBOX ── -->
   <div class="lightbox" id="lightbox" role="dialog" aria-label="Portfolio image viewer" aria-modal="true">
     <button class="lightbox-close" onclick="closeLightbox()">[ CLOSE ]</button>
-    <button class="lightbox-arrow lightbox-prev" onclick="navigateLightbox(-1)" aria-label="Previous image">&#8249;</button>
-    <img id="lightbox-img" src="" alt="">
-    <button class="lightbox-arrow lightbox-next" onclick="navigateLightbox(1)" aria-label="Next image">&#8250;</button>
+    <div class="lightbox-stage">
+      <button class="lightbox-arrow lightbox-prev" onclick="navigateLightbox(-1)" aria-label="Previous image">&#8249;</button>
+      <img id="lightbox-img" src="" alt="">
+      <button class="lightbox-arrow lightbox-next" onclick="navigateLightbox(1)" aria-label="Next image">&#8250;</button>
+    </div>
     <div class="lightbox-label" id="lightbox-label"></div>
   </div>
 

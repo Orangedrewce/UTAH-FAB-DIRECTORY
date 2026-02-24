@@ -99,6 +99,14 @@ window.navigateLightbox = navigateLightbox;
 window.navigateLightboxCards = navigateLightboxCards;
 
 document.addEventListener("keydown", (event) => {
+  // Escape while pseudo-fullscreen → close it
+  const pseudoFs = document.querySelector(".port-thumb--model.is-pseudo-fullscreen");
+  if (event.key === "Escape" && pseudoFs) {
+    event.preventDefault();
+    togglePseudoFullscreen(pseudoFs); // toggles off
+    return;
+  }
+
   const openModelCard = document.querySelector(".port-thumb--model.is-model-open");
   if (event.key === "Escape" && openModelCard) {
     event.preventDefault();
@@ -157,7 +165,7 @@ function syncViewerFullscreenButtons() {
   for (const target of fullscreenTargets) {
     const btn = target.querySelector(".model-fullscreen-btn");
     if (!btn) continue;
-    const active = document.fullscreenElement === target;
+    const active = isCardFullscreen(target);
     btn.textContent = active ? "EXIT" : "FULL";
     btn.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
     btn.classList.toggle("is-active", active);
@@ -454,22 +462,47 @@ function toggleModelCard(cardEl) {
   }
 }
 
+function isCardFullscreen(cardEl) {
+  return document.fullscreenElement === cardEl || cardEl.classList.contains("is-pseudo-fullscreen");
+}
+
 function toggleCardFullscreen(cardEl) {
   if (!cardEl) return;
 
-  const toggleFullscreen = async () => {
-    try {
-      if (document.fullscreenElement === cardEl) {
-        await document.exitFullscreen?.();
-      } else {
-        await cardEl.requestFullscreen?.();
+  // Native Fullscreen API available (desktop browsers, Android Chrome)
+  if (cardEl.requestFullscreen) {
+    const toggleNative = async () => {
+      try {
+        if (document.fullscreenElement === cardEl) {
+          await document.exitFullscreen?.();
+        } else {
+          await cardEl.requestFullscreen();
+        }
+      } catch (err) {
+        // Native failed (e.g. user gesture requirement) — fall back to CSS
+        togglePseudoFullscreen(cardEl);
       }
-    } catch (err) {
-      console.warn("Fullscreen toggle failed:", err);
-    }
-  };
+    };
+    toggleNative();
+  } else {
+    // No native API (iOS Safari) — use CSS pseudo-fullscreen
+    togglePseudoFullscreen(cardEl);
+  }
+}
 
-  toggleFullscreen();
+function togglePseudoFullscreen(cardEl) {
+  const wasActive = cardEl.classList.contains("is-pseudo-fullscreen");
+  // Close any other pseudo-fullscreen card first
+  document.querySelectorAll(".is-pseudo-fullscreen").forEach((el) => {
+    el.classList.remove("is-pseudo-fullscreen");
+  });
+  document.body.classList.remove("has-pseudo-fullscreen");
+
+  if (!wasActive) {
+    cardEl.classList.add("is-pseudo-fullscreen");
+    document.body.classList.add("has-pseudo-fullscreen");
+  }
+  syncViewerFullscreenButtons();
 }
 
 /** Single-click focus: highlight the card with a visible outline. */
@@ -572,7 +605,6 @@ function portfolioItemHTML(item, cardIndex, visualAssets) {
       </div>
       <button type="button" class="model-fullscreen-btn" aria-label="Enter fullscreen">FULL</button>
       <button type="button" class="model-toggle-btn" data-model-action="toggle" aria-label="Open interactive 3D model">View 3D</button>
-      ${visualAssets.length > 1 ? `<button type="button" class="model-gallery-btn" data-card-index="${cardIndex}" onclick="openLightbox(this)">Gallery ${visualAssets.length}</button>` : ""}
       <span class="port-model-badge">3D</span>
     </div>
     ${caption}
