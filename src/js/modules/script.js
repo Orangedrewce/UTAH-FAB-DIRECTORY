@@ -17,43 +17,72 @@
 import { supabase as sb } from "./supabase.js";
 import { fetchPortfolioItems } from "./api.js";
 import { esc, generateUUID, normalisePortfolioImageUrl } from "./utils.js";
+import { getCardVisualAssets } from "./media-assets.js";
 
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
 const lightboxLabel = document.getElementById("lightbox-label");
 
-// ── Lightbox navigation state ───────────────────────────────────────────
-let thumbs = [...document.querySelectorAll(".thumb")];
-let currentIndex = 0;
+// ── Lightbox two-level navigation state ─────────────────────────────────
+let lightboxCards = [];
+let currentCardIndex = 0;
+let currentMediaIndex = 0;
 
-/** Refresh thumb list (call after dynamic DOM inserts) */
-function refreshThumbs() {
-  thumbs = [...document.querySelectorAll(".thumb")];
+function setLightboxCards(cards) {
+  lightboxCards = Array.isArray(cards) ? cards : [];
+  if (currentCardIndex >= lightboxCards.length) currentCardIndex = 0;
+  if (currentMediaIndex < 0) currentMediaIndex = 0;
+}
+
+function getCurrentCard() {
+  return lightboxCards[currentCardIndex] || null;
+}
+
+function getCurrentMedia() {
+  const card = getCurrentCard();
+  if (!card?.visualAssets?.length) return null;
+  if (currentMediaIndex >= card.visualAssets.length) currentMediaIndex = 0;
+  return card.visualAssets[currentMediaIndex] || null;
+}
+
+function renderLightboxState() {
+  if (!lightbox || !lightboxImg || !lightboxLabel) return;
+  const card = getCurrentCard();
+  const media = getCurrentMedia();
+  if (!card || !media) return;
+
+  lightboxImg.src = media.url;
+  lightboxImg.alt = media.alt || card.title || "";
+  const cardPos = currentCardIndex + 1;
+  const mediaPos = currentMediaIndex + 1;
+  lightboxLabel.textContent = `${card.label} · Card ${cardPos}/${lightboxCards.length} · Media ${mediaPos}/${card.visualAssets.length}`;
 }
 
 export function openLightbox(element) {
-  if (!lightbox || !lightboxImg || !lightboxLabel) return;
-  const image = element.querySelector("img");
-  if (!image) return;
+  if (!lightbox) return;
+  const cardIndex = Number(element?.dataset?.cardIndex);
+  const mediaIndex = Number(element?.dataset?.mediaIndex || 0);
+  if (!Number.isInteger(cardIndex) || cardIndex < 0 || cardIndex >= lightboxCards.length) return;
 
-  const idx = thumbs.indexOf(element);
-  if (idx !== -1) currentIndex = idx;
-
-  lightboxImg.src = image.src;
-  lightboxImg.alt = image.alt || "";
-  lightboxLabel.textContent = element.getAttribute("data-label") || "";
+  currentCardIndex = cardIndex;
+  currentMediaIndex = Number.isInteger(mediaIndex) && mediaIndex >= 0 ? mediaIndex : 0;
+  renderLightboxState();
   lightbox.classList.add("open");
 }
 
 function navigateLightbox(delta) {
-  if (!thumbs.length || !lightbox?.classList.contains("open")) return;
-  currentIndex = (currentIndex + delta + thumbs.length) % thumbs.length;
-  const thumb = thumbs[currentIndex];
-  const image = thumb.querySelector("img");
-  if (!image) return;
-  lightboxImg.src = image.src;
-  lightboxImg.alt = image.alt || "";
-  lightboxLabel.textContent = thumb.getAttribute("data-label") || "";
+  if (!lightbox?.classList.contains("open")) return;
+  const card = getCurrentCard();
+  if (!card?.visualAssets?.length) return;
+  currentMediaIndex = (currentMediaIndex + delta + card.visualAssets.length) % card.visualAssets.length;
+  renderLightboxState();
+}
+
+function navigateLightboxCards(delta) {
+  if (!lightbox?.classList.contains("open") || !lightboxCards.length) return;
+  currentCardIndex = (currentCardIndex + delta + lightboxCards.length) % lightboxCards.length;
+  currentMediaIndex = 0;
+  renderLightboxState();
 }
 
 export function closeLightbox() {
@@ -67,6 +96,7 @@ export function closeLightbox() {
 window.openLightbox = openLightbox;
 window.closeLightbox = closeLightbox;
 window.navigateLightbox = navigateLightbox;
+window.navigateLightboxCards = navigateLightboxCards;
 
 document.addEventListener("keydown", (event) => {
   const openModelCard = document.querySelector(".port-thumb--model.is-model-open");
@@ -94,6 +124,8 @@ document.addEventListener("keydown", (event) => {
     case "Escape":     closeLightbox(); break;
     case "ArrowLeft":  navigateLightbox(-1); break;
     case "ArrowRight": navigateLightbox(1); break;
+    case "ArrowUp":    navigateLightboxCards(-1); break;
+    case "ArrowDown":  navigateLightboxCards(1); break;
   }
 });
 
@@ -440,13 +472,26 @@ function toggleCardFullscreen(cardEl) {
   toggleFullscreen();
 }
 
+/** Single-click focus: highlight the card with a visible outline. */
+function focusCard(cardEl) {
+  if (!cardEl) return;
+  // Clear any previously focused card
+  const prev = document.querySelector(".port-thumb--model.is-card-focused");
+  if (prev && prev !== cardEl) prev.classList.remove("is-card-focused");
+  cardEl.classList.add("is-card-focused");
+}
+
+// ── Single click: focus/select the card (outline highlight) ──
+// ── Double click on render curtain: toggle fullscreen ──
 document.addEventListener("click", (event) => {
+  // Render curtain single-click → open lightbox (not fullscreen)
   const renderWindow = event.target.closest(".model-render-curtain");
   if (renderWindow) {
     const card = renderWindow.closest(".port-thumb--model");
     if (!card) return;
-    event.preventDefault();
-    toggleCardFullscreen(card);
+    // Single click focuses the card (visual highlight)
+    focusCard(card);
+    // Don't go fullscreen — let dblclick handle that
     return;
   }
 
@@ -455,7 +500,6 @@ document.addEventListener("click", (event) => {
     const card = fullscreenBtn.closest(".port-thumb--model");
     if (!card) return;
     event.preventDefault();
-
     toggleCardFullscreen(card);
     return;
   }
@@ -472,9 +516,26 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  // Click outside any model card → close open card + clear focus
   const openCard = document.querySelector(".port-thumb--model.is-model-open");
   if (openCard && !openCard.contains(event.target)) {
     closeModelCard(openCard);
+  }
+  const focusedCard = document.querySelector(".port-thumb--model.is-card-focused");
+  if (focusedCard && !focusedCard.contains(event.target)) {
+    focusedCard.classList.remove("is-card-focused");
+  }
+});
+
+// ── Double click on render curtain → fullscreen ──
+document.addEventListener("dblclick", (event) => {
+  const renderWindow = event.target.closest(".model-render-curtain");
+  if (renderWindow) {
+    const card = renderWindow.closest(".port-thumb--model");
+    if (!card) return;
+    event.preventDefault();
+    toggleCardFullscreen(card);
+    return;
   }
 });
 
@@ -483,13 +544,17 @@ document.addEventListener("click", (event) => {
  * Cards with a model_url render a host <div> for the OV viewer;
  * all other cards keep the existing image/lightbox path.
  */
-function portfolioItemHTML(item) {
+function portfolioItemHTML(item, cardIndex, visualAssets) {
   const tag = esc(item.tag || "RENDER");
   const title = esc(item.title);
   const desc = esc(item.description || "");
   const label = `${tag} · ${title}`;
-  const imgUrl = normalisePortfolioImageUrl(item.image_url) || "assets/Render.png";
-  const modelUrls = getModelUrlList(item.model_url);
+  const coverMedia = visualAssets[0] || null;
+  const imgUrl = normalisePortfolioImageUrl(coverMedia?.url || item.image_url) || "assets/Render.png";
+
+  const { modelAssets } = getCardVisualAssets(item);
+  const modelUrlJoined = modelAssets.map((asset) => asset.url).find(Boolean) || item.model_url || "";
+  const modelUrls = getModelUrlList(modelUrlJoined);
   const embedUrl = modelUrls.length === 1 && isExternalEmbedUrl(modelUrls[0]) ? modelUrls[0] : "";
 
   const caption = `<figcaption class="port-caption">
@@ -503,10 +568,11 @@ function portfolioItemHTML(item) {
     <div class="port-thumb port-thumb--model">
       <div class="model-viewer-host" data-item-id="${esc(String(item.id || title))}" data-model-urls="${esc(modelUrls.join(","))}" data-embed-url="${esc(embedUrl)}" aria-hidden="true"></div>
       <div class="model-render-curtain" aria-hidden="false">
-        <img class="model-render-thumb" src="${esc(imgUrl)}" alt="${title}" loading="lazy">
+        <img class="model-render-thumb" src="${esc(imgUrl)}" alt="${title}" loading="lazy" data-card-index="${cardIndex}" data-media-index="0" onclick="openLightbox(this)">
       </div>
       <button type="button" class="model-fullscreen-btn" aria-label="Enter fullscreen">FULL</button>
       <button type="button" class="model-toggle-btn" data-model-action="toggle" aria-label="Open interactive 3D model">View 3D</button>
+      ${visualAssets.length > 1 ? `<button type="button" class="model-gallery-btn" data-card-index="${cardIndex}" onclick="openLightbox(this)">Gallery ${visualAssets.length}</button>` : ""}
       <span class="port-model-badge">3D</span>
     </div>
     ${caption}
@@ -514,7 +580,7 @@ function portfolioItemHTML(item) {
   }
 
   return `<figure class="port-item" data-tag="${tag}">
-    <div class="port-thumb thumb" onclick="openLightbox(this)" data-label="${esc(label)}">
+    <div class="port-thumb thumb" onclick="openLightbox(this)" data-label="${esc(label)}" data-card-index="${cardIndex}" data-media-index="0">
       <img src="${esc(imgUrl)}" alt="${title}" loading="lazy">
       <div class="thumb-overlay">[ VIEW ]</div>
     </div>
@@ -583,9 +649,35 @@ async function renderPortfolioPage() {
     // Reset filter bar to base state before repopulating
     filterBar.innerHTML = '<button class="port-filter-btn active" data-filter="all">ALL</button>';
 
+    const lightboxCardsData = items
+      .map((item) => {
+        const tag = item.tag || "RENDER";
+        const title = item.title || "Untitled";
+        const label = `${tag} · ${title}`;
+        const { visualAssets } = getCardVisualAssets(item);
+        const cardVisuals = visualAssets.length
+          ? visualAssets.map((asset) => ({
+              url: normalisePortfolioImageUrl(asset.url),
+              alt: asset.alt || title,
+            })).filter((asset) => !!asset.url)
+          : [{ url: normalisePortfolioImageUrl(item.image_url) || "assets/Render.png", alt: title }];
+
+        return {
+          id: String(item.id || title),
+          title,
+          label,
+          visualAssets: cardVisuals,
+        };
+      })
+      .filter((card) => card.visualAssets.length);
+
+    setLightboxCards(lightboxCardsData);
+
     // Render all items
-    grid.innerHTML = items.map(portfolioItemHTML).join("");
-    refreshThumbs();
+    grid.innerHTML = items
+      .map((item, index) => portfolioItemHTML(item, index, lightboxCardsData[index]?.visualAssets || []))
+      .join("");
+
     grid.querySelectorAll(".port-thumb--model").forEach((cardEl) => {
       bindModelCardActivity(cardEl);
     });

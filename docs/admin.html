@@ -1,367 +1,580 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Utah Fab Directory - Admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&family=Share+Tech+Mono&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/admin.css">
-</head>
-<body>
-
-<!-- ═══════════════════════════════════════════════════
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Utah Fab Directory - Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&family=Share+Tech+Mono&family=Barlow:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+  </head>
+  <body>
+    <!-- ═══════════════════════════════════════════════════
      AUTH GATE - shown when not logged in
 ═══════════════════════════════════════════════════ -->
-<div id="authGate" class="auth-gate">
-  <div class="auth-box">
-    <h1>UTAH <span>FAB</span> ADMIN</h1>
-    <p class="auth-sub">Sign in to manage the directory</p>
-    <form id="loginForm" autocomplete="on">
-      <label for="authEmail" class="sr-only">Email</label>
-      <input type="email" id="authEmail" placeholder="Email" required>
-      <label for="authPassword" class="sr-only">Password</label>
-      <input type="password" id="authPassword" placeholder="Password" required>
-      <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
-      <p class="auth-error" id="authError" aria-live="polite"></p>
-    </form>
-  </div>
-</div>
+    <div id="authGate" class="auth-gate">
+      <div class="auth-box">
+        <h1>UTAH <span>FAB</span> ADMIN</h1>
+        <p class="auth-sub">Sign in to manage the directory</p>
+        <form id="loginForm" autocomplete="on">
+          <label for="authEmail" class="sr-only">Email</label>
+          <input type="email" id="authEmail" placeholder="Email" required />
+          <label for="authPassword" class="sr-only">Password</label>
+          <input
+            type="password"
+            id="authPassword"
+            placeholder="Password"
+            required
+          />
+          <button type="submit" class="btn btn-primary" id="loginBtn">
+            Sign In
+          </button>
+          <p class="auth-error" id="authError" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
 
-<!-- ═══════════════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════════════
      ADMIN DASHBOARD - hidden until authenticated
 ═══════════════════════════════════════════════════ -->
-<main id="adminDash" class="admin-dash hidden">
+    <main id="adminDash" class="admin-dash hidden">
+      <div class="bg-grid"></div>
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
 
-  <div class="bg-grid"></div>
-  <div class="corner tl"></div>
-  <div class="corner tr"></div>
-  <div class="corner bl"></div>
-  <div class="corner br"></div>
+      <!-- Top bar -->
+      <header class="admin-header">
+        <div class="admin-header-inner">
+          <h1>UTAH <span>FAB</span> ADMIN</h1>
+          <div class="admin-header-right">
+            <a
+              href="direct.html"
+              class="btn btn-outline btn-sm"
+              target="_blank"
+              rel="noopener noreferrer"
+              >View Public Directory</a
+            >
+            <a
+              href="portfolio.html"
+              class="btn btn-outline btn-sm"
+              target="_blank"
+              rel="noopener noreferrer"
+              >View Portfolio</a
+            >
+            <span id="adminEmail" class="admin-email"></span>
+            <button id="logoutBtn" class="btn btn-outline btn-sm">
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </header>
 
-  <!-- Top bar -->
-  <header class="admin-header">
-    <div class="admin-header-inner">
-      <h1>UTAH <span>FAB</span> ADMIN</h1>
-      <div class="admin-header-right">
-        <a href="direct.html" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">View Public Directory</a>
-        <a href="portfolio.html" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">View Portfolio</a>
-        <span id="adminEmail" class="admin-email"></span>
-        <button id="logoutBtn" class="btn btn-outline btn-sm">Sign Out</button>
-      </div>
-    </div>
-  </header>
+      <!-- ── TAB BAR ── -->
+      <nav class="admin-tabs" id="adminTabs">
+        <button class="admin-tab active" data-tab="directory">Directory</button>
+        <button class="admin-tab" data-tab="portfolio">Portfolio</button>
+      </nav>
 
-  <!-- ── TAB BAR ── -->
-  <nav class="admin-tabs" id="adminTabs">
-    <button class="admin-tab active" data-tab="directory">Directory</button>
-    <button class="admin-tab" data-tab="portfolio">Portfolio</button>
-  </nav>
-
-  <!-- ════════════════════════════════════════════════════
+      <!-- ════════════════════════════════════════════════════
        TAB: DIRECTORY (existing content)
   ════════════════════════════════════════════════════ -->
-  <div class="admin-tab-panel active" id="tabDirectory">
-
-  <!-- Toolbar -->
-  <div class="toolbar">
-    <div class="toolbar-inner">
-      <div class="toolbar-left">
-        <input type="search" id="adminSearch" placeholder="Search shops…" class="admin-search">
-        <select id="adminRegionFilter">
-          <option value="">All Regions</option>
-        </select>
-        <select id="adminTagFilter">
-          <option value="">All Tags</option>
-        </select>
-        <label class="toggle-label">
-          <input type="checkbox" id="showInactive"> Show inactive
-        </label>
-      </div>
-      <div class="toolbar-right">
-        <div class="bulk-actions hidden" id="bulkActions">
-          <span class="bulk-count" id="bulkCount">0 selected</span>
-          <button type="button" class="btn btn-outline btn-sm" id="bulkToggleBtn" title="Flips each selected shop: active becomes inactive, inactive becomes active.">Toggle Active Status</button>
+      <div class="admin-tab-panel active" id="tabDirectory">
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="toolbar-inner">
+            <div class="toolbar-left">
+              <input
+                type="search"
+                id="adminSearch"
+                placeholder="Search shops…"
+                class="admin-search"
+              />
+              <select id="adminRegionFilter">
+                <option value="">All Regions</option>
+              </select>
+              <select id="adminTagFilter">
+                <option value="">All Tags</option>
+              </select>
+              <label class="toggle-label">
+                <input type="checkbox" id="showInactive" /> Show inactive
+              </label>
+            </div>
+            <div class="toolbar-right">
+              <div class="bulk-actions hidden" id="bulkActions">
+                <span class="bulk-count" id="bulkCount">0 selected</span>
+                <button
+                  type="button"
+                  class="btn btn-outline btn-sm"
+                  id="bulkToggleBtn"
+                  title="Flips each selected shop: active becomes inactive, inactive becomes active."
+                >
+                  Toggle Active Status
+                </button>
+              </div>
+              <span class="admin-count"
+                ><strong id="adminCount">0</strong> shops</span
+              >
+              <button class="btn btn-primary" id="addShopBtn">
+                + Add Shop
+              </button>
+            </div>
+          </div>
         </div>
-        <span class="admin-count"><strong id="adminCount">0</strong> shops</span>
-        <button class="btn btn-primary" id="addShopBtn">+ Add Shop</button>
+
+        <!-- Pending directory requests -->
+        <div class="requests-panel hidden" id="requestsPanel">
+          <div class="requests-panel-inner">
+            <button
+              type="button"
+              class="requests-toggle"
+              id="requestsToggle"
+              aria-expanded="false"
+            >
+              <span class="requests-toggle-label">Listing Requests</span>
+              <span class="requests-badge" id="requestsBadge">0</span>
+              <svg
+                class="requests-chevron"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div class="requests-body hidden" id="requestsBody">
+              <div class="requests-list" id="requestsList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data table -->
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table class="shop-table" id="shopTable">
+              <thead>
+                <tr>
+                  <th scope="col" class="col-select">
+                    <input
+                      type="checkbox"
+                      id="selectAll"
+                      aria-label="Select all shops"
+                    />
+                  </th>
+                  <th scope="col" class="col-status">Active</th>
+                  <th scope="col" class="col-name">Name</th>
+                  <th scope="col" class="col-city">City</th>
+                  <th scope="col" class="col-region">Region</th>
+                  <th scope="col" class="col-category">Category</th>
+                  <th scope="col" class="col-tags">Tags</th>
+                  <th scope="col" class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="shopTableBody">
+                <!-- Rows rendered by JS -->
+              </tbody>
+            </table>
+            <div class="table-empty hidden" id="tableEmpty">
+              No shops found.
+            </div>
+          </div>
+          <!-- /table-scroll -->
+        </div>
       </div>
-    </div>
-  </div>
+      <!-- /tabDirectory -->
 
-  <!-- Pending directory requests -->
-  <div class="requests-panel hidden" id="requestsPanel">
-    <div class="requests-panel-inner">
-      <button type="button" class="requests-toggle" id="requestsToggle" aria-expanded="false">
-        <span class="requests-toggle-label">Listing Requests</span>
-        <span class="requests-badge" id="requestsBadge">0</span>
-        <svg class="requests-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="requests-body hidden" id="requestsBody">
-        <div class="requests-list" id="requestsList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Data table -->
-  <div class="table-wrap">
-    <div class="table-scroll">
-    <table class="shop-table" id="shopTable">
-      <thead>
-        <tr>
-          <th scope="col" class="col-select"><input type="checkbox" id="selectAll" aria-label="Select all shops"></th>
-          <th scope="col" class="col-status">Active</th>
-          <th scope="col" class="col-name">Name</th>
-          <th scope="col" class="col-city">City</th>
-          <th scope="col" class="col-region">Region</th>
-          <th scope="col" class="col-category">Category</th>
-          <th scope="col" class="col-tags">Tags</th>
-          <th scope="col" class="col-actions">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="shopTableBody">
-        <!-- Rows rendered by JS -->
-      </tbody>
-    </table>
-    <div class="table-empty hidden" id="tableEmpty">No shops found.</div>
-    </div><!-- /table-scroll -->
-  </div>
-
-  </div><!-- /tabDirectory -->
-
-  <!-- ════════════════════════════════════════════════════
+      <!-- ════════════════════════════════════════════════════
        TAB: PORTFOLIO
   ════════════════════════════════════════════════════ -->
-  <div class="admin-tab-panel" id="tabPortfolio">
-
-    <!-- Portfolio toolbar -->
-    <div class="toolbar">
-      <div class="toolbar-inner">
-        <div class="toolbar-left">
-          <input type="search" id="portAdminSearch" placeholder="Search portfolio…" class="admin-search">
-          <select id="portTagFilter">
-            <option value="">All Tags</option>
-            <option value="INTAKE">Intake</option>
-            <option value="MODEL">Model</option>
-            <option value="OUTPUT">Output</option>
-            <option value="RENDER">Render</option>
-            <option value="ASSEMBLY">Assembly</option>
-          </select>
-          <label class="toggle-label">
-            <input type="checkbox" id="showHidden"> Show hidden
-          </label>
+      <div class="admin-tab-panel" id="tabPortfolio">
+        <!-- Portfolio toolbar -->
+        <div class="toolbar">
+          <div class="toolbar-inner">
+            <div class="toolbar-left">
+              <input
+                type="search"
+                id="portAdminSearch"
+                placeholder="Search portfolio…"
+                class="admin-search"
+              />
+              <select id="portTagFilter">
+                <option value="">All Tags</option>
+                <option value="INTAKE">Intake</option>
+                <option value="MODEL">Model</option>
+                <option value="OUTPUT">Output</option>
+                <option value="RENDER">Render</option>
+                <option value="ASSEMBLY">Assembly</option>
+              </select>
+              <label class="toggle-label">
+                <input type="checkbox" id="showHidden" /> Show hidden
+              </label>
+            </div>
+            <div class="toolbar-right">
+              <span class="admin-count"
+                ><strong id="portAdminCount">0</strong> items</span
+              >
+              <button class="btn btn-primary" id="addPortfolioBtn">
+                + Add Item
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="toolbar-right">
-          <span class="admin-count"><strong id="portAdminCount">0</strong> items</span>
-          <button class="btn btn-primary" id="addPortfolioBtn">+ Add Item</button>
+
+        <!-- Portfolio card grid -->
+        <div class="port-admin-grid-wrap">
+          <div class="port-admin-grid" id="portAdminGrid">
+            <!-- Rendered by portfolio-admin.js -->
+          </div>
+          <div class="table-empty hidden" id="portAdminEmpty">
+            No portfolio items found.
+          </div>
         </div>
       </div>
-    </div>
+      <!-- /tabPortfolio -->
+    </main>
+    <!-- /adminDash -->
 
-    <!-- Portfolio card grid -->
-    <div class="port-admin-grid-wrap">
-      <div class="port-admin-grid" id="portAdminGrid">
-        <!-- Rendered by portfolio-admin.js -->
-      </div>
-      <div class="table-empty hidden" id="portAdminEmpty">No portfolio items found.</div>
-    </div>
-
-  </div><!-- /tabPortfolio -->
-
-</main><!-- /adminDash -->
-
-<!-- ═══════════════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════════════
      PORTFOLIO EDIT MODAL
 ═══════════════════════════════════════════════════ -->
-<div class="modal-backdrop hidden" id="portModalBackdrop">
-  <div class="modal modal--wide" id="portModal" role="dialog" aria-modal="true" aria-labelledby="portModalTitle" tabindex="-1">
-    <div class="modal-header">
-      <h2 id="portModalTitle">Add Portfolio Item</h2>
-      <button class="modal-close" id="portModalCloseBtn">&times;</button>
-    </div>
-
-    <div class="modal-split">
-      <form id="portForm" class="modal-body" autocomplete="off">
-
-        <div class="form-group">
-          <label for="pTitle">Title *</label>
-          <input type="text" id="pTitle" required placeholder="Driveshaft · Parametric 3D Model">
+    <div class="modal-backdrop hidden" id="portModalBackdrop">
+      <div
+        class="modal modal--wide"
+        id="portModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="portModalTitle"
+        tabindex="-1"
+      >
+        <div class="modal-header">
+          <h2 id="portModalTitle">Add Portfolio Item</h2>
+          <button class="modal-close" id="portModalCloseBtn">&times;</button>
         </div>
 
-        <div class="form-group">
-          <label for="pDesc">Description</label>
-          <textarea id="pDesc" rows="2" placeholder="Fusion 360 / DFM for CNC turning"></textarea>
-        </div>
+        <div class="modal-split">
+          <form id="portForm" class="modal-body" autocomplete="off">
+            <div class="form-group">
+              <label for="pTitle">Title *</label>
+              <input
+                type="text"
+                id="pTitle"
+                required
+                placeholder="Driveshaft · Parametric 3D Model"
+              />
+            </div>
 
-        <div class="form-row">
-          <div class="form-group flex-1">
-            <label for="pTag">Tag *</label>
-            <select id="pTag" required>
-              <option value="INTAKE">Intake</option>
-              <option value="MODEL">Model</option>
-              <option value="OUTPUT">Output</option>
-              <option value="RENDER" selected>Render</option>
-              <option value="ASSEMBLY">Assembly</option>
-            </select>
-          </div>
-          <div class="form-group flex-1">
-            <label for="pSortOrder">Sort Order</label>
-            <input type="number" id="pSortOrder" value="0" min="0">
-          </div>
-        </div>
+            <div class="form-group">
+              <label for="pDesc">Description</label>
+              <textarea
+                id="pDesc"
+                rows="2"
+                placeholder="Fusion 360 / DFM for CNC turning"
+              ></textarea>
+            </div>
 
-        <div class="form-group">
-          <label for="pImage">Image (PNG/JPG/GIF/WebP)</label>
-          <div class="port-upload-zone" id="pImageZone">
-            <input type="file" id="pImage" accept="image/png,image/jpeg,image/gif,image/webp" class="sr-only">
-            <div class="port-upload-preview" id="pImagePreview">
-              <span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="pTag">Tag *</label>
+                <select id="pTag" required>
+                  <option value="INTAKE">Intake</option>
+                  <option value="MODEL">Model</option>
+                  <option value="OUTPUT">Output</option>
+                  <option value="RENDER" selected>Render</option>
+                  <option value="ASSEMBLY">Assembly</option>
+                </select>
+              </div>
+              <div class="form-group flex-1">
+                <label for="pSortOrder">Sort Order</label>
+                <input type="number" id="pSortOrder" value="0" min="0" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="pImage">Image (PNG/JPG/GIF/WebP)</label>
+              <div class="port-upload-zone" id="pImageZone">
+                <input
+                  type="file"
+                  id="pImage"
+                  accept="image/png,image/jpeg,image/gif,image/webp"
+                  class="sr-only"
+                />
+                <div class="port-upload-preview" id="pImagePreview">
+                  <span class="port-upload-placeholder"
+                    >Click or drag to upload image (Max 10MB)</span
+                  >
+                </div>
+              </div>
+              <span class="form-hint"
+                >Use Media Assets below to paste image/GIF URLs.</span
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="pModelFile">3D Model (optional)</label>
+              <div class="model-source-toggle" id="pModelSourceToggle">
+                <label class="toggle-label"
+                  ><input
+                    type="radio"
+                    name="pModelSource"
+                    id="pModelSourceHosted"
+                    value="hosted"
+                    checked
+                  />
+                  Hosted Asset</label
+                >
+                <label class="toggle-label"
+                  ><input
+                    type="radio"
+                    name="pModelSource"
+                    id="pModelSourceExternal"
+                    value="external"
+                  />
+                  External Embed</label
+                >
+              </div>
+              <div class="port-upload-zone" id="pModelZone">
+                <input
+                  type="file"
+                  id="pModelFile"
+                  accept=".glb,.gltf,.step,.stp,.stl,.obj,.mtl"
+                  multiple
+                  class="sr-only"
+                />
+                <div class="port-upload-preview" id="pModelPreview">
+                  <span class="port-upload-placeholder"
+                    >Click or drag to upload (Max 25MB): .glb / .obj+.mtl /
+                    .step / .stl</span
+                  >
+                </div>
+              </div>
+              <span class="form-hint"
+                >Hosted Asset: upload model files to Supabase.</span
+              >
+              <span class="form-hint"
+                >External Embed: add a 3D URL in Media Assets below.</span
+              >
+            </div>
+
+            <div class="form-group">
+              <label>Media Assets</label>
+              <div class="port-asset-list" id="pAssetList"></div>
+              <div class="port-asset-actions">
+                <button
+                  type="button"
+                  class="btn btn-outline btn-sm"
+                  id="pAssetAddImageBtn"
+                >
+                  + Image URL
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline btn-sm"
+                  id="pAssetAddGifBtn"
+                >
+                  + GIF URL
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline btn-sm"
+                  id="pAssetAddModelBtn"
+                >
+                  + 3D URL
+                </button>
+              </div>
+              <span class="form-hint" id="pAssetSummary"
+                >0/12 assets · 0.0 MB / 100 MB</span
+              >
+            </div>
+
+            <div class="form-row">
+              <label class="toggle-label">
+                <input type="checkbox" id="pFeatured" /> Featured (show on
+                homepage)
+              </label>
+              <label class="toggle-label">
+                <input type="checkbox" id="pVisible" checked /> Visible
+              </label>
+            </div>
+
+            <input type="hidden" id="pId" value="" />
+            <input type="hidden" id="pExistingImageUrl" value="" />
+            <input type="hidden" id="pImageUrl" value="" />
+            <input type="hidden" id="pModelUrl" value="" />
+            <input type="hidden" id="pImageSizeBytes" value="0" />
+            <input type="hidden" id="pModelSizeBytes" value="0" />
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline"
+                id="portModalCancelBtn"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger hidden"
+                id="portDeleteBtn"
+              >
+                Delete
+              </button>
+              <button type="submit" class="btn btn-primary" id="portSaveBtn">
+                Save Item
+              </button>
+            </div>
+          </form>
+
+          <div class="modal-preview-pane">
+            <h3 class="preview-title">Live Preview</h3>
+            <div id="portLivePreview" class="port-live-preview">
+              <!-- Rendered reactively -->
             </div>
           </div>
-          <input type="url" id="pImageUrl" placeholder="-- optional: paste hosted image URL (Google Drive supported) --" style="margin-top:6px;">
-        </div>
-
-        <div class="form-group">
-          <label for="pModelFile">3D Model (optional)</label>
-          <div class="model-source-toggle" id="pModelSourceToggle">
-            <label class="toggle-label"><input type="radio" name="pModelSource" id="pModelSourceHosted" value="hosted" checked> Hosted Asset</label>
-            <label class="toggle-label"><input type="radio" name="pModelSource" id="pModelSourceExternal" value="external"> External Embed</label>
-          </div>
-          <div class="port-upload-zone" id="pModelZone">
-            <input type="file" id="pModelFile" accept=".glb,.gltf,.step,.stp,.stl,.obj,.mtl" multiple class="sr-only">
-            <div class="port-upload-preview" id="pModelPreview">
-              <span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .obj+.mtl / .step / .stl</span>
-            </div>
-          </div>
-          <input type="url" id="pModelUrl" placeholder="-- or paste a 3dviewer.net embed URL --" style="margin-top:6px;">
-          <span class="form-hint">Hosted Asset: upload model files to Supabase and the URL auto-fills.</span>
-          <span class="form-hint">External Embed: paste a 3dviewer.net embed URL.</span>
-        </div>
-
-        <div class="form-row">
-          <label class="toggle-label">
-            <input type="checkbox" id="pFeatured"> Featured (show on homepage)
-          </label>
-          <label class="toggle-label">
-            <input type="checkbox" id="pVisible" checked> Visible
-          </label>
-        </div>
-
-        <input type="hidden" id="pId" value="">
-        <input type="hidden" id="pExistingImageUrl" value="">
-        <input type="hidden" id="pImageSizeBytes" value="0">
-        <input type="hidden" id="pModelSizeBytes" value="0">
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline" id="portModalCancelBtn">Cancel</button>
-          <button type="button" class="btn btn-danger hidden" id="portDeleteBtn">Delete</button>
-          <button type="submit" class="btn btn-primary" id="portSaveBtn">Save Item</button>
-        </div>
-      </form>
-
-      <div class="modal-preview-pane">
-        <h3 class="preview-title">Live Preview</h3>
-        <div id="portLivePreview" class="port-live-preview">
-          <!-- Rendered reactively -->
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- ═══════════════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════════════
      SHOP EDIT MODAL
 ═══════════════════════════════════════════════════ -->
-<div class="modal-backdrop hidden" id="modalBackdrop">
-  <div class="modal modal--wide" id="shopModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
-    <div class="modal-header">
-      <h2 id="modalTitle">Add Shop</h2>
-      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    <div class="modal-backdrop hidden" id="modalBackdrop">
+      <div
+        class="modal modal--wide"
+        id="shopModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+        tabindex="-1"
+      >
+        <div class="modal-header">
+          <h2 id="modalTitle">Add Shop</h2>
+          <button class="modal-close" id="modalCloseBtn">&times;</button>
+        </div>
+
+        <div class="modal-split">
+          <form id="shopForm" class="modal-body" autocomplete="off">
+            <div class="form-row">
+              <div class="form-group flex-2">
+                <label for="fName">Shop Name *</label>
+                <input type="text" id="fName" required />
+              </div>
+              <div class="form-group flex-1">
+                <label for="fCity">City *</label>
+                <input type="text" id="fCity" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="fRegion">Region *</label>
+                <select id="fRegion" required></select>
+              </div>
+              <div class="form-group flex-1">
+                <label for="fCategory">Category</label>
+                <input
+                  type="text"
+                  id="fCategory"
+                  list="categoryList"
+                  value="Fabrication & Machining"
+                />
+                <datalist id="categoryList"><!-- Populated by JS --></datalist>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="fSize">Size / Description</label>
+              <input
+                type="text"
+                id="fSize"
+                placeholder="e.g. Small family-owned - est. 1978, 45+ years"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="fServices">Services</label>
+              <textarea
+                id="fServices"
+                rows="3"
+                placeholder="CNC milling, laser cutting, welding…"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="fWebsite">Website / Contact</label>
+              <input
+                type="text"
+                id="fWebsite"
+                placeholder="Phone, email, or website"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="fMapsUrl">Google Maps Profile URL</label>
+              <input
+                type="url"
+                id="fMapsUrl"
+                placeholder="https://maps.google.com/…"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Tags</label>
+              <div class="tag-picker" id="tagPicker">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="toggle-label">
+                <input type="checkbox" id="fIsActive" checked /> Active (visible
+                on public site)
+              </label>
+            </div>
+
+            <input type="hidden" id="fId" value="" />
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" id="modalCancelBtn">
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger hidden"
+                id="deleteBtn"
+              >
+                Delete
+              </button>
+              <button type="submit" class="btn btn-primary" id="saveBtn">
+                Save Shop
+              </button>
+            </div>
+          </form>
+
+          <div class="modal-preview-pane">
+            <h3 class="preview-title">Live Preview</h3>
+            <div id="liveCardPreview" class="shop-live-preview">
+              <!-- Rendered reactively by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="modal-split">
-      <form id="shopForm" class="modal-body" autocomplete="off">
-
-      <div class="form-row">
-        <div class="form-group flex-2">
-          <label for="fName">Shop Name *</label>
-          <input type="text" id="fName" required>
-        </div>
-        <div class="form-group flex-1">
-          <label for="fCity">City *</label>
-          <input type="text" id="fCity" required>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group flex-1">
-          <label for="fRegion">Region *</label>
-          <select id="fRegion" required></select>
-        </div>
-        <div class="form-group flex-1">
-          <label for="fCategory">Category</label>
-          <input type="text" id="fCategory" list="categoryList" value="Fabrication & Machining">
-          <datalist id="categoryList"><!-- Populated by JS --></datalist>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="fSize">Size / Description</label>
-        <input type="text" id="fSize" placeholder="e.g. Small family-owned - est. 1978, 45+ years">
-      </div>
-
-      <div class="form-group">
-        <label for="fServices">Services</label>
-        <textarea id="fServices" rows="3" placeholder="CNC milling, laser cutting, welding…"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="fWebsite">Website / Contact</label>
-        <input type="text" id="fWebsite" placeholder="Phone, email, or website">
-      </div>
-
-      <div class="form-group">
-        <label for="fMapsUrl">Google Maps Profile URL</label>
-        <input type="url" id="fMapsUrl" placeholder="https://maps.google.com/…">
-      </div>
-
-      <div class="form-group">
-        <label>Tags</label>
-        <div class="tag-picker" id="tagPicker">
-          <!-- Rendered by JS -->
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label class="toggle-label">
-          <input type="checkbox" id="fIsActive" checked> Active (visible on public site)
-        </label>
-      </div>
-
-      <input type="hidden" id="fId" value="">
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline" id="modalCancelBtn">Cancel</button>
-        <button type="button" class="btn btn-danger hidden" id="deleteBtn">Delete</button>
-        <button type="submit" class="btn btn-primary" id="saveBtn">Save Shop</button>
-      </div>
-    </form>
-
-      <div class="modal-preview-pane">
-        <h3 class="preview-title">Live Preview</h3>
-        <div id="liveCardPreview" class="shop-live-preview">
-          <!-- Rendered reactively by JS -->
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Supabase JS client (CDN) -->
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script type="module" src="js/modules/admin.js"></script>
-<script type="module" src="js/modules/portfolio-admin.js"></script>
-</body>
+    <!-- Supabase JS client (CDN) -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"
+    ></script>
+    <script type="module" src="js/modules/admin.js"></script>
+    <script type="module" src="js/modules/portfolio-admin.js"></script>
+  </body>
 </html>

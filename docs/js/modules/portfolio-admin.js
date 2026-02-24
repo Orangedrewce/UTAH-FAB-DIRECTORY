@@ -40,6 +40,15 @@ import {
   uploadPortfolioAsset,
 } from "./api.js";
 import { esc, normalisePortfolioImageUrl } from "./utils.js";
+import {
+  MEDIA_LIMITS,
+  createAssetDraft,
+  normaliseMediaAssets,
+  toMediaAssetsPayload,
+  validateMediaAssets,
+  mediaAssetsToLegacy,
+  getCardVisualAssets,
+} from "./media-assets.js";
 
 // ── DOM refs ────────────────────────────────────────────────────────────
 const $ = (sel) => document.querySelector(sel);
@@ -90,6 +99,11 @@ const pImageSizeBytes = $("#pImageSizeBytes");
 const pModelSizeBytes = $("#pModelSizeBytes");
 const pModelSourceHosted = $("#pModelSourceHosted");
 const pModelSourceExternal = $("#pModelSourceExternal");
+const pAssetList = $("#pAssetList");
+const pAssetAddImageBtn = $("#pAssetAddImageBtn");
+const pAssetAddGifBtn = $("#pAssetAddGifBtn");
+const pAssetAddModelBtn = $("#pAssetAddModelBtn");
+const pAssetSummary = $("#pAssetSummary");
 
 // ── State ───────────────────────────────────────────────────────────────
 let allItems = [];
@@ -99,6 +113,7 @@ let _adminFsBound = false;
 let portModalFocusCleanup = null;
 let portModalReturnFocusEl = null;
 let livePreviewImageBlobUrl = null;
+let currentMediaAssets = [];
 
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 const MAX_MODEL_SIZE_BYTES = 25 * 1024 * 1024;
@@ -107,8 +122,11 @@ function trapFocus(container) {
   if (!container) return () => {};
 
   const getFocusable = () =>
-    [...container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
-      .filter((el) => !el.disabled && el.offsetParent !== null);
+    [
+      ...container.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      ),
+    ].filter((el) => !el.disabled && el.offsetParent !== null);
 
   const keyHandler = (e) => {
     if (e.key !== "Tab") return;
@@ -191,6 +209,136 @@ function looksLikeImageUrl(url) {
   return /drive\.google\.com|lh3\.googleusercontent\.com/i.test(value);
 }
 
+function getAssetsTotalBytes(assets) {
+  return (assets || []).reduce(
+    (sum, asset) => sum + (Number(asset.size_bytes) || 0),
+    0,
+  );
+}
+
+function upsertMediaAssetFromLegacy(seed, options = {}) {
+  const url = String(seed?.url || "").trim();
+  if (!url) return;
+  const type = seed.type || "image";
+  const existingIdx = currentMediaAssets.findIndex(
+    (asset) => asset.url === url && asset.type === type,
+  );
+
+  const draft = createAssetDraft(
+    seed,
+    existingIdx >= 0 ? existingIdx : currentMediaAssets.length,
+  );
+  if (existingIdx >= 0) {
+    currentMediaAssets[existingIdx] = {
+      ...currentMediaAssets[existingIdx],
+      ...draft,
+    };
+  } else {
+    if (!currentMediaAssets.length) draft.is_cover = true;
+    currentMediaAssets.push(draft);
+  }
+
+  currentMediaAssets = normaliseMediaAssets(currentMediaAssets, "", "", { includeEmpty: true });
+  if (options.render !== false) {
+    renderAssetEditor();
+  }
+}
+
+function renderAssetEditor() {
+  if (!pAssetList) return;
+
+  if (!currentMediaAssets.length) {
+    pAssetList.innerHTML =
+      '<div class="port-asset-empty">No assets yet. Add image/GIF/3D URLs or upload files above.</div>';
+  } else {
+    pAssetList.innerHTML = currentMediaAssets
+      .map((asset, index) => {
+        return `
+          <div class="port-asset-row" data-index="${index}">
+            <input class="port-asset-cover" type="radio" name="pAssetCover" title="Cover" ${asset.is_cover ? "checked" : ""}>
+            <select class="port-asset-type" aria-label="Asset type">
+              <option value="image" ${asset.type === "image" ? "selected" : ""}>Image</option>
+              <option value="gif" ${asset.type === "gif" ? "selected" : ""}>GIF</option>
+              <option value="model" ${asset.type === "model" ? "selected" : ""}>3D</option>
+            </select>
+            <input class="port-asset-url" type="url" placeholder="https://..." value="${esc(asset.url || "")}">
+            <input class="port-asset-alt" type="text" placeholder="Alt text (optional)" value="${esc(asset.alt || "")}">
+            <input class="port-asset-size" type="number" min="0" step="1" placeholder="Bytes" value="${asset.size_bytes || ""}">
+            <button type="button" class="btn btn-danger btn-sm port-asset-remove" aria-label="Remove asset">Remove</button>
+          </div>
+        `;
+      })
+      .join("");
+  }
+
+  if (pAssetSummary) {
+    const totalBytes = getAssetsTotalBytes(currentMediaAssets);
+    const totalMb = (totalBytes / (1024 * 1024)).toFixed(1);
+    pAssetSummary.textContent = `${currentMediaAssets.length}/${MEDIA_LIMITS.maxAssets} assets · ${totalMb} MB / 100 MB`;
+  }
+}
+
+function focusAndHighlightLastAssetRow() {
+  if (!pAssetList) return;
+  const rows = [...pAssetList.querySelectorAll(".port-asset-row")];
+  if (!rows.length) return;
+
+  const lastRow = rows[rows.length - 1];
+  lastRow.classList.add("port-asset-row--new");
+
+  const urlInput = lastRow.querySelector(".port-asset-url");
+  if (urlInput?.focus) {
+    urlInput.focus();
+    urlInput.select?.();
+  }
+
+  window.setTimeout(() => {
+    lastRow.classList.remove("port-asset-row--new");
+  }, 900);
+}
+
+function setAssetSummaryMessage(message) {
+  if (!pAssetSummary || !message) return;
+  const prev = pAssetSummary.textContent;
+  pAssetSummary.textContent = message;
+  pAssetSummary.classList.add("port-asset-summary-flash");
+
+  window.setTimeout(() => {
+    pAssetSummary.classList.remove("port-asset-summary-flash");
+    const totalBytes = getAssetsTotalBytes(currentMediaAssets);
+    const totalMb = (totalBytes / (1024 * 1024)).toFixed(1);
+    pAssetSummary.textContent = `${currentMediaAssets.length}/${MEDIA_LIMITS.maxAssets} assets · ${totalMb} MB / 100 MB`;
+  }, 800);
+}
+
+function readAssetEditorState() {
+  if (!pAssetList) return [];
+
+  const next = [...pAssetList.querySelectorAll(".port-asset-row")].map(
+    (row, index) => {
+      const type = row.querySelector(".port-asset-type")?.value || "image";
+      const url = row.querySelector(".port-asset-url")?.value || "";
+      const alt = row.querySelector(".port-asset-alt")?.value || "";
+      const sizeRaw = row.querySelector(".port-asset-size")?.value || "";
+      const size = Number(sizeRaw);
+      const isCover = !!row.querySelector(".port-asset-cover")?.checked;
+
+      return createAssetDraft(
+        {
+          type,
+          url,
+          alt,
+          size_bytes: Number.isFinite(size) && size > 0 ? size : null,
+          is_cover: isCover,
+        },
+        index,
+      );
+    },
+  );
+
+  return normaliseMediaAssets(next, "", "", { includeEmpty: true });
+}
+
 function revokeLivePreviewImageBlobUrl() {
   if (!livePreviewImageBlobUrl) return;
   try {
@@ -223,12 +371,16 @@ if (adminTabs) {
     const tab = btn.dataset.tab;
 
     // Update button states
-    adminTabs.querySelectorAll(".admin-tab").forEach((b) => b.classList.remove("active"));
+    adminTabs
+      .querySelectorAll(".admin-tab")
+      .forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
 
     // Toggle panels
-    if (tabDirectory) tabDirectory.classList.toggle("active", tab === "directory");
-    if (tabPortfolio) tabPortfolio.classList.toggle("active", tab === "portfolio");
+    if (tabDirectory)
+      tabDirectory.classList.toggle("active", tab === "directory");
+    if (tabPortfolio)
+      tabPortfolio.classList.toggle("active", tab === "portfolio");
 
     // Load portfolio data on first switch
     if (tab === "portfolio" && !_ready) {
@@ -237,30 +389,110 @@ if (adminTabs) {
   });
 }
 
-// ── INIT ────────────────────────────────────────────────────────────────
-async function initPortfolio() {
-  if (_ready) return;
-  _ready = true;
-  await loadItems();
-
-  // Attach event listeners
+// ── STATIC UI WIRING ────────────────────────────────────────────────────
+// Bind all DOM listeners that don't depend on fetched data.  Runs once at
+// module evaluation so the modal, upload zones, and asset-editor buttons
+// are always live — even if initPortfolio() hasn't resolved yet.
+// ─────────────────────────────────────────────────────────────────────────
+function bindStaticUI() {
+  // Panel-level controls (toolbar filters, add-item, modal chrome)
   if (portAdminSearch) portAdminSearch.addEventListener("input", applyFilters);
   if (portTagFilter) portTagFilter.addEventListener("change", applyFilters);
   if (showHidden) showHidden.addEventListener("change", applyFilters);
-  if (addPortfolioBtn) addPortfolioBtn.addEventListener("click", () => openModal());
-  if (portModalCloseBtn) portModalCloseBtn.addEventListener("click", closeModal);
-  if (portModalCancelBtn) portModalCancelBtn.addEventListener("click", closeModal);
+  if (addPortfolioBtn)
+    addPortfolioBtn.addEventListener("click", () => openModal());
+  if (portModalCloseBtn)
+    portModalCloseBtn.addEventListener("click", closeModal);
+  if (portModalCancelBtn)
+    portModalCancelBtn.addEventListener("click", closeModal);
   if (portDeleteBtn) portDeleteBtn.addEventListener("click", handleDelete);
   if (portForm) portForm.addEventListener("submit", handleSave);
 
-  // Image upload zone
+  // ── Asset editor (delegated on pAssetList container) ──
+  if (pAssetList) {
+    pAssetList.addEventListener("input", () => {
+      currentMediaAssets = readAssetEditorState();
+      if (pAssetSummary) {
+        const totalBytes = getAssetsTotalBytes(currentMediaAssets);
+        const totalMb = (totalBytes / (1024 * 1024)).toFixed(1);
+        pAssetSummary.textContent = `${currentMediaAssets.length}/${MEDIA_LIMITS.maxAssets} assets · ${totalMb} MB / 100 MB`;
+      }
+      updateLivePreview();
+    });
+
+    pAssetList.addEventListener("change", () => {
+      currentMediaAssets = normaliseMediaAssets(readAssetEditorState(), "", "", {
+        includeEmpty: true,
+      });
+      renderAssetEditor();
+      updateLivePreview();
+    });
+
+    pAssetList.addEventListener("click", (e) => {
+      const row = e.target.closest(".port-asset-row");
+      if (!row) return;
+
+      const index = Number(row.dataset.index);
+      if (!Number.isInteger(index) || index < 0) return;
+
+      if (e.target.closest(".port-asset-remove")) {
+        currentMediaAssets.splice(index, 1);
+        if (
+          currentMediaAssets.length &&
+          !currentMediaAssets.some((asset) => asset.is_cover)
+        ) {
+          currentMediaAssets[0].is_cover = true;
+        }
+        currentMediaAssets = normaliseMediaAssets(currentMediaAssets, "", "", {
+          includeEmpty: true,
+        });
+        renderAssetEditor();
+        updateLivePreview();
+      }
+    });
+  }
+
+  // ── Add-asset buttons (Image / GIF / 3D) ──
+  [pAssetAddImageBtn, pAssetAddGifBtn, pAssetAddModelBtn].forEach((btn) => {
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      if (currentMediaAssets.length >= MEDIA_LIMITS.maxAssets) {
+        alert(`Maximum ${MEDIA_LIMITS.maxAssets} assets per card.`);
+        return;
+      }
+
+      const type =
+        btn === pAssetAddGifBtn
+          ? "gif"
+          : btn === pAssetAddModelBtn
+            ? "model"
+            : "image";
+      currentMediaAssets.push(
+        createAssetDraft(
+          { type, is_cover: currentMediaAssets.length === 0 },
+          currentMediaAssets.length,
+        ),
+      );
+      currentMediaAssets = normaliseMediaAssets(currentMediaAssets, "", "", {
+        includeEmpty: true,
+      });
+      renderAssetEditor();
+      updateLivePreview();
+      focusAndHighlightLastAssetRow();
+      setAssetSummaryMessage(`Added ${type.toUpperCase()} slot`);
+    });
+  });
+
+  // ── Image upload zone ──
   if (pImageZone) {
     pImageZone.addEventListener("click", () => pImage?.click());
     pImageZone.addEventListener("dragover", (e) => {
       e.preventDefault();
       pImageZone.classList.add("dragover");
     });
-    pImageZone.addEventListener("dragleave", () => pImageZone.classList.remove("dragover"));
+    pImageZone.addEventListener("dragleave", () =>
+      pImageZone.classList.remove("dragover"),
+    );
     pImageZone.addEventListener("drop", (e) => {
       e.preventDefault();
       pImageZone.classList.remove("dragover");
@@ -272,14 +504,16 @@ async function initPortfolio() {
   }
   if (pImage) pImage.addEventListener("change", updateImagePreview);
 
-  // Model upload zone
+  // ── Model upload zone ──
   if (pModelZone) {
     pModelZone.addEventListener("click", () => pModelFile?.click());
     pModelZone.addEventListener("dragover", (e) => {
       e.preventDefault();
       pModelZone.classList.add("dragover");
     });
-    pModelZone.addEventListener("dragleave", () => pModelZone.classList.remove("dragover"));
+    pModelZone.addEventListener("dragleave", () =>
+      pModelZone.classList.remove("dragover"),
+    );
     pModelZone.addEventListener("drop", (e) => {
       e.preventDefault();
       pModelZone.classList.remove("dragover");
@@ -289,12 +523,13 @@ async function initPortfolio() {
       }
     });
   }
-  if (pModelFile) pModelFile.addEventListener("change", handleModelFileSelected);
+  if (pModelFile)
+    pModelFile.addEventListener("change", handleModelFileSelected);
   [pModelSourceHosted, pModelSourceExternal].forEach((el) => {
     if (el) el.addEventListener("change", updateModelSourceUI);
   });
 
-  // Live preview updates
+  // ── Live preview updates ──
   [pTitle, pDesc, pTag, pModelUrl, pImageUrl].forEach((el) => {
     if (el) el.addEventListener("input", updateLivePreview);
   });
@@ -302,7 +537,7 @@ async function initPortfolio() {
     if (el) el.addEventListener("change", updateLivePreview);
   });
 
-  // Close modal on backdrop click
+  // ── Close modal on backdrop click ──
   if (portModalBackdrop) {
     portModalBackdrop.addEventListener("click", (e) => {
       if (e.target === portModalBackdrop) closeModal();
@@ -311,18 +546,35 @@ async function initPortfolio() {
 
   updateModelSourceUI();
 
-  // Escape to close
+  // ── Escape to close ──
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && document.fullscreenElement?.closest?.(".port-admin-card-img")) {
+    if (
+      e.key === "Escape" &&
+      document.fullscreenElement?.closest?.(".port-admin-card-img")
+    ) {
       e.preventDefault();
       document.exitFullscreen?.();
       return;
     }
 
-    if (e.key === "Escape" && portModalBackdrop && !portModalBackdrop.classList.contains("hidden")) {
+    if (
+      e.key === "Escape" &&
+      portModalBackdrop &&
+      !portModalBackdrop.classList.contains("hidden")
+    ) {
       closeModal();
     }
   });
+}
+
+// Run immediately at module scope — no auth or data dependency needed.
+bindStaticUI();
+
+// ── INIT (data-dependent) ───────────────────────────────────────────────
+async function initPortfolio() {
+  if (_ready) return;
+  _ready = true;
+  await loadItems();
 }
 
 // ── DATA LOADING ────────────────────────────────────────────────────────
@@ -342,19 +594,22 @@ function applyFilters() {
   const tagFilter = portTagFilter?.value || "";
   const includeHidden = showHidden?.checked || false;
 
-  filtered = allItems.filter((item) => {
-    if (!includeHidden && !item.is_visible) return false;
-    if (tagFilter && item.tag !== tagFilter) return false;
-    if (search) {
-      const haystack = `${item.title} ${item.description || ""} ${item.tag}`.toLowerCase();
-      if (!haystack.includes(search)) return false;
-    }
-    return true;
-  }).sort((a, b) => {
-    const orderA = Number.parseInt(a.sort_order, 10) || 9999;
-    const orderB = Number.parseInt(b.sort_order, 10) || 9999;
-    return orderA - orderB;
-  });
+  filtered = allItems
+    .filter((item) => {
+      if (!includeHidden && !item.is_visible) return false;
+      if (tagFilter && item.tag !== tagFilter) return false;
+      if (search) {
+        const haystack =
+          `${item.title} ${item.description || ""} ${item.tag}`.toLowerCase();
+        if (!haystack.includes(search)) return false;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      const orderA = Number.parseInt(a.sort_order, 10) || 9999;
+      const orderB = Number.parseInt(b.sort_order, 10) || 9999;
+      return orderA - orderB;
+    });
 
   if (portAdminCount) portAdminCount.textContent = filtered.length;
   renderGrid();
@@ -386,12 +641,16 @@ function renderGrid() {
   });
 
   portAdminGrid.innerHTML = filtered
-    .map(
-      (item) => {
-        const normalisedImageUrl = normalisePortfolioImageUrl(item.image_url);
-        const displayOrder = liveRankById.get(String(item.id)) || 0;
+    .map((item) => {
+      const { assets, visualAssets, modelAssets } = getCardVisualAssets(item);
+      const coverAsset =
+        assets.find((asset) => asset.is_cover) || assets[0] || null;
+      const normalisedImageUrl = normalisePortfolioImageUrl(
+        coverAsset?.url || item.image_url,
+      );
+      const displayOrder = liveRankById.get(String(item.id)) || 0;
 
-        return `
+      return `
     <div class="port-admin-card${item.is_visible ? "" : " port-admin-card--hidden"}${item.is_featured ? " port-admin-card--featured" : ""}" data-id="${item.id}">
       <div class="port-admin-card-img">
         ${
@@ -402,7 +661,7 @@ function renderGrid() {
                  <button type="button" class="port-admin-fs-btn" aria-label="Enter fullscreen">FULL</button>`
               : `<div class="port-admin-card-placeholder">NO IMAGE</div>`
         }
-        ${item.model_url ? '<span class="port-admin-3d-badge">3D</span>' : ""}
+        ${modelAssets.length ? '<span class="port-admin-3d-badge">3D</span>' : ""}
       </div>
       <div class="port-admin-card-body">
         <span class="port-admin-card-tag">${esc(item.tag)}</span>
@@ -412,6 +671,8 @@ function renderGrid() {
           ${item.is_featured ? '<span class="port-admin-flag port-admin-flag--feat">FEATURED</span>' : ""}
           ${!item.is_visible ? '<span class="port-admin-flag port-admin-flag--hidden">HIDDEN</span>' : ""}
           <span class="port-admin-flag port-admin-flag--order">#${displayOrder}</span>
+          ${assets.length ? `<span class="port-admin-flag">ASSETS ${assets.length}</span>` : ""}
+          ${visualAssets.length ? `<span class="port-admin-flag">IMG ${visualAssets.length}</span>` : ""}
           ${item.image_size_bytes ? `<span class="port-admin-flag port-admin-flag--size" title="Image file size">IMG ${formatBytes(item.image_size_bytes)}</span>` : ""}
           ${item.model_size_bytes ? `<span class="port-admin-flag port-admin-flag--size" title="3D model file size">3D ${formatBytes(item.model_size_bytes)}</span>` : ""}
         </div>
@@ -421,39 +682,38 @@ function renderGrid() {
       </div>
     </div>
   `;
-      }
-    )
+    })
     .join("");
 
   // Attach edit/fullscreen listeners via delegation (bind once)
   if (!portAdminGrid.dataset.bound) {
     portAdminGrid.addEventListener("click", (e) => {
-    const fsBtn = e.target.closest(".port-admin-fs-btn");
-    if (fsBtn) {
-      const frameWrap = fsBtn.closest(".port-admin-card-img");
-      if (!frameWrap) return;
+      const fsBtn = e.target.closest(".port-admin-fs-btn");
+      if (fsBtn) {
+        const frameWrap = fsBtn.closest(".port-admin-card-img");
+        if (!frameWrap) return;
 
-      const toggle = async () => {
-        try {
-          if (document.fullscreenElement === frameWrap) {
-            await document.exitFullscreen?.();
-          } else {
-            await frameWrap.requestFullscreen?.();
+        const toggle = async () => {
+          try {
+            if (document.fullscreenElement === frameWrap) {
+              await document.exitFullscreen?.();
+            } else {
+              await frameWrap.requestFullscreen?.();
+            }
+          } catch (err) {
+            console.warn("Admin preview fullscreen failed:", err);
           }
-        } catch (err) {
-          console.warn("Admin preview fullscreen failed:", err);
-        }
-      };
+        };
 
-      toggle();
-      return;
-    }
+        toggle();
+        return;
+      }
 
-    const editBtn = e.target.closest(".port-edit-btn");
-    if (editBtn) {
-      const item = allItems.find((i) => i.id === editBtn.dataset.id);
-      if (item) openModal(item);
-    }
+      const editBtn = e.target.closest(".port-edit-btn");
+      if (editBtn) {
+        const item = allItems.find((i) => i.id === editBtn.dataset.id);
+        if (item) openModal(item);
+      }
     });
     portAdminGrid.dataset.bound = "1";
   }
@@ -464,7 +724,10 @@ function renderGrid() {
         const frameWrap = btn.closest(".port-admin-card-img");
         const active = document.fullscreenElement === frameWrap;
         btn.textContent = active ? "EXIT" : "FULL";
-        btn.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
+        btn.setAttribute(
+          "aria-label",
+          active ? "Exit fullscreen" : "Enter fullscreen",
+        );
         btn.classList.toggle("is-active", active);
       });
     });
@@ -500,13 +763,20 @@ function openModal(item = null) {
     if (pImageUrl) pImageUrl.value = item.image_url || "";
     if (pImageSizeBytes) pImageSizeBytes.value = item.image_size_bytes || 0;
     if (pModelSizeBytes) pModelSizeBytes.value = item.model_size_bytes || 0;
+    currentMediaAssets = normaliseMediaAssets(
+      item.media_assets,
+      item.image_url,
+      item.model_url,
+      { includeEmpty: true },
+    );
 
     // Show existing image in preview
     const normalisedImageUrl = normalisePortfolioImageUrl(item.image_url);
     if (normalisedImageUrl) {
       pImagePreview.innerHTML = `<img src="${esc(normalisedImageUrl)}" alt="Current image">`;
     } else {
-      pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
+      pImagePreview.innerHTML =
+        '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
     }
 
     // Show existing model state
@@ -515,7 +785,8 @@ function openModal(item = null) {
         const filename = item.model_url.split("/").pop().split("?")[0];
         pModelPreview.innerHTML = `<span class="port-upload-placeholder" style="color:var(--brand-orange-dim)">${esc(filename)}</span>`;
       } else {
-        pModelPreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
+        pModelPreview.innerHTML =
+          '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
       }
     }
     if (pModelFile) pModelFile.value = "";
@@ -527,8 +798,11 @@ function openModal(item = null) {
     portModalTitle.textContent = "Add Portfolio Item";
     pId.value = "";
     if (pSortOrder) pSortOrder.value = getNextSortOrder();
-    pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
-    if (pModelPreview) pModelPreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
+    pImagePreview.innerHTML =
+      '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
+    if (pModelPreview)
+      pModelPreview.innerHTML =
+        '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
     if (pModelFile) pModelFile.value = "";
     if (pModelUrl) pModelUrl.value = "";
     if (pImageUrl) pImageUrl.value = "";
@@ -536,11 +810,13 @@ function openModal(item = null) {
       pModelSourceHosted.checked = true;
       pModelSourceExternal.checked = false;
     }
+    currentMediaAssets = [];
     updateModelSourceUI();
     portDeleteBtn.classList.add("hidden");
   }
 
   revokeLivePreviewImageBlobUrl();
+  renderAssetEditor();
 
   updateLivePreview();
   portModalBackdrop.classList.remove("hidden");
@@ -571,12 +847,14 @@ function updateImagePreview() {
     if (file.size > MAX_IMAGE_SIZE_BYTES) {
       alert("Image exceeds max size (10MB).");
       pImage.value = "";
-      pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
+      pImagePreview.innerHTML =
+        '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
       return;
     }
     livePreviewImageBlobUrl = URL.createObjectURL(file);
     pImagePreview.innerHTML = `<img src="${livePreviewImageBlobUrl}" alt="Preview">`;
   }
+
   updateLivePreview();
 }
 
@@ -592,7 +870,8 @@ async function handleModelFileSelected() {
   if (totalBytes > MAX_MODEL_SIZE_BYTES) {
     alert("3D upload exceeds max size (25MB total).");
     pModelFile.value = "";
-    pModelPreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
+    pModelPreview.innerHTML =
+      '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
     return;
   }
 
@@ -604,6 +883,13 @@ async function handleModelFileSelected() {
     const urls = await Promise.all(files.map((f) => uploadPortfolioAsset(f)));
     pModelUrl.value = urls.join(",");
     if (pModelSizeBytes) pModelSizeBytes.value = totalBytes;
+    upsertMediaAssetFromLegacy({
+      type: "model",
+      url: pModelUrl.value,
+      alt: pTitle?.value || "",
+      size_bytes: totalBytes,
+      is_cover: !currentMediaAssets.length,
+    });
     pModelPreview.innerHTML = `<span class="port-upload-placeholder" style="color:var(--brand-orange-dim)">${esc(names)}</span>`;
     updateLivePreview();
   } catch (err) {
@@ -623,11 +909,19 @@ function updateLivePreview() {
   const tag = pTag?.value || "RENDER";
   const hasImageFileSelected = (pImage?.files?.length || 0) > 0;
   if (hasImageFileSelected && !livePreviewImageBlobUrl) {
-    console.warn("Live preview image blob URL is missing while a file is selected.");
+    console.warn(
+      "Live preview image blob URL is missing while a file is selected.",
+    );
   }
+  const coverAsset =
+    currentMediaAssets.find((asset) => asset.is_cover) ||
+    currentMediaAssets[0] ||
+    null;
   const imgSrc = hasImageFileSelected
     ? livePreviewImageBlobUrl || ""
-    : normalisePortfolioImageUrl(pImageUrl?.value || pExistingImageUrl?.value || "");
+    : normalisePortfolioImageUrl(
+        coverAsset?.url || pImageUrl?.value || pExistingImageUrl?.value || "",
+      );
   const hasModel = !!pModelUrl?.value;
   const featured = pFeatured?.checked;
 
@@ -658,9 +952,10 @@ async function handleSave(e) {
   portSaveBtn.textContent = "SAVING…";
 
   try {
-    let imageUrl = normalisePortfolioImageUrl(
-      pImageUrl?.value || pExistingImageUrl?.value || "",
-    ) || null;
+    let imageUrl =
+      normalisePortfolioImageUrl(
+        pImageUrl?.value || pExistingImageUrl?.value || "",
+      ) || null;
     let imageSizeBytes = parseInt(pImageSizeBytes?.value, 10) || null;
     const modelSource = getModelSourceMode();
 
@@ -690,6 +985,86 @@ async function handleSave(e) {
       modelSizeBytes = null;
     }
 
+    currentMediaAssets = readAssetEditorState();
+
+    // ── Merge uploaded / legacy URLs into the in-memory asset list ──
+    // Suppress DOM re-render (render: false) — we only need the in-memory
+    // array for serialisation; the modal is about to close anyway.
+    if (imageUrl) {
+      const imageType = /\.gif(\?|#|$)/i.test(imageUrl) ? "gif" : "image";
+      const existingImageUrl = normalisePortfolioImageUrl(
+        pExistingImageUrl?.value || "",
+      );
+
+      // If the user uploaded a *new* file, replace the previous cover image
+      // instead of appending a duplicate.
+      if (pImage?.files?.length > 0 && existingImageUrl) {
+        const oldIdx = currentMediaAssets.findIndex(
+          (a) =>
+            (a.type === "image" || a.type === "gif") &&
+            a.url === existingImageUrl,
+        );
+        if (oldIdx >= 0) {
+          currentMediaAssets[oldIdx] = createAssetDraft(
+            {
+              ...currentMediaAssets[oldIdx],
+              url: imageUrl,
+              type: imageType,
+              size_bytes: imageSizeBytes,
+              alt: title,
+            },
+            oldIdx,
+          );
+        } else {
+          // Old URL not in list — append, but claim cover if none set
+          upsertMediaAssetFromLegacy(
+            {
+              type: imageType,
+              url: imageUrl,
+              alt: title,
+              size_bytes: imageSizeBytes,
+              is_cover: !currentMediaAssets.some((a) => a.is_cover),
+            },
+            { render: false },
+          );
+        }
+      } else {
+        // No file upload — just ensure the URL-based image is in the list
+        upsertMediaAssetFromLegacy(
+          {
+            type: imageType,
+            url: imageUrl,
+            alt: title,
+            size_bytes: imageSizeBytes,
+            is_cover: !currentMediaAssets.some((a) => a.is_cover),
+          },
+          { render: false },
+        );
+      }
+    }
+
+    if (modelUrl) {
+      upsertMediaAssetFromLegacy(
+        {
+          type: "model",
+          url: modelUrl,
+          alt: title,
+          size_bytes: modelSizeBytes,
+          is_cover: !currentMediaAssets.some((a) => a.is_cover),
+        },
+        { render: false },
+      );
+    }
+
+    // ── Serialise from the in-memory array (single source of truth) ──
+    const mediaAssetsPayload = toMediaAssetsPayload(currentMediaAssets);
+    const validation = validateMediaAssets(mediaAssetsPayload);
+    if (!validation.ok) {
+      throw new Error(validation.errors[0]);
+    }
+
+    const legacyFromAssets = mediaAssetsToLegacy(mediaAssetsPayload);
+
     let sortOrder = parseInt(pSortOrder?.value, 10);
     if (!Number.isInteger(sortOrder) || sortOrder <= 0) {
       sortOrder = getNextSortOrder(pId?.value || null);
@@ -701,16 +1076,19 @@ async function handleSave(e) {
       description: pDesc?.value?.trim() || null,
       tag: pTag?.value || "RENDER",
       sort_order: sortOrder,
-      image_url: imageUrl,
-      image_size_bytes: imageSizeBytes || null,
-      model_url: modelUrl,
-      model_size_bytes: modelSizeBytes || null,
+      image_url: legacyFromAssets.image_url || null,
+      image_size_bytes: legacyFromAssets.image_size_bytes || null,
+      model_url: legacyFromAssets.model_url || null,
+      model_size_bytes: legacyFromAssets.model_size_bytes || null,
+      media_assets: mediaAssetsPayload,
+      cover_index: legacyFromAssets.cover_index,
       is_featured: !!pFeatured?.checked,
       is_visible: pVisible?.checked !== false,
     };
 
     const id = pId?.value;
-    const save = (p) => id ? updatePortfolioItem(id, p) : insertPortfolioItem(p);
+    const save = (p) =>
+      id ? updatePortfolioItem(id, p) : insertPortfolioItem(p);
     let shiftedItems = [];
     let saveSucceeded = false;
 
@@ -741,7 +1119,11 @@ async function handleSave(e) {
               String(item.id) !== String(id)
             );
           })
-          .sort((a, b) => Number.parseInt(b.sort_order, 10) - Number.parseInt(a.sort_order, 10));
+          .sort(
+            (a, b) =>
+              Number.parseInt(b.sort_order, 10) -
+              Number.parseInt(a.sort_order, 10),
+          );
 
         shiftedItems = itemsToShift.map((item) => ({
           id: item.id,
@@ -762,9 +1144,21 @@ async function handleSave(e) {
       saveSucceeded = true;
     } catch (schemaErr) {
       // If the size columns haven't been migrated yet, retry without them
-      if (schemaErr.message?.includes("image_size_bytes") || schemaErr.message?.includes("model_size_bytes") || schemaErr.message?.includes("schema cache")) {
-        console.warn("Size columns not found in DB — retrying without them. Run the migration SQL to enable file size tracking.");
-        const { image_size_bytes, model_size_bytes, ...fallbackPayload } = payload;
+      if (
+        schemaErr.message?.includes("image_size_bytes") ||
+        schemaErr.message?.includes("model_size_bytes") ||
+        schemaErr.message?.includes("schema cache")
+      ) {
+        console.warn(
+          "Size columns not found in DB — retrying without them. Run the migration SQL to enable file size tracking.",
+        );
+        const {
+          image_size_bytes,
+          model_size_bytes,
+          media_assets,
+          cover_index,
+          ...fallbackPayload
+        } = payload;
         await save(fallbackPayload);
         saveSucceeded = true;
       } else {
@@ -817,5 +1211,7 @@ _supabase.auth.onAuthStateChange((event, session) => {
     initPortfolio();
   }
 });
+
+// Note: pAssetList and pAssetAdd*Btn listeners are now inside initPortfolio() above.
 
 ensurePortfolioReadyFromSession();

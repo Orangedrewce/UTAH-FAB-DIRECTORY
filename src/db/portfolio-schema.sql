@@ -19,11 +19,12 @@ CREATE TABLE IF NOT EXISTS portfolio_items (
   title             TEXT NOT NULL,
   description       TEXT,
   tag               TEXT NOT NULL DEFAULT 'RENDER',     -- e.g. INTAKE, MODEL, OUTPUT, RENDER, ASSEMBLY
-  card_numbers      TEXT,                                -- Optional: one or many card numbers (e.g. "7" or "7, 8, 12")
   image_url         TEXT,                                -- PNG/JPG stored in Supabase Storage
   image_size_bytes  BIGINT,                              -- File size of the uploaded image
   model_url         TEXT,                                -- Optional: URL to .glb/.gltf/.step for 3D viewer
   model_size_bytes  BIGINT,                              -- Total file size of the uploaded 3D model(s)
+  media_assets      JSONB DEFAULT '[]'::jsonb,           -- Ordered list of mixed assets [{type,url,alt,size_bytes,position,is_cover}]
+  cover_index       INTEGER DEFAULT 0,                   -- Index in media_assets used as card cover
   sort_order        INTEGER DEFAULT 0,
   is_featured       BOOLEAN DEFAULT FALSE,              -- Show on homepage hero section
   is_visible        BOOLEAN DEFAULT TRUE,               -- Hide without deleting
@@ -36,7 +37,8 @@ CREATE TABLE IF NOT EXISTS portfolio_items (
 -- ALTER TABLE portfolio_items
 --   ADD COLUMN IF NOT EXISTS image_size_bytes BIGINT,
 --   ADD COLUMN IF NOT EXISTS model_size_bytes  BIGINT,
---   ADD COLUMN IF NOT EXISTS card_numbers      TEXT;
+--   ADD COLUMN IF NOT EXISTS media_assets      JSONB DEFAULT '[]'::jsonb,
+--   ADD COLUMN IF NOT EXISTS cover_index       INTEGER DEFAULT 0;
 
 -- Index for public queries (visible items ordered by sort)
 CREATE INDEX IF NOT EXISTS idx_portfolio_visible

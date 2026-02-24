@@ -1153,3 +1153,64 @@ body.modal-open {
   margin-bottom: 8px;
   flex-wrap: wrap;
 }
+
+.port-asset-list {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+}
+
+.port-asset-row {
+  display: grid;
+  grid-template-columns: auto 84px minmax(0, 1fr) minmax(0, 0.7fr) 82px auto;
+  gap: .35rem;
+  align-items: center;
+}
+
+.port-asset-row--new {
+  outline: 1px solid rgba(var(--brand-orange-rgb), 0.65);
+  outline-offset: 2px;
+  background: rgba(var(--brand-orange-rgb), 0.08);
+}
+
+.port-asset-row input,
+.port-asset-row select {
+  min-width: 0;
+}
+
+.port-asset-cover {
+  width: 16px;
+  height: 16px;
+}
+
+.port-asset-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .5rem;
+}
+
+.port-asset-empty {
+  border: 1px dashed var(--border-neutral);
+  border-radius: var(--radius);
+  padding: .55rem .7rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: .72rem;
+}
+
+.port-asset-summary-flash {
+  color: var(--brand-orange-dim);
+  opacity: 1;
+}
+
+@media (max-width: 980px) {
+  .port-asset-row {
+    grid-template-columns: auto 72px minmax(0, 1fr);
+  }
+
+  .port-asset-row .port-asset-alt,
+  .port-asset-row .port-asset-size {
+    grid-column: 2 / span 2;
+  }
+}

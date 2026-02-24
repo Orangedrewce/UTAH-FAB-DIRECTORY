@@ -353,7 +353,7 @@ body {
   display: flex;
 }
 .lightbox img {
-  max-width: 90vw;
+  max-width: calc(100vw - 200px);
   max-height: 80vh;
   object-fit: contain;
   border: 1px solid var(--orange);
@@ -377,6 +377,22 @@ body {
   font-size: var(--fs-sm);
   color: var(--muted);
   letter-spacing: 2px;
+}
+
+.lightbox-card-nav {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--orange);
+  letter-spacing: 2px;
+  background: none;
+  border: 1px solid rgba(var(--brand-orange-rgb), 0.45);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.lightbox-card-nav:hover {
+  border-color: var(--orange);
+  background: rgba(var(--brand-orange-rgb), 0.12);
 }
 
 /* Lightbox prev / next arrows */
@@ -409,6 +425,18 @@ body {
 }
 .lightbox-next {
   right: 1rem;
+}
+
+@media (max-width: 768px) {
+  .lightbox img {
+    max-width: calc(100vw - 120px);
+  }
+  .lightbox-arrow {
+    font-size: 1.8rem;
+    padding: 8px 10px;
+  }
+  .lightbox-prev { left: 0.5rem; }
+  .lightbox-next { right: 0.5rem; }
 }
 
 /* ── CAPABILITIES GRID ── */
@@ -821,6 +849,25 @@ body {
   border-color: var(--orange);
   color: var(--orange);
 }
+.model-gallery-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: var(--z-float);
+  border: 1px solid rgba(var(--white-rgb), 0.3);
+  background: rgba(var(--bg-dark-rgb), 0.72);
+  color: var(--light);
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.model-gallery-btn:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
 .model-fullscreen-btn {
   position: absolute;
   top: 6px;
@@ -843,7 +890,8 @@ body {
   color: var(--orange);
 }
 .port-thumb--model.model-controls-idle .model-toggle-btn,
-.port-thumb--model.model-controls-idle .model-fullscreen-btn {
+.port-thumb--model.model-controls-idle .model-fullscreen-btn,
+.port-thumb--model.model-controls-idle .model-gallery-btn {
   opacity: 0;
 }
 .model-orbit-toast {
@@ -872,6 +920,13 @@ body {
   width: 100vw;
   height: 100vh;
   aspect-ratio: auto;
+}
+
+/* Focus state — single-click highlight ring */
+.port-thumb--model.is-card-focused {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(var(--orange-rgb, 232, 121, 36), 0.18);
 }
 .model-viewer-host canvas {
   display: block;

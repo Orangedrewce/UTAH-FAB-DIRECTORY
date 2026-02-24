@@ -123,6 +123,8 @@ CREATE TABLE IF NOT EXISTS public.portfolio_items (
   image_size_bytes  BIGINT,
   model_url         TEXT,
   model_size_bytes  BIGINT,
+  media_assets      JSONB DEFAULT '[]'::jsonb,
+  cover_index       INTEGER DEFAULT 0,
   sort_order        INTEGER DEFAULT 0,
   is_featured       BOOLEAN DEFAULT FALSE,
   is_visible        BOOLEAN DEFAULT TRUE,
@@ -132,7 +134,9 @@ CREATE TABLE IF NOT EXISTS public.portfolio_items (
 
 ALTER TABLE public.portfolio_items
   ADD COLUMN IF NOT EXISTS image_size_bytes BIGINT,
-  ADD COLUMN IF NOT EXISTS model_size_bytes BIGINT;
+  ADD COLUMN IF NOT EXISTS model_size_bytes BIGINT,
+  ADD COLUMN IF NOT EXISTS media_assets JSONB DEFAULT '[]'::jsonb,
+  ADD COLUMN IF NOT EXISTS cover_index INTEGER DEFAULT 0;
 
 CREATE INDEX IF NOT EXISTS idx_portfolio_visible
   ON public.portfolio_items (is_visible, sort_order);
