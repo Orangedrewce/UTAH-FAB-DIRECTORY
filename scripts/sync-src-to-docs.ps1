@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "1000 lines of code just to get multi image support on a card."
+  git commit -m "bug fixes, css alignment, fullscreen mobile fix"
 
   # 5) Publish to live site
   git pull origin dev --rebase

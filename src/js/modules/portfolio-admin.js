@@ -75,6 +75,7 @@ const portForm = $("#portForm");
 const portModalCloseBtn = $("#portModalCloseBtn");
 const portModalCancelBtn = $("#portModalCancelBtn");
 const portDeleteBtn = $("#portDeleteBtn");
+const portApplyBtn = $("#portApplyBtn");
 const portSaveBtn = $("#portSaveBtn");
 const portLivePreview = $("#portLivePreview");
 
@@ -255,7 +256,10 @@ function renderAssetEditor() {
       .map((asset, index) => {
         return `
           <div class="port-asset-row" data-index="${index}">
-            <input class="port-asset-cover" type="radio" name="pAssetCover" title="Cover" ${asset.is_cover ? "checked" : ""}>
+            <label class="port-asset-cover-label" title="Set as cover image">
+              <input class="port-asset-cover" type="radio" name="pAssetCover" ${asset.is_cover ? "checked" : ""}>
+              <span>Cover</span>
+            </label>
             <select class="port-asset-type" aria-label="Asset type">
               <option value="image" ${asset.type === "image" ? "selected" : ""}>Image</option>
               <option value="gif" ${asset.type === "gif" ? "selected" : ""}>GIF</option>
@@ -406,11 +410,23 @@ function bindStaticUI() {
   if (portModalCancelBtn)
     portModalCancelBtn.addEventListener("click", closeModal);
   if (portDeleteBtn) portDeleteBtn.addEventListener("click", handleDelete);
+  if (portApplyBtn) portApplyBtn.addEventListener("click", () => handleSave(null, { keepOpen: true }));
   if (portForm) portForm.addEventListener("submit", handleSave);
 
   // ── Asset editor (delegated on pAssetList container) ──
   if (pAssetList) {
-    pAssetList.addEventListener("input", () => {
+    pAssetList.addEventListener("input", (e) => {
+      // Auto-select the cover radio when a URL is typed into that row,
+      // so the first linked URL becomes cover without needing manual selection.
+      const urlInput = e.target.closest(".port-asset-url");
+      if (urlInput && urlInput.value.trim()) {
+        const row = urlInput.closest(".port-asset-row");
+        const noCoverChecked = !pAssetList.querySelector(".port-asset-cover:checked");
+        if (row && noCoverChecked) {
+          const radio = row.querySelector(".port-asset-cover");
+          if (radio) radio.checked = true;
+        }
+      }
       currentMediaAssets = readAssetEditorState();
       if (pAssetSummary) {
         const totalBytes = getAssetsTotalBytes(currentMediaAssets);
@@ -942,14 +958,14 @@ function updateLivePreview() {
 }
 
 // ── SAVE ────────────────────────────────────────────────────────────────
-async function handleSave(e) {
-  e.preventDefault();
+async function handleSave(e, { keepOpen = false } = {}) {
+  if (e) e.preventDefault();
 
   const title = pTitle?.value?.trim();
-  if (!title) return;
+  if (!title) { pTitle?.focus(); return; }
 
-  portSaveBtn.disabled = true;
-  portSaveBtn.textContent = "SAVING…";
+  const activeBtn = keepOpen ? portApplyBtn : portSaveBtn;
+  if (activeBtn) { activeBtn.disabled = true; activeBtn.textContent = keepOpen ? "APPLYING…" : "SAVING…"; }
 
   try {
     let imageUrl =
@@ -1029,17 +1045,25 @@ async function handleSave(e) {
           );
         }
       } else {
-        // No file upload — just ensure the URL-based image is in the list
-        upsertMediaAssetFromLegacy(
-          {
-            type: imageType,
-            url: imageUrl,
-            alt: title,
-            size_bytes: imageSizeBytes,
-            is_cover: !currentMediaAssets.some((a) => a.is_cover),
-          },
-          { render: false },
+        // No file upload — only inject the legacy URL when the asset editor has
+        // no visual (image/gif) assets yet.  If the user already has entries in
+        // the editor (even with a different URL), trust those and skip to avoid
+        // appending a stale duplicate.
+        const hasVisualAsset = currentMediaAssets.some(
+          (a) => (a.type === "image" || a.type === "gif") && a.url,
         );
+        if (!hasVisualAsset) {
+          upsertMediaAssetFromLegacy(
+            {
+              type: imageType,
+              url: imageUrl,
+              alt: title,
+              size_bytes: imageSizeBytes,
+              is_cover: !currentMediaAssets.some((a) => a.is_cover),
+            },
+            { render: false },
+          );
+        }
       }
     }
 
@@ -1091,6 +1115,7 @@ async function handleSave(e) {
       id ? updatePortfolioItem(id, p) : insertPortfolioItem(p);
     let shiftedItems = [];
     let saveSucceeded = false;
+    let savedItem = null;
 
     try {
       // ── START COLLISION RESOLUTION ──
@@ -1140,7 +1165,7 @@ async function handleSave(e) {
       }
       // ── END COLLISION RESOLUTION ──
 
-      await save(payload);
+      savedItem = await save(payload);
       saveSucceeded = true;
     } catch (schemaErr) {
       // If the size columns haven't been migrated yet, retry without them
@@ -1159,7 +1184,7 @@ async function handleSave(e) {
           cover_index,
           ...fallbackPayload
         } = payload;
-        await save(fallbackPayload);
+        savedItem = await save(fallbackPayload);
         saveSucceeded = true;
       } else {
         throw schemaErr;
@@ -1174,14 +1199,24 @@ async function handleSave(e) {
       }
     }
 
-    closeModal();
-    await loadItems();
+    if (keepOpen) {
+      // Stay in modal — update ID (new item just got one) and mark as Edit
+      if (savedItem?.id && pId) pId.value = savedItem.id;
+      if (savedItem?.image_url && pExistingImageUrl) pExistingImageUrl.value = savedItem.image_url || "";
+      portModalTitle.textContent = "Edit Portfolio Item";
+      if (portDeleteBtn) portDeleteBtn.classList.remove("hidden");
+      setAssetSummaryMessage("Saved ✓");
+      await loadItems();
+    } else {
+      closeModal();
+      await loadItems();
+    }
   } catch (err) {
     console.error("Portfolio save error:", err);
     alert("Save failed: " + (err.message || "Unknown error"));
   } finally {
-    portSaveBtn.disabled = false;
-    portSaveBtn.textContent = "Save Item";
+    if (portSaveBtn) { portSaveBtn.disabled = false; portSaveBtn.textContent = "Save & Close"; }
+    if (portApplyBtn) { portApplyBtn.disabled = false; portApplyBtn.textContent = "Apply"; }
   }
 }
 

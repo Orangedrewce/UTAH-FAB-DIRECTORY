@@ -298,71 +298,69 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="pImage">Image (PNG/JPG/GIF/WebP)</label>
-              <div class="port-upload-zone" id="pImageZone">
-                <input
-                  type="file"
-                  id="pImage"
-                  accept="image/png,image/jpeg,image/gif,image/webp"
-                  class="sr-only"
-                />
-                <div class="port-upload-preview" id="pImagePreview">
-                  <span class="port-upload-placeholder"
-                    >Click or drag to upload image (Max 10MB)</span
-                  >
+            <details class="form-section" id="pImageSection">
+              <summary class="form-section-summary">Image (PNG/JPG/GIF/WebP)</summary>
+              <div class="form-section-body">
+                <div class="port-upload-zone" id="pImageZone">
+                  <input
+                    type="file"
+                    id="pImage"
+                    accept="image/png,image/jpeg,image/gif,image/webp"
+                    class="sr-only"
+                  />
+                  <div class="port-upload-preview" id="pImagePreview">
+                    <span class="port-upload-placeholder"
+                      >Click or drag to upload image (Max 10MB)</span
+                    >
+                  </div>
                 </div>
+                <span class="form-hint">Use Media Assets below to paste image/GIF URLs.</span>
               </div>
-              <span class="form-hint"
-                >Use Media Assets below to paste image/GIF URLs.</span
-              >
-            </div>
+            </details>
 
-            <div class="form-group">
-              <label for="pModelFile">3D Model (optional)</label>
-              <div class="model-source-toggle" id="pModelSourceToggle">
-                <label class="toggle-label"
-                  ><input
-                    type="radio"
-                    name="pModelSource"
-                    id="pModelSourceHosted"
-                    value="hosted"
-                    checked
-                  />
-                  Hosted Asset</label
-                >
-                <label class="toggle-label"
-                  ><input
-                    type="radio"
-                    name="pModelSource"
-                    id="pModelSourceExternal"
-                    value="external"
-                  />
-                  External Embed</label
-                >
-              </div>
-              <div class="port-upload-zone" id="pModelZone">
-                <input
-                  type="file"
-                  id="pModelFile"
-                  accept=".glb,.gltf,.step,.stp,.stl,.obj,.mtl"
-                  multiple
-                  class="sr-only"
-                />
-                <div class="port-upload-preview" id="pModelPreview">
-                  <span class="port-upload-placeholder"
-                    >Click or drag to upload (Max 25MB): .glb / .obj+.mtl /
-                    .step / .stl</span
+            <details class="form-section" id="pModelSection">
+              <summary class="form-section-summary">3D Model (optional)</summary>
+              <div class="form-section-body">
+                <div class="model-source-toggle" id="pModelSourceToggle">
+                  <label class="toggle-label"
+                    ><input
+                      type="radio"
+                      name="pModelSource"
+                      id="pModelSourceHosted"
+                      value="hosted"
+                      checked
+                    />
+                    Hosted Asset</label
+                  >
+                  <label class="toggle-label"
+                    ><input
+                      type="radio"
+                      name="pModelSource"
+                      id="pModelSourceExternal"
+                      value="external"
+                    />
+                    External Embed</label
                   >
                 </div>
+                <div class="port-upload-zone" id="pModelZone">
+                  <input
+                    type="file"
+                    id="pModelFile"
+                    accept=".glb,.gltf,.step,.stp,.stl,.obj,.mtl"
+                    multiple
+                    class="sr-only"
+                  />
+                  <div class="port-upload-preview" id="pModelPreview">
+                    <span class="port-upload-placeholder"
+                      >Click or drag to upload (Max 25MB): .glb / .obj+.mtl /
+                      .step / .stl</span
+                    >
+                  </div>
+                </div>
+                <span class="form-hint">Hosted Asset: upload model files to Supabase.</span>
+                <span class="form-hint">External Embed: add a 3D URL in Media Assets below.</span>
               </div>
-              <span class="form-hint"
-                >Hosted Asset: upload model files to Supabase.</span
-              >
-              <span class="form-hint"
-                >External Embed: add a 3D URL in Media Assets below.</span
-              >
-            </div>
+            </details>
 
             <div class="form-group">
               <label>Media Assets</label>
@@ -427,8 +425,11 @@
               >
                 Delete
               </button>
+              <button type="button" class="btn btn-outline" id="portApplyBtn">
+                Apply
+              </button>
               <button type="submit" class="btn btn-primary" id="portSaveBtn">
-                Save Item
+                Save &amp; Close
               </button>
             </div>
           </form>
