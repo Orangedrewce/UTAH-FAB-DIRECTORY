@@ -143,6 +143,41 @@ export function openLightbox(element) {
   document.body.style.overflow = "hidden";
 }
 
+function initStaticThumbLightbox() {
+  const thumbs = [
+    ...document.querySelectorAll(
+      '.thumb[onclick*="openLightbox"]:not([data-card-index])',
+    ),
+  ];
+  if (!thumbs.length) return;
+
+  const staticCards = thumbs
+    .map((thumb, index) => {
+      const img = thumb.querySelector("img");
+      const src = img?.getAttribute("src") || "";
+      if (!src) return null;
+
+      const absoluteUrl = new URL(src, window.location.href).href;
+      const label = thumb.dataset.label || img.getAttribute("alt") || "Image";
+      const title = img.getAttribute("alt") || label;
+
+      thumb.dataset.cardIndex = String(index);
+      thumb.dataset.mediaIndex = "0";
+
+      return {
+        id: `static-${index}`,
+        title,
+        label,
+        visualAssets: [{ url: absoluteUrl, alt: img.getAttribute("alt") || title }],
+      };
+    })
+    .filter(Boolean);
+
+  if (staticCards.length) {
+    setLightboxCards(staticCards);
+  }
+}
+
 function navigateLightbox(delta) {
   if (!lightbox?.classList.contains("open")) return;
   const card = getCurrentCard();
@@ -1132,4 +1167,5 @@ window.addEventListener("beforeunload", disposeAllCardViewers);
    ═════════════════════════════════════════════════════════════════════ */
 initContactForm();
 initCollapsible();
+initStaticThumbLightbox();
 renderPortfolioPage();

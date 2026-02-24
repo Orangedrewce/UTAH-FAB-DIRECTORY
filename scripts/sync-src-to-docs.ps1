@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "ios full screen fix pt3"
+  git commit -m "description changes"
 
   # 5) Publish to live site
   git pull origin dev --rebase
