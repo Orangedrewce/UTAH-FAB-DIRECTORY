@@ -103,12 +103,15 @@ document.addEventListener("keydown", (event) => {
 
 // ── Model URL normalisation ─────────────────────────────────────────────
 /**
- * Split comma-separated model URLs, trim, return the first valid URL or null.
+ * Split comma-separated model URLs, trim, return all valid URLs.
  */
-function getPrimaryModelUrl(rawUrl) {
-  if (!rawUrl || typeof rawUrl !== "string") return null;
-  const urls = rawUrl.split(",").map((u) => u.trim()).filter(Boolean);
-  return urls.length > 0 ? urls[0] : null;
+function getModelUrlList(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== "string") return [];
+  return rawUrl.split(",").map((u) => u.trim()).filter(Boolean);
+}
+
+function isExternalEmbedUrl(url) {
+  return /3dviewer\.net/i.test(url || "");
 }
 
 // ── Per-card OV viewer registry & lifecycle ─────────────────────────────
@@ -116,6 +119,7 @@ function getPrimaryModelUrl(rawUrl) {
 const viewerRegistry = new Map();
 const fullscreenTargets = new Set();
 const orbitToastTimers = new WeakMap();
+const controlsIdleTimers = new WeakMap();
 
 function syncViewerFullscreenButtons() {
   for (const target of fullscreenTargets) {
@@ -224,9 +228,9 @@ function addPivotGizmo(embeddedViewer, hostEl) {
 }
 
 /** Create an OV.EmbeddedViewer inside a host element. */
-function initCardViewer(hostEl, modelUrl) {
+function initCardViewer(hostEl, modelUrls) {
   const id = hostEl.dataset.itemId;
-  if (!id || !modelUrl) return;
+  if (!id || !Array.isArray(modelUrls) || !modelUrls.length) return;
   disposeCardViewer(id);
 
   const fullscreenTarget = hostEl.closest(".port-thumb--model") || hostEl;
@@ -261,7 +265,7 @@ function initCardViewer(hostEl, modelUrl) {
         viewerRegistry.delete(id);
       }
     });
-    viewer.LoadModelFromUrlList([modelUrl]);
+    viewer.LoadModelFromUrlList(modelUrls);
     viewerRegistry.set(id, { viewer, hostEl });
   } catch (err) {
     console.warn(`Viewer init failed [${id}]:`, err);
@@ -291,14 +295,21 @@ function ensureCardViewer(cardEl) {
   const hostEl = cardEl?.querySelector(".model-viewer-host");
   if (!hostEl || hostEl.dataset.viewerReady === "true") return;
 
-  const url = hostEl.dataset.modelUrl;
-  if (!url) {
+  const embedUrl = hostEl.dataset.embedUrl;
+  if (embedUrl && isExternalEmbedUrl(embedUrl)) {
+    hostEl.innerHTML = `<iframe class="model-embed-frame" src="${esc(embedUrl)}" loading="lazy" tabindex="-1" title="3D model preview"></iframe>`;
+    hostEl.dataset.viewerReady = "true";
+    return;
+  }
+
+  const modelUrls = getModelUrlList(hostEl.dataset.modelUrls || "");
+  if (!modelUrls.length) {
     hostEl.innerHTML = '<span class="model-viewer-fallback">NO MODEL</span>';
     hostEl.dataset.viewerReady = "true";
     return;
   }
 
-  initCardViewer(hostEl, url);
+  initCardViewer(hostEl, modelUrls);
   hostEl.dataset.viewerReady = "true";
 }
 
@@ -323,6 +334,42 @@ function showModelOrbitToast(cardEl) {
   orbitToastTimers.set(cardEl, hideTimer);
 }
 
+function clearControlsIdleTimer(cardEl) {
+  const timer = controlsIdleTimers.get(cardEl);
+  if (timer) {
+    window.clearTimeout(timer);
+    controlsIdleTimers.delete(cardEl);
+  }
+}
+
+function scheduleControlsFade(cardEl) {
+  if (!cardEl) return;
+  clearControlsIdleTimer(cardEl);
+  const timer = window.setTimeout(() => {
+    cardEl.classList.add("model-controls-idle");
+  }, 3000);
+  controlsIdleTimers.set(cardEl, timer);
+}
+
+function showCardControls(cardEl) {
+  if (!cardEl) return;
+  cardEl.classList.remove("model-controls-idle");
+  scheduleControlsFade(cardEl);
+}
+
+function bindModelCardActivity(cardEl) {
+  if (!cardEl || cardEl.dataset.controlsBound === "true") return;
+
+  const activate = () => showCardControls(cardEl);
+  cardEl.addEventListener("mousemove", activate);
+  cardEl.addEventListener("mouseenter", activate);
+  cardEl.addEventListener("touchstart", activate, { passive: true });
+  cardEl.addEventListener("pointerdown", activate);
+
+  cardEl.dataset.controlsBound = "true";
+  showCardControls(cardEl);
+}
+
 function setModelCardOpen(cardEl, isOpen) {
   if (!cardEl) return;
   cardEl.classList.toggle("is-model-open", isOpen);
@@ -340,6 +387,10 @@ function setModelCardOpen(cardEl, isOpen) {
       isOpen ? "Switch back to render" : "Open interactive 3D model"
     );
   }
+
+  if (!isOpen) {
+    cardEl.classList.remove("model-controls-idle");
+  }
 }
 
 function openModelCard(cardEl) {
@@ -351,12 +402,14 @@ function openModelCard(cardEl) {
   ensureCardViewer(cardEl);
   setModelCardOpen(cardEl, true);
   showModelOrbitToast(cardEl);
+  showCardControls(cardEl);
 }
 
 function closeModelCard(cardEl) {
   setModelCardOpen(cardEl, false);
   const toastEl = cardEl?.querySelector(".model-orbit-toast");
   if (toastEl) toastEl.classList.remove("is-visible");
+  clearControlsIdleTimer(cardEl);
 }
 
 function toggleModelCard(cardEl) {
@@ -436,7 +489,8 @@ function portfolioItemHTML(item) {
   const desc = esc(item.description || "");
   const label = `${tag} · ${title}`;
   const imgUrl = item.image_url || "assets/Render.png";
-  const modelUrl = getPrimaryModelUrl(item.model_url);
+  const modelUrls = getModelUrlList(item.model_url);
+  const embedUrl = modelUrls.length === 1 && isExternalEmbedUrl(modelUrls[0]) ? modelUrls[0] : "";
 
   const caption = `<figcaption class="port-caption">
       <span class="port-tag">${tag}</span>
@@ -444,10 +498,10 @@ function portfolioItemHTML(item) {
       ${desc ? `<span class="port-meta">${desc}</span>` : ""}
     </figcaption>`;
 
-  if (modelUrl) {
+  if (modelUrls.length) {
     return `<figure class="port-item port-item--model" data-tag="${tag}">
     <div class="port-thumb port-thumb--model">
-      <div class="model-viewer-host" data-item-id="${esc(String(item.id || title))}" data-model-url="${esc(modelUrl)}" aria-hidden="true"></div>
+      <div class="model-viewer-host" data-item-id="${esc(String(item.id || title))}" data-model-urls="${esc(modelUrls.join(","))}" data-embed-url="${esc(embedUrl)}" aria-hidden="true"></div>
       <div class="model-render-curtain" aria-hidden="false">
         <img class="model-render-thumb" src="${esc(imgUrl)}" alt="${title}" loading="lazy">
       </div>
@@ -476,15 +530,40 @@ async function renderPortfolioPage() {
   const grid = document.getElementById("portfolioGrid");
   const filterBar = document.getElementById("portFilterBar");
   const loading = document.getElementById("portLoading");
+  const empty = document.getElementById("portEmpty");
+  const emptyLabel = document.querySelector("#portEmpty .port-empty-label");
+  const retryBtn = document.getElementById("portRetryBtn");
   if (!grid || !filterBar) return;
 
-  if (loading) loading.classList.remove("hidden");
+  const showLoading = () => {
+    if (loading) loading.classList.remove("hidden");
+    if (empty) empty.classList.add("hidden");
+  };
+
+  const showEmptyState = (message) => {
+    if (loading) loading.classList.add("hidden");
+    if (emptyLabel) emptyLabel.textContent = message;
+    if (empty) empty.classList.remove("hidden");
+  };
+
+  const showGridState = () => {
+    if (loading) loading.classList.add("hidden");
+    if (empty) empty.classList.add("hidden");
+  };
+
+  if (retryBtn) {
+    retryBtn.onclick = () => {
+      renderPortfolioPage();
+    };
+  }
+
+  showLoading();
 
   try {
     const items = await fetchPortfolioItems(false); // all visible
     if (!items.length) {
-      if (loading) loading.classList.add("hidden");
-      return; // keep static fallback
+      showEmptyState("No portfolio assets are currently published.");
+      return;
     }
 
     // Populate filter buttons from tags
@@ -501,33 +580,42 @@ async function renderPortfolioPage() {
     // Dispose existing viewers before replacing DOM
     disposeAllCardViewers();
 
+    // Reset filter bar to base state before repopulating
+    filterBar.innerHTML = '<button class="port-filter-btn active" data-filter="all">ALL</button>';
+
     // Render all items
     grid.innerHTML = items.map(portfolioItemHTML).join("");
     refreshThumbs();
+    grid.querySelectorAll(".port-thumb--model").forEach((cardEl) => {
+      bindModelCardActivity(cardEl);
+    });
 
-    if (loading) loading.classList.add("hidden");
+    showGridState();
 
     // Filter handler
-    filterBar.addEventListener("click", (e) => {
-      const btn = e.target.closest(".port-filter-btn");
-      if (!btn) return;
+    if (!filterBar.dataset.bound) {
+      filterBar.addEventListener("click", (e) => {
+        const btn = e.target.closest(".port-filter-btn");
+        if (!btn) return;
 
-      // Update active state
-      filterBar.querySelectorAll(".port-filter-btn").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
+        // Update active state
+        filterBar.querySelectorAll(".port-filter-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
 
-      const filter = btn.dataset.filter;
-      grid.querySelectorAll(".port-item").forEach((item) => {
-        if (filter === "all" || item.dataset.tag === filter) {
-          item.style.display = "";
-        } else {
-          item.style.display = "none";
-        }
+        const filter = btn.dataset.filter;
+        grid.querySelectorAll(".port-item").forEach((item) => {
+          if (filter === "all" || item.dataset.tag === filter) {
+            item.style.display = "";
+          } else {
+            item.style.display = "none";
+          }
+        });
       });
-    });
+      filterBar.dataset.bound = "true";
+    }
   } catch (err) {
-    console.warn("Portfolio load failed, keeping static fallback:", err);
-    if (loading) loading.classList.add("hidden");
+    console.warn("Portfolio load failed:", err);
+    showEmptyState("Unable to retrieve CAD assets. Please contact directly for a portfolio PDF.");
   }
 }
 

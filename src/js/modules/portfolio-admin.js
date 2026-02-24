@@ -60,6 +60,7 @@ const portAdminEmpty = $("#portAdminEmpty");
 
 // Modal
 const portModalBackdrop = $("#portModalBackdrop");
+const portModal = $("#portModal");
 const portModalTitle = $("#portModalTitle");
 const portForm = $("#portForm");
 const portModalCloseBtn = $("#portModalCloseBtn");
@@ -86,12 +87,76 @@ const pVisible = $("#pVisible");
 const pExistingImageUrl = $("#pExistingImageUrl");
 const pImageSizeBytes = $("#pImageSizeBytes");
 const pModelSizeBytes = $("#pModelSizeBytes");
+const pModelSourceHosted = $("#pModelSourceHosted");
+const pModelSourceExternal = $("#pModelSourceExternal");
 
 // ── State ───────────────────────────────────────────────────────────────
 let allItems = [];
 let filtered = [];
 let _ready = false;
 let _adminFsBound = false;
+let portModalFocusCleanup = null;
+let portModalReturnFocusEl = null;
+
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
+const MAX_MODEL_SIZE_BYTES = 25 * 1024 * 1024;
+
+function trapFocus(container) {
+  if (!container) return () => {};
+
+  const getFocusable = () =>
+    [...container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+      .filter((el) => !el.disabled && el.offsetParent !== null);
+
+  const keyHandler = (e) => {
+    if (e.key !== "Tab") return;
+    const focusable = getFocusable();
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
+  container.addEventListener("keydown", keyHandler);
+  const focusable = getFocusable();
+  (focusable[0] || container).focus();
+
+  return () => container.removeEventListener("keydown", keyHandler);
+}
+
+function isExternalEmbedUrl(url) {
+  return /3dviewer\.net/i.test(url || "");
+}
+
+function getModelSourceMode() {
+  return pModelSourceExternal?.checked ? "external" : "hosted";
+}
+
+function updateModelSourceUI() {
+  const mode = getModelSourceMode();
+  const hosted = mode === "hosted";
+
+  if (pModelZone) {
+    pModelZone.classList.toggle("is-disabled", !hosted);
+    pModelZone.setAttribute("aria-disabled", String(!hosted));
+  }
+
+  if (pModelFile) pModelFile.disabled = !hosted;
+  if (pModelUrl) {
+    pModelUrl.placeholder = hosted
+      ? "-- optional: paste hosted asset URL --"
+      : "-- paste a 3dviewer.net embed URL --";
+  }
+}
 
 // ── HELPERS ─────────────────────────────────────────────────────────────
 function formatBytes(bytes) {
@@ -176,6 +241,9 @@ async function initPortfolio() {
     });
   }
   if (pModelFile) pModelFile.addEventListener("change", handleModelFileSelected);
+  [pModelSourceHosted, pModelSourceExternal].forEach((el) => {
+    if (el) el.addEventListener("change", updateModelSourceUI);
+  });
 
   // Live preview updates
   [pTitle, pDesc, pTag, pModelUrl].forEach((el) => {
@@ -191,6 +259,8 @@ async function initPortfolio() {
       if (e.target === portModalBackdrop) closeModal();
     });
   }
+
+  updateModelSourceUI();
 
   // Escape to close
   document.addEventListener("keydown", (e) => {
@@ -343,6 +413,7 @@ function renderGrid() {
 function openModal(item = null) {
   if (!portModalBackdrop || !portForm) return;
 
+  portModalReturnFocusEl = document.activeElement;
   portForm.reset();
   pExistingImageUrl.value = "";
 
@@ -355,6 +426,11 @@ function openModal(item = null) {
     pTag.value = item.tag || "RENDER";
     pSortOrder.value = item.sort_order || 0;
     pModelUrl.value = item.model_url || "";
+    if (pModelSourceExternal && pModelSourceHosted) {
+      const external = isExternalEmbedUrl(item.model_url || "");
+      pModelSourceExternal.checked = external;
+      pModelSourceHosted.checked = !external;
+    }
     pFeatured.checked = !!item.is_featured;
     pVisible.checked = item.is_visible !== false;
     pExistingImageUrl.value = item.image_url || "";
@@ -365,7 +441,7 @@ function openModal(item = null) {
     if (item.image_url) {
       pImagePreview.innerHTML = `<img src="${esc(item.image_url)}" alt="Current image">`;
     } else {
-      pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image</span>';
+      pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
     }
 
     // Show existing model state
@@ -374,31 +450,46 @@ function openModal(item = null) {
         const filename = item.model_url.split("/").pop().split("?")[0];
         pModelPreview.innerHTML = `<span class="port-upload-placeholder" style="color:var(--brand-orange-dim)">${esc(filename)}</span>`;
       } else {
-        pModelPreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload .glb / .step / .stl</span>';
+        pModelPreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
       }
     }
     if (pModelFile) pModelFile.value = "";
+    updateModelSourceUI();
 
     portDeleteBtn.classList.remove("hidden");
   } else {
     // ADD mode
     portModalTitle.textContent = "Add Portfolio Item";
     pId.value = "";
-    pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image</span>';
-    if (pModelPreview) pModelPreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload .glb / .step / .stl</span>';
+    pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
+    if (pModelPreview) pModelPreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
     if (pModelFile) pModelFile.value = "";
     if (pModelUrl) pModelUrl.value = "";
+    if (pModelSourceHosted && pModelSourceExternal) {
+      pModelSourceHosted.checked = true;
+      pModelSourceExternal.checked = false;
+    }
+    updateModelSourceUI();
     portDeleteBtn.classList.add("hidden");
   }
 
   updateLivePreview();
   portModalBackdrop.classList.remove("hidden");
   document.body.classList.add("modal-open");
+  if (portModal) {
+    if (portModalFocusCleanup) portModalFocusCleanup();
+    portModalFocusCleanup = trapFocus(portModal);
+  }
 }
 
 function closeModal() {
+  if (portModalFocusCleanup) {
+    portModalFocusCleanup();
+    portModalFocusCleanup = null;
+  }
   if (portModalBackdrop) portModalBackdrop.classList.add("hidden");
   document.body.classList.remove("modal-open");
+  if (portModalReturnFocusEl?.focus) portModalReturnFocusEl.focus();
 }
 
 // ── IMAGE PREVIEW ────────────────────────────────────────────────────────────────────────
@@ -406,6 +497,12 @@ function updateImagePreview() {
   if (!pImage || !pImagePreview) return;
   if (pImage.files.length > 0) {
     const file = pImage.files[0];
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      alert("Image exceeds max size (10MB).");
+      pImage.value = "";
+      pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
+      return;
+    }
     const url = URL.createObjectURL(file);
     pImagePreview.innerHTML = `<img src="${url}" alt="Preview">`;
   }
@@ -415,7 +512,18 @@ function updateImagePreview() {
 // ── MODEL UPLOAD ───────────────────────────────────────────────────────────────────────
 async function handleModelFileSelected() {
   if (!pModelFile?.files?.length || !pModelPreview || !pModelUrl) return;
+  if (getModelSourceMode() !== "hosted") {
+    pModelFile.value = "";
+    return;
+  }
   const files = Array.from(pModelFile.files);
+  const totalBytes = files.reduce((sum, f) => sum + f.size, 0);
+  if (totalBytes > MAX_MODEL_SIZE_BYTES) {
+    alert("3D upload exceeds max size (25MB total).");
+    pModelFile.value = "";
+    pModelPreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
+    return;
+  }
 
   const names = files.map((f) => f.name).join(" + ");
   pModelPreview.innerHTML = `<span class="port-upload-placeholder">UPLOADING ${esc(names)}\u2026</span>`;
@@ -424,7 +532,7 @@ async function handleModelFileSelected() {
   try {
     const urls = await Promise.all(files.map((f) => uploadPortfolioAsset(f)));
     pModelUrl.value = urls.join(",");
-    if (pModelSizeBytes) pModelSizeBytes.value = files.reduce((sum, f) => sum + f.size, 0);
+    if (pModelSizeBytes) pModelSizeBytes.value = totalBytes;
     pModelPreview.innerHTML = `<span class="port-upload-placeholder" style="color:var(--brand-orange-dim)">${esc(names)}</span>`;
     updateLivePreview();
   } catch (err) {
@@ -478,14 +586,26 @@ async function handleSave(e) {
   try {
     let imageUrl = pExistingImageUrl?.value || null;
     let imageSizeBytes = parseInt(pImageSizeBytes?.value, 10) || null;
+    const modelSource = getModelSourceMode();
 
     // Upload new image if selected
     if (pImage?.files?.length > 0) {
+      if (pImage.files[0].size > MAX_IMAGE_SIZE_BYTES) {
+        throw new Error("Image exceeds max size (10MB).");
+      }
       imageSizeBytes = pImage.files[0].size;
       imageUrl = await uploadPortfolioAsset(pImage.files[0]);
     }
 
-    const modelSizeBytes = parseInt(pModelSizeBytes?.value, 10) || null;
+    let modelUrl = pModelUrl?.value?.trim() || null;
+    let modelSizeBytes = parseInt(pModelSizeBytes?.value, 10) || null;
+
+    if (modelSource === "external") {
+      if (modelUrl && !isExternalEmbedUrl(modelUrl)) {
+        throw new Error("External embed mode requires a 3dviewer.net URL.");
+      }
+      modelSizeBytes = null;
+    }
 
     const payload = {
       title,
@@ -494,7 +614,7 @@ async function handleSave(e) {
       sort_order: parseInt(pSortOrder?.value, 10) || 0,
       image_url: imageUrl,
       image_size_bytes: imageSizeBytes || null,
-      model_url: pModelUrl?.value?.trim() || null,
+      model_url: modelUrl,
       model_size_bytes: modelSizeBytes || null,
       is_featured: !!pFeatured?.checked,
       is_visible: pVisible?.checked !== false,

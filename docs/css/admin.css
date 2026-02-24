@@ -1074,6 +1074,10 @@ body.modal-open {
   border-color: var(--brand-orange-dim);
   background: rgba(255, 107, 43, .04);
 }
+.port-upload-zone.is-disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
 .port-upload-preview {
   min-height: 100px;
   display: flex;
@@ -1141,4 +1145,11 @@ body.modal-open {
   margin-top: .25rem;
   line-height: 1.4;
   opacity: .7;
+}
+
+.model-source-toggle {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
 }

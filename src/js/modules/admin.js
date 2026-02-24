@@ -115,6 +115,7 @@ const requestsList = $("#requestsList");
 
 // Modal
 const modalBackdrop = $("#modalBackdrop");
+const shopModal = $("#shopModal");
 const modalTitle = $("#modalTitle");
 const shopForm = $("#shopForm");
 const modalCloseBtn = $("#modalCloseBtn");
@@ -134,6 +135,41 @@ const fServices = $("#fServices");
 const fWebsite = $("#fWebsite");
 const fMapsUrl = $("#fMapsUrl");
 const fIsActive = $("#fIsActive");
+
+let shopModalFocusCleanup = null;
+let shopModalReturnFocusEl = null;
+
+function trapFocus(container) {
+  if (!container) return () => {};
+
+  const getFocusable = () =>
+    [...container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+      .filter((el) => !el.disabled && el.offsetParent !== null);
+
+  const keyHandler = (e) => {
+    if (e.key !== "Tab") return;
+    const focusable = getFocusable();
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
+  container.addEventListener("keydown", keyHandler);
+  const focusable = getFocusable();
+  (focusable[0] || container).focus();
+
+  return () => container.removeEventListener("keydown", keyHandler);
+}
 
 /* ═══════════════════════════════════════════════════════════════════════
    AUTH
@@ -619,13 +655,25 @@ function openEditModal(id) {
 }
 
 function openModal() {
+  shopModalReturnFocusEl = document.activeElement;
   modalBackdrop.classList.remove("hidden");
   document.body.classList.add("modal-open");
+  if (shopModal) {
+    if (shopModalFocusCleanup) shopModalFocusCleanup();
+    shopModalFocusCleanup = trapFocus(shopModal);
+  }
 }
 
 function closeModal() {
+  if (shopModalFocusCleanup) {
+    shopModalFocusCleanup();
+    shopModalFocusCleanup = null;
+  }
   modalBackdrop.classList.add("hidden");
   document.body.classList.remove("modal-open");
+  if (shopModalReturnFocusEl?.focus) {
+    shopModalReturnFocusEl.focus();
+  }
 }
 
 modalCloseBtn.addEventListener("click", closeModal);

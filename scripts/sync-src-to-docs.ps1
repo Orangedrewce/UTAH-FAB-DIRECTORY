@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Syncs src/ to docs/ for GitHub Pages deployment.
+  ask TO SYNC, Syncs src/ to docs/ for GitHub Pages deployment.
 
 .DESCRIPTION
   Cleans docs/, then copies everything from src/ EXCEPT the db/ folder
@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "Description change no...."
+  git commit -m "policy changes"
 
   # 5) Publish to live site
   git pull origin dev --rebase

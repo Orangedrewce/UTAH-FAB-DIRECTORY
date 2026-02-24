@@ -25,7 +25,7 @@
       <label for="authPassword" class="sr-only">Password</label>
       <input type="password" id="authPassword" placeholder="Password" required>
       <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
-      <p class="auth-error" id="authError"></p>
+      <p class="auth-error" id="authError" aria-live="polite"></p>
     </form>
   </div>
 </div>
@@ -83,7 +83,7 @@
       <div class="toolbar-right">
         <div class="bulk-actions hidden" id="bulkActions">
           <span class="bulk-count" id="bulkCount">0 selected</span>
-          <button type="button" class="btn btn-outline btn-sm" id="bulkToggleBtn">Toggle Active Status</button>
+          <button type="button" class="btn btn-outline btn-sm" id="bulkToggleBtn" title="Flips each selected shop: active becomes inactive, inactive becomes active.">Toggle Active Status</button>
         </div>
         <span class="admin-count"><strong id="adminCount">0</strong> shops</span>
         <button class="btn btn-primary" id="addShopBtn">+ Add Shop</button>
@@ -176,7 +176,7 @@
      PORTFOLIO EDIT MODAL
 ═══════════════════════════════════════════════════ -->
 <div class="modal-backdrop hidden" id="portModalBackdrop">
-  <div class="modal modal--wide" id="portModal" role="dialog" aria-labelledby="portModalTitle">
+  <div class="modal modal--wide" id="portModal" role="dialog" aria-modal="true" aria-labelledby="portModalTitle" tabindex="-1">
     <div class="modal-header">
       <h2 id="portModalTitle">Add Portfolio Item</h2>
       <button class="modal-close" id="portModalCloseBtn">&times;</button>
@@ -217,21 +217,26 @@
           <div class="port-upload-zone" id="pImageZone">
             <input type="file" id="pImage" accept="image/png,image/jpeg,image/webp" class="sr-only">
             <div class="port-upload-preview" id="pImagePreview">
-              <span class="port-upload-placeholder">Click or drag to upload image</span>
+              <span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>
             </div>
           </div>
         </div>
 
         <div class="form-group">
-          <label>3D Model (optional)</label>
+          <label for="pModelFile">3D Model (optional)</label>
+          <div class="model-source-toggle" id="pModelSourceToggle">
+            <label class="toggle-label"><input type="radio" name="pModelSource" id="pModelSourceHosted" value="hosted" checked> Hosted Asset</label>
+            <label class="toggle-label"><input type="radio" name="pModelSource" id="pModelSourceExternal" value="external"> External Embed</label>
+          </div>
           <div class="port-upload-zone" id="pModelZone">
             <input type="file" id="pModelFile" accept=".glb,.gltf,.step,.stp,.stl,.obj,.mtl" multiple class="sr-only">
             <div class="port-upload-preview" id="pModelPreview">
-              <span class="port-upload-placeholder">Click or drag to upload .glb / .obj+.mtl / .step / .stl</span>
+              <span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .obj+.mtl / .step / .stl</span>
             </div>
           </div>
-          <input type="url" id="pModelUrl" placeholder="-- or paste a public URL directly --" style="margin-top:6px;">
-          <span class="form-hint">Upload goes to Supabase Storage. URL auto-fills on upload. Paste a 3dviewer.net link to use an external embed instead.</span>
+          <input type="url" id="pModelUrl" placeholder="-- or paste a 3dviewer.net embed URL --" style="margin-top:6px;">
+          <span class="form-hint">Hosted Asset: upload model files to Supabase and the URL auto-fills.</span>
+          <span class="form-hint">External Embed: paste a 3dviewer.net embed URL.</span>
         </div>
 
         <div class="form-row">
@@ -269,7 +274,7 @@
      SHOP EDIT MODAL
 ═══════════════════════════════════════════════════ -->
 <div class="modal-backdrop hidden" id="modalBackdrop">
-  <div class="modal modal--wide" id="shopModal" role="dialog" aria-labelledby="modalTitle">
+  <div class="modal modal--wide" id="shopModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
     <div class="modal-header">
       <h2 id="modalTitle">Add Shop</h2>
       <button class="modal-close" id="modalCloseBtn">&times;</button>

@@ -814,6 +814,8 @@ body {
   padding: 6px 12px;
   cursor: pointer;
   text-transform: none;
+  opacity: 1;
+  transition: opacity 0.25s ease, border-color 0.2s ease, color 0.2s ease;
 }
 .model-toggle-btn:hover {
   border-color: var(--orange);
@@ -832,12 +834,17 @@ body {
   letter-spacing: 1.5px;
   padding: 3px 7px;
   cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  opacity: 1;
+  transition: opacity 0.25s ease, border-color 0.2s ease, color 0.2s ease;
 }
 .model-fullscreen-btn:hover,
 .model-fullscreen-btn.is-active {
   border-color: var(--orange);
   color: var(--orange);
+}
+.port-thumb--model.model-controls-idle .model-toggle-btn,
+.port-thumb--model.model-controls-idle .model-fullscreen-btn {
+  opacity: 0;
 }
 .model-orbit-toast {
   position: absolute;
@@ -870,6 +877,12 @@ body {
   display: block;
   width: 100% !important;
   height: 100% !important;
+}
+.model-embed-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
 }
 /* OV progress/loading text inherits site styling */
 .model-viewer-host > div:not(:has(canvas)) {
@@ -936,9 +949,35 @@ body {
 .port-empty-label {
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
-  letter-spacing: 3px;
+  letter-spacing: 1px;
   color: var(--muted);
-  text-transform: uppercase;
+  text-transform: none;
+}
+.port-empty-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.port-empty-btn,
+.port-empty-link {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 1px;
+  color: var(--light);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px 14px;
+  text-decoration: none;
+}
+.port-empty-btn {
+  cursor: pointer;
+}
+.port-empty-btn:hover,
+.port-empty-link:hover {
+  border-color: var(--orange);
+  color: var(--orange);
 }
 
 /* ── LOADING STATE ── */
