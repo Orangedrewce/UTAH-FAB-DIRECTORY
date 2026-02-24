@@ -98,6 +98,7 @@ let _ready = false;
 let _adminFsBound = false;
 let portModalFocusCleanup = null;
 let portModalReturnFocusEl = null;
+let livePreviewImageBlobUrl = null;
 
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 const MAX_MODEL_SIZE_BYTES = 25 * 1024 * 1024;
@@ -167,12 +168,51 @@ function formatBytes(bytes) {
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
+function getNextSortOrder(editingId = null) {
+  const used = new Set(
+    allItems
+      .filter((item) => String(item.id) !== String(editingId || ""))
+      .map((item) => Number.parseInt(item.sort_order, 10))
+      .filter((value) => Number.isInteger(value) && value > 0),
+  );
+
+  let candidate = 1;
+  while (used.has(candidate)) {
+    candidate += 1;
+  }
+  return candidate;
+}
+
 function looksLikeImageUrl(url) {
   if (!url) return false;
   const value = String(url).trim();
   if (!value) return false;
   if (/\.(png|jpe?g|gif|webp)(\?|#|$)/i.test(value)) return true;
   return /drive\.google\.com|lh3\.googleusercontent\.com/i.test(value);
+}
+
+function revokeLivePreviewImageBlobUrl() {
+  if (!livePreviewImageBlobUrl) return;
+  try {
+    URL.revokeObjectURL(livePreviewImageBlobUrl);
+  } catch (_) {
+    // best effort
+  }
+  livePreviewImageBlobUrl = null;
+}
+
+async function ensurePortfolioReadyFromSession() {
+  if (_ready) return;
+  try {
+    const {
+      data: { session },
+    } = await _supabase.auth.getSession();
+    if (session && tabPortfolio?.classList.contains("active")) {
+      await initPortfolio();
+    }
+  } catch (err) {
+    console.warn("Portfolio session check failed:", err);
+  }
 }
 
 // ── TAB SWITCHING ───────────────────────────────────────────────────────
@@ -192,7 +232,7 @@ if (adminTabs) {
 
     // Load portfolio data on first switch
     if (tab === "portfolio" && !_ready) {
-      initPortfolio();
+      ensurePortfolioReadyFromSession();
     }
   });
 }
@@ -310,6 +350,10 @@ function applyFilters() {
       if (!haystack.includes(search)) return false;
     }
     return true;
+  }).sort((a, b) => {
+    const orderA = Number.parseInt(a.sort_order, 10) || 9999;
+    const orderB = Number.parseInt(b.sort_order, 10) || 9999;
+    return orderA - orderB;
   });
 
   if (portAdminCount) portAdminCount.textContent = filtered.length;
@@ -336,14 +380,23 @@ function renderGrid() {
 
   if (portAdminEmpty) portAdminEmpty.classList.add("hidden");
 
+  const liveRankById = new Map();
+  filtered.forEach((item, index) => {
+    liveRankById.set(String(item.id), index + 1);
+  });
+
   portAdminGrid.innerHTML = filtered
     .map(
-      (item) => `
+      (item) => {
+        const normalisedImageUrl = normalisePortfolioImageUrl(item.image_url);
+        const displayOrder = liveRankById.get(String(item.id)) || 0;
+
+        return `
     <div class="port-admin-card${item.is_visible ? "" : " port-admin-card--hidden"}${item.is_featured ? " port-admin-card--featured" : ""}" data-id="${item.id}">
       <div class="port-admin-card-img">
         ${
-          item.image_url
-            ? `<img src="${esc(normalisePortfolioImageUrl(item.image_url))}" alt="${esc(item.title)}" loading="lazy">`
+          normalisedImageUrl
+            ? `<img src="${esc(normalisedImageUrl)}" alt="${esc(item.title)}" loading="lazy">`
             : item.model_url
               ? `<iframe class="port-admin-card-preview-frame" src="${esc(buildEmbedSrc(item.model_url))}" loading="lazy" tabindex="-1"></iframe>
                  <button type="button" class="port-admin-fs-btn" aria-label="Enter fullscreen">FULL</button>`
@@ -358,7 +411,7 @@ function renderGrid() {
         <div class="port-admin-card-flags">
           ${item.is_featured ? '<span class="port-admin-flag port-admin-flag--feat">FEATURED</span>' : ""}
           ${!item.is_visible ? '<span class="port-admin-flag port-admin-flag--hidden">HIDDEN</span>' : ""}
-          <span class="port-admin-flag port-admin-flag--order">#${item.sort_order}</span>
+          <span class="port-admin-flag port-admin-flag--order">#${displayOrder}</span>
           ${item.image_size_bytes ? `<span class="port-admin-flag port-admin-flag--size" title="Image file size">IMG ${formatBytes(item.image_size_bytes)}</span>` : ""}
           ${item.model_size_bytes ? `<span class="port-admin-flag port-admin-flag--size" title="3D model file size">3D ${formatBytes(item.model_size_bytes)}</span>` : ""}
         </div>
@@ -367,7 +420,8 @@ function renderGrid() {
         <button class="btn btn-outline btn-sm port-edit-btn" data-id="${item.id}">Edit</button>
       </div>
     </div>
-  `
+  `;
+      }
     )
     .join("");
 
@@ -433,7 +487,7 @@ function openModal(item = null) {
     pTitle.value = item.title || "";
     pDesc.value = item.description || "";
     pTag.value = item.tag || "RENDER";
-    pSortOrder.value = item.sort_order || 0;
+    pSortOrder.value = item.sort_order || getNextSortOrder(item.id);
     pModelUrl.value = item.model_url || "";
     if (pModelSourceExternal && pModelSourceHosted) {
       const external = isExternalEmbedUrl(item.model_url || "");
@@ -448,8 +502,9 @@ function openModal(item = null) {
     if (pModelSizeBytes) pModelSizeBytes.value = item.model_size_bytes || 0;
 
     // Show existing image in preview
-    if (item.image_url) {
-      pImagePreview.innerHTML = `<img src="${esc(normalisePortfolioImageUrl(item.image_url))}" alt="Current image">`;
+    const normalisedImageUrl = normalisePortfolioImageUrl(item.image_url);
+    if (normalisedImageUrl) {
+      pImagePreview.innerHTML = `<img src="${esc(normalisedImageUrl)}" alt="Current image">`;
     } else {
       pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
     }
@@ -471,6 +526,7 @@ function openModal(item = null) {
     // ADD mode
     portModalTitle.textContent = "Add Portfolio Item";
     pId.value = "";
+    if (pSortOrder) pSortOrder.value = getNextSortOrder();
     pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
     if (pModelPreview) pModelPreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload (Max 25MB): .glb / .step / .stl</span>';
     if (pModelFile) pModelFile.value = "";
@@ -483,6 +539,8 @@ function openModal(item = null) {
     updateModelSourceUI();
     portDeleteBtn.classList.add("hidden");
   }
+
+  revokeLivePreviewImageBlobUrl();
 
   updateLivePreview();
   portModalBackdrop.classList.remove("hidden");
@@ -500,12 +558,14 @@ function closeModal() {
   }
   if (portModalBackdrop) portModalBackdrop.classList.add("hidden");
   document.body.classList.remove("modal-open");
+  revokeLivePreviewImageBlobUrl();
   if (portModalReturnFocusEl?.focus) portModalReturnFocusEl.focus();
 }
 
 // ── IMAGE PREVIEW ────────────────────────────────────────────────────────────────────────
 function updateImagePreview() {
   if (!pImage || !pImagePreview) return;
+  revokeLivePreviewImageBlobUrl();
   if (pImage.files.length > 0) {
     const file = pImage.files[0];
     if (file.size > MAX_IMAGE_SIZE_BYTES) {
@@ -514,8 +574,8 @@ function updateImagePreview() {
       pImagePreview.innerHTML = '<span class="port-upload-placeholder">Click or drag to upload image (Max 10MB)</span>';
       return;
     }
-    const url = URL.createObjectURL(file);
-    pImagePreview.innerHTML = `<img src="${url}" alt="Preview">`;
+    livePreviewImageBlobUrl = URL.createObjectURL(file);
+    pImagePreview.innerHTML = `<img src="${livePreviewImageBlobUrl}" alt="Preview">`;
   }
   updateLivePreview();
 }
@@ -563,7 +623,7 @@ function updateLivePreview() {
   const tag = pTag?.value || "RENDER";
   const imgSrc =
     pImage?.files?.length > 0
-      ? URL.createObjectURL(pImage.files[0])
+      ? livePreviewImageBlobUrl || ""
       : normalisePortfolioImageUrl(pImageUrl?.value || pExistingImageUrl?.value || "");
   const hasModel = !!pModelUrl?.value;
   const featured = pFeatured?.checked;
@@ -627,11 +687,17 @@ async function handleSave(e) {
       modelSizeBytes = null;
     }
 
+    let sortOrder = parseInt(pSortOrder?.value, 10);
+    if (!Number.isInteger(sortOrder) || sortOrder <= 0) {
+      sortOrder = getNextSortOrder(pId?.value || null);
+      if (pSortOrder) pSortOrder.value = String(sortOrder);
+    }
+
     const payload = {
       title,
       description: pDesc?.value?.trim() || null,
       tag: pTag?.value || "RENDER",
-      sort_order: parseInt(pSortOrder?.value, 10) || 0,
+      sort_order: sortOrder,
       image_url: imageUrl,
       image_size_bytes: imageSizeBytes || null,
       model_url: modelUrl,
@@ -642,8 +708,52 @@ async function handleSave(e) {
 
     const id = pId?.value;
     const save = (p) => id ? updatePortfolioItem(id, p) : insertPortfolioItem(p);
+    let shiftedItems = [];
 
     try {
+      // ── START COLLISION RESOLUTION ──
+      const usedOrders = new Set(
+        allItems
+          .filter((item) => String(item.id) !== String(id))
+          .map((item) => Number.parseInt(item.sort_order, 10))
+          .filter((num) => Number.isInteger(num) && num > 0),
+      );
+
+      if (usedOrders.has(sortOrder)) {
+        portSaveBtn.textContent = "SHIFTING…";
+
+        let firstAvailableGap = sortOrder + 1;
+        while (usedOrders.has(firstAvailableGap)) {
+          firstAvailableGap += 1;
+        }
+
+        const itemsToShift = allItems
+          .filter((item) => {
+            const itemOrder = Number.parseInt(item.sort_order, 10);
+            return (
+              Number.isInteger(itemOrder) &&
+              itemOrder >= sortOrder &&
+              itemOrder < firstAvailableGap &&
+              String(item.id) !== String(id)
+            );
+          })
+          .sort((a, b) => Number.parseInt(b.sort_order, 10) - Number.parseInt(a.sort_order, 10));
+
+        shiftedItems = itemsToShift.map((item) => ({
+          id: item.id,
+          previousOrder: Number.parseInt(item.sort_order, 10),
+        }));
+
+        await Promise.all(
+          itemsToShift.map((item) =>
+            updatePortfolioItem(item.id, {
+              sort_order: Number.parseInt(item.sort_order, 10) + 1,
+            }),
+          ),
+        );
+      }
+      // ── END COLLISION RESOLUTION ──
+
       await save(payload);
     } catch (schemaErr) {
       // If the size columns haven't been migrated yet, retry without them
@@ -652,6 +762,13 @@ async function handleSave(e) {
         const { image_size_bytes, model_size_bytes, ...fallbackPayload } = payload;
         await save(fallbackPayload);
       } else {
+        if (shiftedItems.length) {
+          await Promise.all(
+            shiftedItems.map((item) =>
+              updatePortfolioItem(item.id, { sort_order: item.previousOrder }),
+            ),
+          );
+        }
         throw schemaErr;
       }
     }
@@ -693,3 +810,5 @@ _supabase.auth.onAuthStateChange((event, session) => {
     initPortfolio();
   }
 });
+
+ensurePortfolioReadyFromSession();

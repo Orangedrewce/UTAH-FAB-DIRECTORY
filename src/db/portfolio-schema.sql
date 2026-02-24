@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS portfolio_items (
   title             TEXT NOT NULL,
   description       TEXT,
   tag               TEXT NOT NULL DEFAULT 'RENDER',     -- e.g. INTAKE, MODEL, OUTPUT, RENDER, ASSEMBLY
+  card_numbers      TEXT,                                -- Optional: one or many card numbers (e.g. "7" or "7, 8, 12")
   image_url         TEXT,                                -- PNG/JPG stored in Supabase Storage
   image_size_bytes  BIGINT,                              -- File size of the uploaded image
   model_url         TEXT,                                -- Optional: URL to .glb/.gltf/.step for 3D viewer
@@ -34,7 +35,8 @@ CREATE TABLE IF NOT EXISTS portfolio_items (
 -- Run this block once if your table was created before these columns existed:
 -- ALTER TABLE portfolio_items
 --   ADD COLUMN IF NOT EXISTS image_size_bytes BIGINT,
---   ADD COLUMN IF NOT EXISTS model_size_bytes  BIGINT;
+--   ADD COLUMN IF NOT EXISTS model_size_bytes  BIGINT,
+--   ADD COLUMN IF NOT EXISTS card_numbers      TEXT;
 
 -- Index for public queries (visible items ordered by sort)
 CREATE INDEX IF NOT EXISTS idx_portfolio_visible
