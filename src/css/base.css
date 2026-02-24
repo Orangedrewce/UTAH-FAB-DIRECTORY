@@ -13,6 +13,7 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
   /* Firefox scrollbar */
   scrollbar-width: thin;
   scrollbar-color: var(--border-neutral) var(--bg-deep);

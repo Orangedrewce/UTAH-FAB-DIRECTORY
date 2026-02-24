@@ -47,18 +47,6 @@ body {
     color 0.3s;
 }
 
-/* System preference fallback */
-@media (prefers-color-scheme: light) {
-  body:not(.dark-mode) {
-    --iron: #f0ece2;
-    --light: #1a1a1a;
-    --muted: #5a5a4a;
-    --card-bg: rgba(var(--black-rgb), 0.04);
-    --card-border: rgba(var(--brand-orange-rgb), 0.35);
-    --grid-color: rgba(var(--brand-orange-rgb), 0.1);
-  }
-}
-
 /* ── LAYOUT ── */
 .page-wrap {
   max-width: 960px;
