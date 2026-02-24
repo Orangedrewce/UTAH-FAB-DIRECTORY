@@ -70,7 +70,13 @@
 
 import { supabase as _supabase } from "./supabase.js";
 import { ALL_TAGS, CATEGORIES, REGION_BOUNDS } from "./constants.js";
-import { esc, parseMapsUrl, websiteLink, debounce } from "./utils.js";
+import {
+  esc,
+  parseMapsUrl,
+  websiteLink,
+  debounce,
+  trapFocus,
+} from "./utils.js";
 import { fetchShops, fetchRegions, fetchRequests } from "./api.js";
 
 // ── Canonical regions (loaded from DB, fallback hardcoded) ─────────────
@@ -139,37 +145,7 @@ const fIsActive = $("#fIsActive");
 let shopModalFocusCleanup = null;
 let shopModalReturnFocusEl = null;
 
-function trapFocus(container) {
-  if (!container) return () => {};
-
-  const getFocusable = () =>
-    [...container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
-      .filter((el) => !el.disabled && el.offsetParent !== null);
-
-  const keyHandler = (e) => {
-    if (e.key !== "Tab") return;
-    const focusable = getFocusable();
-    if (!focusable.length) return;
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    const active = document.activeElement;
-
-    if (e.shiftKey && active === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && active === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  };
-
-  container.addEventListener("keydown", keyHandler);
-  const focusable = getFocusable();
-  (focusable[0] || container).focus();
-
-  return () => container.removeEventListener("keydown", keyHandler);
-}
+// trapFocus is imported from utils.js
 
 /* ═══════════════════════════════════════════════════════════════════════
    AUTH
@@ -187,11 +163,16 @@ async function checkSession() {
   }
 }
 
-loginForm.addEventListener("submit", async (e) => {
+loginForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
   authError.textContent = "";
   const email = $("#authEmail").value.trim();
   const pass = $("#authPassword").value;
+  if (!_supabase) {
+    authError.textContent =
+      "Database connection failed. Please check your network or disable adblockers.";
+    return;
+  }
   const { data, error } = await _supabase.auth.signInWithPassword({
     email,
     password: pass,
@@ -203,13 +184,13 @@ loginForm.addEventListener("submit", async (e) => {
   showDashboard(data.user);
 });
 
-logoutBtn.addEventListener("click", async () => {
+logoutBtn?.addEventListener("click", async () => {
   await _supabase.auth.signOut();
   allShops = [];
   pendingRequests = [];
-  shopTableBody.innerHTML = "";
-  authGate.classList.remove("hidden");
-  adminDash.classList.add("hidden");
+  if (shopTableBody) shopTableBody.innerHTML = "";
+  authGate?.classList.remove("hidden");
+  adminDash?.classList.add("hidden");
 });
 
 async function showDashboard(user) {
@@ -307,6 +288,14 @@ async function loadRegions() {
     REGIONS = await fetchRegions();
   } catch (error) {
     console.error("Critical error loading regions:", error);
+    // Surface the failure so the admin knows region dropdowns may be empty
+    const banner =
+      document.getElementById("adminError") || document.createElement("p");
+    banner.id = "adminError";
+    banner.style.cssText = "color:#e74c3c;padding:.5rem 1rem;font-size:.85rem;";
+    banner.textContent =
+      "Warning: region list could not be loaded — region dropdowns may be empty. Check your Supabase connection.";
+    adminDash?.prepend(banner);
   }
 
   // Populate toolbar region filter (build string, assign once)
@@ -389,10 +378,10 @@ function applyFilters() {
   renderTable();
 }
 
-adminSearch.addEventListener("input", debounce(applyFilters, 250));
-adminRegionFilt.addEventListener("change", applyFilters);
-adminTagFilt.addEventListener("change", applyFilters);
-showInactive.addEventListener("change", applyFilters);
+adminSearch?.addEventListener("input", debounce(applyFilters, 250));
+adminRegionFilt?.addEventListener("change", applyFilters);
+adminTagFilt?.addEventListener("change", applyFilters);
+showInactive?.addEventListener("change", applyFilters);
 
 /* ═══════════════════════════════════════════════════════════════════════
    TABLE RENDERING
@@ -452,7 +441,7 @@ function renderTable() {
 }
 
 // Delegate clicks on the table body (attached once, survives re-renders)
-shopTableBody.addEventListener("click", (e) => {
+shopTableBody?.addEventListener("click", (e) => {
   const btn = e.target.closest(".edit-btn");
   if (btn) {
     openEditModal(btn.dataset.id);
@@ -502,7 +491,7 @@ function syncSelectAllState() {
   }
 }
 
-selectAllCb.addEventListener("change", () => {
+selectAllCb?.addEventListener("change", () => {
   const rowCbs = shopTableBody.querySelectorAll(".row-select");
   if (selectAllCb.checked) {
     rowCbs.forEach((cb) => {
@@ -518,7 +507,7 @@ selectAllCb.addEventListener("change", () => {
   syncSelectAllState();
 });
 
-bulkToggleBtn.addEventListener("click", async () => {
+bulkToggleBtn?.addEventListener("click", async () => {
   if (selectedIds.size === 0) return;
 
   const ids = [...selectedIds];
@@ -621,7 +610,7 @@ function getSelectedTags() {
   );
 }
 
-addShopBtn.addEventListener("click", () => openAddModal());
+addShopBtn?.addEventListener("click", () => openAddModal());
 
 function openAddModal() {
   modalTitle.textContent = "Add Shop";
@@ -684,9 +673,9 @@ function closeModal() {
   }
 }
 
-modalCloseBtn.addEventListener("click", closeModal);
-modalCancelBtn.addEventListener("click", closeModal);
-modalBackdrop.addEventListener("click", (e) => {
+modalCloseBtn?.addEventListener("click", closeModal);
+modalCancelBtn?.addEventListener("click", closeModal);
+modalBackdrop?.addEventListener("click", (e) => {
   if (e.target === modalBackdrop) closeModal();
 });
 document.addEventListener("keydown", (e) => {
@@ -695,13 +684,13 @@ document.addEventListener("keydown", (e) => {
 });
 
 // Live preview updates on any form input
-shopForm.addEventListener("input", updateLivePreview);
+shopForm?.addEventListener("input", updateLivePreview);
 
 /* ═══════════════════════════════════════════════════════════════════════
    SAVE  (INSERT or UPDATE)
 ═══════════════════════════════════════════════════════════════════════ */
 
-shopForm.addEventListener("submit", async (e) => {
+shopForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   // Validate maps_url if provided
@@ -737,7 +726,7 @@ shopForm.addEventListener("submit", async (e) => {
 
   let error;
   const editId = fId.value;
-  console.log("[save]", editId ? `UPDATE id=${editId}` : "INSERT", payload);
+  // Note: avoid logging payload here — it may contain contact/website data
 
   if (editId) {
     // UPDATE
@@ -777,7 +766,7 @@ shopForm.addEventListener("submit", async (e) => {
    DELETE
 ═══════════════════════════════════════════════════════════════════════ */
 
-deleteBtn.addEventListener("click", async () => {
+deleteBtn?.addEventListener("click", async () => {
   const editId = fId.value;
   if (!editId) return;
   if (!confirm("Delete this shop permanently?")) return;
@@ -829,6 +818,15 @@ function renderRequestsList() {
       const city = r.city || mapsInfo.city || "(Unknown City)";
       const date = new Date(r.created_at).toLocaleDateString();
 
+      // Build region options from the live REGIONS array so new regions appear automatically
+      const regionOptions = REGIONS.map((reg) => {
+        const selected =
+          r.region === reg.slug || (!r.region && reg.slug === "other")
+            ? "selected"
+            : "";
+        return `<option value="${reg.slug}" ${selected}>${esc(reg.title || reg.name || reg.slug)}</option>`;
+      }).join("");
+
       return `
       <div class="requests-card" data-request-id="${r.id}">
         <div class="requests-card-header">
@@ -841,12 +839,7 @@ function renderRequestsList() {
         <div class="requests-card-actions">
            <div class="requests-card-assign">
              <select class="assign-region-select" aria-label="Assign Region">
-               <option value="salt-lake" ${r.region === "salt-lake" ? "selected" : ""}>Salt Lake Valley</option>
-               <option value="utah-county" ${r.region === "utah-county" ? "selected" : ""}>Utah County</option>
-               <option value="weber-ogden" ${r.region === "weber-ogden" ? "selected" : ""}>Weber / Ogden</option>
-               <option value="cache-valley" ${r.region === "cache-valley" ? "selected" : ""}>Cache Valley</option>
-               <option value="southern-utah" ${r.region === "southern-utah" ? "selected" : ""}>Southern Utah</option>
-               <option value="other" ${r.region === "other" || !r.region ? "selected" : ""}>Other / Rural</option>
+               ${regionOptions}
              </select>
            </div>
            <button class="btn btn-primary btn-sm approve-req-btn" data-id="${r.id}">Approve</button>
@@ -857,7 +850,7 @@ function renderRequestsList() {
     .join("");
 }
 
-requestsList.addEventListener("click", async (e) => {
+requestsList?.addEventListener("click", async (e) => {
   const approveId = e.target.closest(".approve-req-btn")?.dataset.id;
   const rejectId = e.target.closest(".reject-req-btn")?.dataset.id;
 
@@ -909,7 +902,23 @@ async function handleRequestAction(requestId, action, region = null) {
       if (insErr && !isDuplicateNameRegion) {
         throw insErr;
       }
-    }
+      if (isDuplicateNameRegion) {
+        console.warn(
+          `[approve] Shop "${req.shop_name}" already exists in region "${region || req.region}" — skipping insert, marking request approved.`,
+        );
+        // Surface a non-blocking notice in the UI
+        const card = requestsList?.querySelector(
+          `[data-request-id="${requestId}"]`,
+        );
+        if (card) {
+          const notice = document.createElement("p");
+          notice.style.cssText =
+            "color:#f39c12;font-size:.8rem;margin:.25rem 0;";
+          notice.textContent = `⚠️ Shop already exists — request marked approved but no new entry was created.`;
+          card.prepend(notice);
+        }
+      }
+    } // end if (action === "approve")
 
     const { error: updErr } = await _supabase
       .from("directory_requests")
@@ -955,14 +964,23 @@ window.addEventListener("resize", syncLayoutHeights);
    INIT
 ═══════════════════════════════════════════════════════════════════════ */
 
-checkSession();
+if (_supabase) {
+  checkSession();
 
-// Listen for auth state changes
-_supabase.auth.onAuthStateChange((event, session) => {
-  if (event === "SIGNED_IN" && session) {
-    showDashboard(session.user);
-  } else if (event === "SIGNED_OUT") {
-    authGate.classList.remove("hidden");
-    adminDash.classList.add("hidden");
-  }
-});
+  // Listen for auth state changes
+  _supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_IN" && session) {
+      showDashboard(session.user);
+    } else if (event === "SIGNED_OUT") {
+      authGate.classList.remove("hidden");
+      adminDash.classList.add("hidden");
+    }
+  });
+} else {
+  // Graceful fallback for Adblockers
+  if (authGate) authGate.classList.remove("hidden");
+  if (adminDash) adminDash.classList.add("hidden");
+  if (authError)
+    authError.textContent =
+      "Supabase SDK not loaded. Please disable adblockers or check connection.";
+}

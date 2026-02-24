@@ -194,15 +194,8 @@ export function websiteLink(shop) {
     const href = urlMatch[0].startsWith("http")
       ? urlMatch[0]
       : "https://" + urlMatch[0];
-    // Block javascript: and other non-http(s) schemes
-    if (!/^https?:\/\//i.test(href)) {
-      const q = encodeURIComponent(shop.name + " " + shop.city + " Utah");
-      return (
-        `<a class="card-link card-link--search" href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener noreferrer">` +
-        `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> ` +
-        `Search Google</a>`
-      );
-    }
+    // Note: href is always https?:// at this point (either matched as-is or prefixed above),
+    // so a scheme check here is not needed.
     const display = urlMatch[0].replace(/^https?:\/\//i, "").replace(/\/$/, "");
     const escapedMatch = urlMatch[0].replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const remaining = raw
@@ -252,8 +245,8 @@ export function websiteLink(shop) {
 export function normaliseShop(s) {
   return {
     id: s.id != null ? String(s.id) : "",
-    name: s.name,
-    city: s.city,
+    name: s.name ?? "",
+    city: s.city ?? "",
     size: s.size || s.size_desc || "",
     services: s.services || "",
     website: s.website || "",
@@ -267,10 +260,65 @@ export function normaliseShop(s) {
   };
 }
 
-/** Returns a v4 UUID, falling back to getRandomValues for older browsers */
+/** Returns a v4 UUID (RFC 4122), falling back to getRandomValues for older browsers */
 export function generateUUID() {
   if (crypto.randomUUID) return crypto.randomUUID();
-  return Array.from(crypto.getRandomValues(new Uint8Array(16)))
-    .map((b) => b.toString(16).padStart(2, "0"))
+  // Manual RFC 4122 v4 construction — do NOT simplify to a plain hex join;
+  // the version nibble (0x4x) and variant bits (0x8x/0x9x/0xax/0xbx) are required.
+  const h = Array.from(crypto.getRandomValues(new Uint8Array(16)));
+  h[6] = (h[6] & 0x0f) | 0x40; // version 4
+  h[8] = (h[8] & 0x3f) | 0x80; // variant bits
+  return h
+    .map(
+      (b, i) =>
+        ([4, 6, 8, 10].includes(i) ? "-" : "") +
+        b.toString(16).padStart(2, "0"),
+    )
     .join("");
+}
+
+/**
+ * Trap keyboard focus inside a container (modal / dialog).
+ * Returns a cleanup function that removes the keydown listener.
+ * Shared by admin.js and portfolio-admin.js — do not duplicate locally.
+ */
+export function trapFocus(container) {
+  if (!container) return () => {};
+
+  const getFocusable = () =>
+    [
+      ...container.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      ),
+    ].filter((el) => !el.disabled && el.offsetParent !== null);
+
+  const keyHandler = (e) => {
+    if (e.key !== "Tab") return;
+    const focusable = getFocusable();
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
+  container.addEventListener("keydown", keyHandler);
+  const focusable = getFocusable();
+  (focusable[0] || container).focus();
+
+  return () => container.removeEventListener("keydown", keyHandler);
+}
+
+/** Returns true if the URL is a 3dviewer.net external embed link.
+ *  Shared by script.js and portfolio-admin.js — do not duplicate locally. */
+export function isExternalEmbedUrl(url) {
+  return /3dviewer\.net/i.test(url || "");
 }

@@ -13,6 +13,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Firefox scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-neutral) var(--bg-deep);
 }
 
 img, picture, video, canvas, svg {
@@ -141,11 +144,6 @@ a {
 ::-webkit-scrollbar-track { background: var(--bg-deep); }
 ::-webkit-scrollbar-thumb { background: var(--border-neutral); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--brand-orange-dim); }
-/* Firefox */
-html {
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-neutral) var(--bg-deep);
-}
 
 /* ── SHARED ENGINEERING DECORATIONS ──────────────────────────────────── */
 .bg-grid {
@@ -196,7 +194,7 @@ html {
 /* ── ENTRANCE ANIMATIONS ─────────────────────────────────────────────── */
 @keyframes revealUp {
   from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: none; }
 }
 
 @keyframes revealFade {

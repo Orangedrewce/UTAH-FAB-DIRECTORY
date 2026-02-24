@@ -171,6 +171,17 @@ function buildDirectory(shops) {
 ═══════════════════════════════════════════════════ */
 
 function applyFilters() {
+  // Abort silently if any required element is missing — prevents crash on partial pages
+  if (
+    !searchInput ||
+    !regionFilter ||
+    !contentRoot ||
+    !visibleCount ||
+    !noResults ||
+    !googleFallback
+  )
+    return;
+
   const searchTerm = searchInput.value.toLowerCase().trim();
   const regionVal = regionFilter.value;
   let count = 0;
@@ -252,13 +263,13 @@ function applyFilters() {
    EVENT LISTENERS
 ═══════════════════════════════════════════════════ */
 
-serviceFilter.addEventListener("change", () => {
+serviceFilter?.addEventListener("change", () => {
   activeFilter = serviceFilter.value;
   applyFilters();
 });
 
-searchInput.addEventListener("input", debounce(applyFilters, 250));
-regionFilter.addEventListener("change", applyFilters);
+searchInput?.addEventListener("input", debounce(applyFilters, 250));
+regionFilter?.addEventListener("change", applyFilters);
 
 /* ═══════════════════════════════════════════════════
    INIT - fetch shops.json → render → filter
@@ -292,12 +303,14 @@ regionFilter.addEventListener("change", applyFilters);
     applyFilters();
   } catch (err) {
     console.error("Directory load error:", err);
-    contentRoot.innerHTML =
-      '<div style="text-align:center;padding:4rem 1rem;color:var(--accent);">' +
-      "<h2>Failed to load shop data</h2>" +
-      '<p style="color:var(--text-dim);margin-top:.5rem;">Check console for details.<br>' +
-      "If testing locally without Supabase, ensure <code>data/shops.json</code> is in the same directory.</p>" +
-      "</div>";
+    if (contentRoot) {
+      contentRoot.innerHTML =
+        '<div style="text-align:center;padding:4rem 1rem;color:var(--accent);">' +
+        "<h2>Failed to load shop data</h2>" +
+        '<p style="color:var(--text-dim);margin-top:.5rem;">Check console for details.<br>' +
+        "If testing locally without Supabase, ensure <code>data/shops.json</code> is in the same directory.</p>" +
+        "</div>";
+    }
   }
 })();
 
@@ -340,6 +353,10 @@ if (joinForm) {
     };
 
     try {
+      if (!_sb)
+        throw new Error(
+          "Database connection blocked. Please check your network or adblocker.",
+        );
       const { error } = await _sb.from("directory_requests").insert([payload]);
       if (error) throw error;
 
@@ -347,9 +364,9 @@ if (joinForm) {
       joinFeedback.textContent = "Request submitted - we'll review it shortly!";
       joinFeedback.classList.add("success");
       joinForm.reset();
-      // Clear tag selections
+      // Clear tag selections (guard against missing picker)
       jTagPicker
-        .querySelectorAll(".tag-chip.selected")
+        ?.querySelectorAll(".tag-chip.selected")
         .forEach((c) => c.classList.remove("selected"));
     } catch (err) {
       console.error("Join request failed:", err);

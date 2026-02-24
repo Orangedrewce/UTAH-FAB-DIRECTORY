@@ -39,7 +39,12 @@ import {
   deletePortfolioItem,
   uploadPortfolioAsset,
 } from "./api.js";
-import { esc, normalisePortfolioImageUrl } from "./utils.js";
+import {
+  esc,
+  normalisePortfolioImageUrl,
+  trapFocus,
+  isExternalEmbedUrl,
+} from "./utils.js";
 import {
   MEDIA_LIMITS,
   createAssetDraft,
@@ -119,44 +124,7 @@ let currentMediaAssets = [];
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 const MAX_MODEL_SIZE_BYTES = 25 * 1024 * 1024;
 
-function trapFocus(container) {
-  if (!container) return () => {};
-
-  const getFocusable = () =>
-    [
-      ...container.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-      ),
-    ].filter((el) => !el.disabled && el.offsetParent !== null);
-
-  const keyHandler = (e) => {
-    if (e.key !== "Tab") return;
-    const focusable = getFocusable();
-    if (!focusable.length) return;
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    const active = document.activeElement;
-
-    if (e.shiftKey && active === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && active === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  };
-
-  container.addEventListener("keydown", keyHandler);
-  const focusable = getFocusable();
-  (focusable[0] || container).focus();
-
-  return () => container.removeEventListener("keydown", keyHandler);
-}
-
-function isExternalEmbedUrl(url) {
-  return /3dviewer\.net/i.test(url || "");
-}
+// trapFocus and isExternalEmbedUrl are imported from utils.js
 
 function getModelSourceMode() {
   return pModelSourceExternal?.checked ? "external" : "hosted";
@@ -239,7 +207,9 @@ function upsertMediaAssetFromLegacy(seed, options = {}) {
     currentMediaAssets.push(draft);
   }
 
-  currentMediaAssets = normaliseMediaAssets(currentMediaAssets, "", "", { includeEmpty: true });
+  currentMediaAssets = normaliseMediaAssets(currentMediaAssets, "", "", {
+    includeEmpty: true,
+  });
   if (options.render !== false) {
     renderAssetEditor();
   }
@@ -410,7 +380,10 @@ function bindStaticUI() {
   if (portModalCancelBtn)
     portModalCancelBtn.addEventListener("click", closeModal);
   if (portDeleteBtn) portDeleteBtn.addEventListener("click", handleDelete);
-  if (portApplyBtn) portApplyBtn.addEventListener("click", () => handleSave(null, { keepOpen: true }));
+  if (portApplyBtn)
+    portApplyBtn.addEventListener("click", () =>
+      handleSave(null, { keepOpen: true }),
+    );
   if (portForm) portForm.addEventListener("submit", handleSave);
 
   // ── Asset editor (delegated on pAssetList container) ──
@@ -421,7 +394,9 @@ function bindStaticUI() {
       const urlInput = e.target.closest(".port-asset-url");
       if (urlInput && urlInput.value.trim()) {
         const row = urlInput.closest(".port-asset-row");
-        const noCoverChecked = !pAssetList.querySelector(".port-asset-cover:checked");
+        const noCoverChecked = !pAssetList.querySelector(
+          ".port-asset-cover:checked",
+        );
         if (row && noCoverChecked) {
           const radio = row.querySelector(".port-asset-cover");
           if (radio) radio.checked = true;
@@ -437,9 +412,14 @@ function bindStaticUI() {
     });
 
     pAssetList.addEventListener("change", () => {
-      currentMediaAssets = normaliseMediaAssets(readAssetEditorState(), "", "", {
-        includeEmpty: true,
-      });
+      currentMediaAssets = normaliseMediaAssets(
+        readAssetEditorState(),
+        "",
+        "",
+        {
+          includeEmpty: true,
+        },
+      );
       renderAssetEditor();
       updateLivePreview();
     });
@@ -710,14 +690,35 @@ function renderGrid() {
         if (!frameWrap) return;
 
         const toggle = async () => {
-          try {
-            if (document.fullscreenElement === frameWrap) {
+          // Exit path
+          if (
+            document.fullscreenElement === frameWrap ||
+            frameWrap.classList.contains("is-pseudo-fullscreen")
+          ) {
+            if (document.fullscreenElement) {
               await document.exitFullscreen?.();
             } else {
-              await frameWrap.requestFullscreen?.();
+              frameWrap.classList.remove("is-pseudo-fullscreen");
+              document.body.classList.remove("has-pseudo-fullscreen");
+              setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
             }
-          } catch (err) {
-            console.warn("Admin preview fullscreen failed:", err);
+            return;
+          }
+          // Enter path — native with iOS fallback
+          if (frameWrap.requestFullscreen) {
+            try {
+              await frameWrap.requestFullscreen();
+            } catch (err) {
+              // Bug 3 Fix: native threw (permission / gesture) — use CSS fallback
+              frameWrap.classList.add("is-pseudo-fullscreen");
+              document.body.classList.add("has-pseudo-fullscreen");
+              setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
+            }
+          } else {
+            // Bug 3 Fix: iOS Safari — requestFullscreen is undefined
+            frameWrap.classList.add("is-pseudo-fullscreen");
+            document.body.classList.add("has-pseudo-fullscreen");
+            setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
           }
         };
 
@@ -757,7 +758,7 @@ function openModal(item = null) {
 
   portModalReturnFocusEl = document.activeElement;
   portForm.reset();
-  pExistingImageUrl.value = "";
+  if (pExistingImageUrl) pExistingImageUrl.value = "";
 
   if (item) {
     // EDIT mode
@@ -775,7 +776,7 @@ function openModal(item = null) {
     }
     pFeatured.checked = !!item.is_featured;
     pVisible.checked = item.is_visible !== false;
-    pExistingImageUrl.value = item.image_url || "";
+    if (pExistingImageUrl) pExistingImageUrl.value = item.image_url || "";
     if (pImageUrl) pImageUrl.value = item.image_url || "";
     if (pImageSizeBytes) pImageSizeBytes.value = item.image_size_bytes || 0;
     if (pModelSizeBytes) pModelSizeBytes.value = item.model_size_bytes || 0;
@@ -808,7 +809,7 @@ function openModal(item = null) {
     if (pModelFile) pModelFile.value = "";
     updateModelSourceUI();
 
-    portDeleteBtn.classList.remove("hidden");
+    portDeleteBtn?.classList.remove("hidden");
   } else {
     // ADD mode
     portModalTitle.textContent = "Add Portfolio Item";
@@ -828,7 +829,7 @@ function openModal(item = null) {
     }
     currentMediaAssets = [];
     updateModelSourceUI();
-    portDeleteBtn.classList.add("hidden");
+    portDeleteBtn?.classList.add("hidden");
   }
 
   revokeLivePreviewImageBlobUrl();
@@ -962,10 +963,16 @@ async function handleSave(e, { keepOpen = false } = {}) {
   if (e) e.preventDefault();
 
   const title = pTitle?.value?.trim();
-  if (!title) { pTitle?.focus(); return; }
+  if (!title) {
+    pTitle?.focus();
+    return;
+  }
 
   const activeBtn = keepOpen ? portApplyBtn : portSaveBtn;
-  if (activeBtn) { activeBtn.disabled = true; activeBtn.textContent = keepOpen ? "APPLYING…" : "SAVING…"; }
+  if (activeBtn) {
+    activeBtn.disabled = true;
+    activeBtn.textContent = keepOpen ? "APPLYING…" : "SAVING…";
+  }
 
   try {
     let imageUrl =
@@ -1084,7 +1091,7 @@ async function handleSave(e, { keepOpen = false } = {}) {
     const mediaAssetsPayload = toMediaAssetsPayload(currentMediaAssets);
     const validation = validateMediaAssets(mediaAssetsPayload);
     if (!validation.ok) {
-      throw new Error(validation.errors[0]);
+      throw new Error(validation.errors.join("\n"));
     }
 
     const legacyFromAssets = mediaAssetsToLegacy(mediaAssetsPayload);
@@ -1127,7 +1134,8 @@ async function handleSave(e, { keepOpen = false } = {}) {
       );
 
       if (usedOrders.has(sortOrder)) {
-        portSaveBtn.textContent = "SHIFTING…";
+        // Update the *active* button label (Apply vs Save & Close)
+        if (activeBtn) activeBtn.textContent = "SHIFTING…";
 
         let firstAvailableGap = sortOrder + 1;
         while (usedOrders.has(firstAvailableGap)) {
@@ -1175,7 +1183,9 @@ async function handleSave(e, { keepOpen = false } = {}) {
         schemaErr.message?.includes("schema cache")
       ) {
         console.warn(
-          "Size columns not found in DB — retrying without them. Run the migration SQL to enable file size tracking.",
+          "[portfolio-admin] Size / media_assets columns not found in DB schema.\n" +
+            "Retrying WITHOUT image_size_bytes, model_size_bytes, media_assets, or cover_index.\n" +
+            "Run the migration SQL to enable file-size tracking and multi-asset support.",
         );
         const {
           image_size_bytes,
@@ -1202,7 +1212,8 @@ async function handleSave(e, { keepOpen = false } = {}) {
     if (keepOpen) {
       // Stay in modal — update ID (new item just got one) and mark as Edit
       if (savedItem?.id && pId) pId.value = savedItem.id;
-      if (savedItem?.image_url && pExistingImageUrl) pExistingImageUrl.value = savedItem.image_url || "";
+      if (savedItem?.image_url && pExistingImageUrl)
+        pExistingImageUrl.value = savedItem.image_url || "";
       portModalTitle.textContent = "Edit Portfolio Item";
       if (portDeleteBtn) portDeleteBtn.classList.remove("hidden");
       setAssetSummaryMessage("Saved ✓");
@@ -1215,8 +1226,14 @@ async function handleSave(e, { keepOpen = false } = {}) {
     console.error("Portfolio save error:", err);
     alert("Save failed: " + (err.message || "Unknown error"));
   } finally {
-    if (portSaveBtn) { portSaveBtn.disabled = false; portSaveBtn.textContent = "Save & Close"; }
-    if (portApplyBtn) { portApplyBtn.disabled = false; portApplyBtn.textContent = "Apply"; }
+    if (portSaveBtn) {
+      portSaveBtn.disabled = false;
+      portSaveBtn.textContent = "Save & Close";
+    }
+    if (portApplyBtn) {
+      portApplyBtn.disabled = false;
+      portApplyBtn.textContent = "Apply";
+    }
   }
 }
 

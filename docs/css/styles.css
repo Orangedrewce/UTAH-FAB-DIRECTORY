@@ -11,7 +11,6 @@
   --amber: var(--brand-amber-light);
   --light: var(--text-main);
   --muted: var(--text-muted);
-  --radius: 0;
   --card-bg: rgba(var(--white-rgb), 0.03);
   --card-border: var(--border-color);
 
@@ -913,14 +912,44 @@ body {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  width: 100vw;
-  height: 100vh;
-  aspect-ratio: auto;
   border: none;
   border-radius: 0;
+  background: var(--bg-deep);
 }
 body.has-pseudo-fullscreen {
   overflow: hidden;
+}
+
+/* Admin grid card: native fullscreen — centre and fill children */
+.port-admin-card-img:fullscreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-deep);
+}
+.port-admin-card-img:fullscreen img,
+.port-admin-card-img:fullscreen iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* Admin grid card: iOS Safari pseudo-fullscreen fallback */
+.port-admin-card-img.is-pseudo-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  border: none;
+  border-radius: 0;
+  background: var(--bg-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.port-admin-card-img.is-pseudo-fullscreen img,
+.port-admin-card-img.is-pseudo-fullscreen iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* Focus state — single-click highlight ring */
@@ -1773,7 +1802,7 @@ body.has-pseudo-fullscreen {
 .pricing-payment-block {
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 107, 43, 0.3);
+  border-top: 1px solid rgba(var(--brand-orange-rgb), 0.3);
   text-align: center;
 }
 
@@ -1834,8 +1863,10 @@ body.has-pseudo-fullscreen {
   gap: 10px;
   transition: transform 0.25s ease;
 }
-.port-item:hover {
-  transform: translateY(-3px);
+@media (hover: hover) {
+  .port-item:hover {
+    transform: translateY(-3px);
+  }
 }
 .port-thumb {
   aspect-ratio: 4/3;

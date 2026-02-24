@@ -53,8 +53,19 @@ import { supabase } from "./supabase.js";
 import { REGION_META, REGION_ORDER } from "./constants.js";
 import { normaliseShop, generateUUID } from "./utils.js";
 
+/** Throws a descriptive error if the Supabase client failed to initialise. */
+function requireClient() {
+  if (!supabase) {
+    throw new Error(
+      "Supabase client not available — the SDK script likely failed to load. " +
+        "Check network connectivity and ensure the CDN <script> is not blocked.",
+    );
+  }
+  return supabase;
+}
+
 export async function fetchShops(onlyActive = true) {
-  let query = supabase
+  let query = requireClient()
     .from("fab_shops")
     .select("*")
     .order("region")
@@ -66,7 +77,7 @@ export async function fetchShops(onlyActive = true) {
   }
 
   const { data, error } = await query;
-  if (error) throw error;
+  if (error) throw new Error(`fetchShops: ${error.message}`);
 
   return (data || []).map((s) => {
     const meta = REGION_META[s.region] || { title: s.region, subtitle: "" };
@@ -77,7 +88,7 @@ export async function fetchShops(onlyActive = true) {
 }
 
 export async function fetchRegions() {
-  const { data, error } = await supabase
+  const { data, error } = await requireClient()
     .from("regions")
     .select("*")
     .order("sort_order");
@@ -97,13 +108,13 @@ export async function fetchRegions() {
 }
 
 export async function fetchRequests() {
-  const { data, error } = await supabase
+  const { data, error } = await requireClient()
     .from("directory_requests")
     .select("*")
     .eq("status", "pending")
     .order("created_at", { ascending: false });
 
-  if (error) throw error;
+  if (error) throw new Error(`fetchRequests: ${error.message}`);
   return data || [];
 }
 
@@ -128,7 +139,7 @@ export async function fetchJSONShops() {
  * Pass `onlyFeatured = true` to get just homepage-featured items.
  */
 export async function fetchPortfolioItems(onlyFeatured = false) {
-  let query = supabase
+  let query = requireClient()
     .from("portfolio_items")
     .select("*")
     .eq("is_visible", true)
@@ -140,7 +151,7 @@ export async function fetchPortfolioItems(onlyFeatured = false) {
   }
 
   const { data, error } = await query;
-  if (error) throw error;
+  if (error) throw new Error(`fetchPortfolioItems: ${error.message}`);
   return data || [];
 }
 
@@ -148,13 +159,13 @@ export async function fetchPortfolioItems(onlyFeatured = false) {
  * Fetch ALL portfolio items (including hidden) for admin dashboard.
  */
 export async function fetchAllPortfolioItems() {
-  const { data, error } = await supabase
+  const { data, error } = await requireClient()
     .from("portfolio_items")
     .select("*")
     .order("sort_order")
     .order("created_at", { ascending: false });
 
-  if (error) throw error;
+  if (error) throw new Error(`fetchAllPortfolioItems: ${error.message}`);
   return data || [];
 }
 
@@ -162,13 +173,13 @@ export async function fetchAllPortfolioItems() {
  * Insert a new portfolio item. Returns the inserted row.
  */
 export async function insertPortfolioItem(payload) {
-  const { data, error } = await supabase
+  const { data, error } = await requireClient()
     .from("portfolio_items")
     .insert([payload])
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) throw new Error(`insertPortfolioItem: ${error.message}`);
   return data;
 }
 
@@ -176,14 +187,14 @@ export async function insertPortfolioItem(payload) {
  * Update an existing portfolio item by id. Returns the updated row.
  */
 export async function updatePortfolioItem(id, payload) {
-  const { data, error } = await supabase
+  const { data, error } = await requireClient()
     .from("portfolio_items")
     .update(payload)
     .eq("id", id)
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) throw new Error(`updatePortfolioItem: ${error.message}`);
   return data;
 }
 
@@ -191,12 +202,12 @@ export async function updatePortfolioItem(id, payload) {
  * Delete a portfolio item by id.
  */
 export async function deletePortfolioItem(id) {
-  const { error } = await supabase
+  const { error } = await requireClient()
     .from("portfolio_items")
     .delete()
     .eq("id", id);
 
-  if (error) throw error;
+  if (error) throw new Error(`deletePortfolioItem: ${error.message}`);
 }
 
 /**
@@ -205,33 +216,54 @@ export async function deletePortfolioItem(id) {
  */
 export async function uploadPortfolioAsset(file) {
   const ext = file.name.split(".").pop().toLowerCase();
+
+  const ALLOWED_EXTENSIONS = new Set([
+    "glb",
+    "gltf",
+    "step",
+    "stp",
+    "stl",
+    "obj",
+    "png",
+    "jpg",
+    "jpeg",
+    "gif",
+    "webp",
+  ]);
+  if (!ALLOWED_EXTENSIONS.has(ext)) {
+    throw new Error(
+      `File type ".${ext}" is not permitted. ` +
+        `Allowed formats: ${[...ALLOWED_EXTENSIONS].join(", ")}.`,
+    );
+  }
+
   const uniqueId = generateUUID();
   const path = `${Date.now()}_${uniqueId}.${ext}`;
 
   // Browsers return empty type for CAD formats — map manually
   const MIME = {
-    glb:  "model/gltf-binary",
+    glb: "model/gltf-binary",
     gltf: "model/gltf+json",
     step: "application/step",
-    stp:  "application/step",
-    stl:  "model/stl",
-    obj:  "model/obj",
-    png:  "image/png",
-    jpg:  "image/jpeg",
+    stp: "application/step",
+    stl: "model/stl",
+    obj: "model/obj",
+    png: "image/png",
+    jpg: "image/jpeg",
     jpeg: "image/jpeg",
-    gif:  "image/gif",
+    gif: "image/gif",
     webp: "image/webp",
   };
   const contentType = MIME[ext] || file.type || "application/octet-stream";
 
-  const { error: uploadErr } = await supabase.storage
-    .from("portfolio-assets")
+  const { error: uploadErr } = await requireClient()
+    .storage.from("portfolio-assets")
     .upload(path, file, { contentType });
 
   if (uploadErr) throw new Error("Upload failed: " + uploadErr.message);
 
-  const { data: urlData } = supabase.storage
-    .from("portfolio-assets")
+  const { data: urlData } = requireClient()
+    .storage.from("portfolio-assets")
     .getPublicUrl(path);
 
   return urlData.publicUrl;

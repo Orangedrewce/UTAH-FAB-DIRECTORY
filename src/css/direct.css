@@ -297,7 +297,7 @@ body {
   }
 
   .card:hover {
-    border-color: var(--text-print-muted);
+    border-color: var(--text-dim);
     background: var(--bg-surface-alt);
     z-index: var(--z-content);
   }

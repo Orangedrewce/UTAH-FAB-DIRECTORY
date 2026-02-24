@@ -161,7 +161,7 @@ body {
   border-bottom: 1px solid var(--border-neutral);
   background: var(--bg-surface);
   position: sticky;
-  top: 0;
+  top: 0; /* overridden by JS to sit directly below .admin-header (same pattern as .toolbar) */
   z-index: var(--z-sticky);
 }
 .admin-tab {
@@ -242,13 +242,13 @@ body {
 
 /* Match toolbar selects to admin-search styling */
 .toolbar select {
-  background: var(--bg-deep);
+  background-color: var(--bg-deep); /* background-color only — preserves the SVG chevron arrow set by base.css */
   border: 1px solid var(--border-neutral);
   border-radius: var(--radius);
   color: var(--text-main);
   font-family: var(--font-mono);
   font-size: .8rem;
-  padding: .45rem .7rem;
+  padding: .45rem 1.75rem .45rem .7rem; /* right clearance for the custom arrow */
 }
 .toolbar select:focus {
   border-color: var(--brand-orange-dim);
@@ -320,7 +320,7 @@ body {
   text-transform: uppercase;
   font-size: .7rem;
   letter-spacing: .06em;
-  color: var(--text2);
+  color: var(--text-muted);
   padding: .55rem .6rem;
   text-align: left;
   border-bottom: 2px solid var(--border-neutral);
@@ -360,7 +360,7 @@ body {
 }
 .section-count {
   font-weight: 400;
-  color: var(--text2);
+  color: var(--text-muted);
   margin-left: .25rem;
 }
 .section-count::before { content: '('; }
@@ -484,8 +484,8 @@ body.modal-open {
   flex-direction: column;
   margin-bottom: .75rem;
 }
-.flex-1 { flex: 1 1 0; }
-.flex-2 { flex: 2 1 0; }
+.flex-1 { flex: 1 1 0; min-width: 0; } /* min-width: 0 prevents flex child overflow on long text */
+.flex-2 { flex: 2 1 0; min-width: 0; }
 
 .form-group label {
   font-family: var(--font-mono);

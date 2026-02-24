@@ -16,7 +16,12 @@
 
 import { supabase as sb } from "./supabase.js";
 import { fetchPortfolioItems } from "./api.js";
-import { esc, generateUUID, normalisePortfolioImageUrl } from "./utils.js";
+import {
+  esc,
+  generateUUID,
+  normalisePortfolioImageUrl,
+  isExternalEmbedUrl,
+} from "./utils.js";
 import { getCardVisualAssets } from "./media-assets.js";
 
 const lightbox = document.getElementById("lightbox");
@@ -62,25 +67,35 @@ export function openLightbox(element) {
   if (!lightbox) return;
   const cardIndex = Number(element?.dataset?.cardIndex);
   const mediaIndex = Number(element?.dataset?.mediaIndex || 0);
-  if (!Number.isInteger(cardIndex) || cardIndex < 0 || cardIndex >= lightboxCards.length) return;
+  if (
+    !Number.isInteger(cardIndex) ||
+    cardIndex < 0 ||
+    cardIndex >= lightboxCards.length
+  )
+    return;
 
   currentCardIndex = cardIndex;
-  currentMediaIndex = Number.isInteger(mediaIndex) && mediaIndex >= 0 ? mediaIndex : 0;
+  currentMediaIndex =
+    Number.isInteger(mediaIndex) && mediaIndex >= 0 ? mediaIndex : 0;
   renderLightboxState();
   lightbox.classList.add("open");
+  document.body.style.overflow = "hidden";
 }
 
 function navigateLightbox(delta) {
   if (!lightbox?.classList.contains("open")) return;
   const card = getCurrentCard();
   if (!card?.visualAssets?.length) return;
-  currentMediaIndex = (currentMediaIndex + delta + card.visualAssets.length) % card.visualAssets.length;
+  currentMediaIndex =
+    (currentMediaIndex + delta + card.visualAssets.length) %
+    card.visualAssets.length;
   renderLightboxState();
 }
 
 function navigateLightboxCards(delta) {
   if (!lightbox?.classList.contains("open") || !lightboxCards.length) return;
-  currentCardIndex = (currentCardIndex + delta + lightboxCards.length) % lightboxCards.length;
+  currentCardIndex =
+    (currentCardIndex + delta + lightboxCards.length) % lightboxCards.length;
   currentMediaIndex = 0;
   renderLightboxState();
 }
@@ -88,8 +103,12 @@ function navigateLightboxCards(delta) {
 export function closeLightbox() {
   if (!lightbox) return;
   lightbox.classList.remove("open");
-  if (lightboxImg) { lightboxImg.src = ""; lightboxImg.alt = ""; }
+  if (lightboxImg) {
+    lightboxImg.src = "";
+    lightboxImg.alt = "";
+  }
   if (lightboxLabel) lightboxLabel.textContent = "";
+  document.body.style.overflow = "";
 }
 
 // Expose to window for inline HTML handlers
@@ -100,19 +119,27 @@ window.navigateLightboxCards = navigateLightboxCards;
 
 document.addEventListener("keydown", (event) => {
   // Escape while pseudo-fullscreen → close it
-  const pseudoFs = document.querySelector(".port-thumb--model.is-pseudo-fullscreen");
+  const pseudoFs = document.querySelector(
+    ".port-thumb--model.is-pseudo-fullscreen",
+  );
   if (event.key === "Escape" && pseudoFs) {
     event.preventDefault();
     togglePseudoFullscreen(pseudoFs); // toggles off
     return;
   }
 
-  const openModelCard = document.querySelector(".port-thumb--model.is-model-open");
+  const openModelCard = document.querySelector(
+    ".port-thumb--model.is-model-open",
+  );
   if (event.key === "Escape" && openModelCard) {
     event.preventDefault();
     const exitFullscreenAndClose = async () => {
       if (document.fullscreenElement) {
-        try { await document.exitFullscreen?.(); } catch (_) { /* no-op */ }
+        try {
+          await document.exitFullscreen?.();
+        } catch (_) {
+          /* no-op */
+        }
       }
       setModelCardOpen(openModelCard, false);
     };
@@ -129,11 +156,21 @@ document.addEventListener("keydown", (event) => {
 
   if (!lightbox?.classList.contains("open")) return;
   switch (event.key) {
-    case "Escape":     closeLightbox(); break;
-    case "ArrowLeft":  navigateLightbox(-1); break;
-    case "ArrowRight": navigateLightbox(1); break;
-    case "ArrowUp":    navigateLightboxCards(-1); break;
-    case "ArrowDown":  navigateLightboxCards(1); break;
+    case "Escape":
+      closeLightbox();
+      break;
+    case "ArrowLeft":
+      navigateLightbox(-1);
+      break;
+    case "ArrowRight":
+      navigateLightbox(1);
+      break;
+    case "ArrowUp":
+      navigateLightboxCards(-1);
+      break;
+    case "ArrowDown":
+      navigateLightboxCards(1);
+      break;
   }
 });
 
@@ -147,12 +184,13 @@ document.addEventListener("keydown", (event) => {
  */
 function getModelUrlList(rawUrl) {
   if (!rawUrl || typeof rawUrl !== "string") return [];
-  return rawUrl.split(",").map((u) => u.trim()).filter(Boolean);
+  return rawUrl
+    .split(",")
+    .map((u) => u.trim())
+    .filter(Boolean);
 }
 
-function isExternalEmbedUrl(url) {
-  return /3dviewer\.net/i.test(url || "");
-}
+// isExternalEmbedUrl is imported from utils.js
 
 // ── Per-card OV viewer registry & lifecycle ─────────────────────────────
 /** @type {Map<string, {viewer: object, hostEl: HTMLElement}>} */
@@ -167,7 +205,10 @@ function syncViewerFullscreenButtons() {
     if (!btn) continue;
     const active = isCardFullscreen(target);
     btn.textContent = active ? "EXIT" : "FULL";
-    btn.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
+    btn.setAttribute(
+      "aria-label",
+      active ? "Exit fullscreen" : "Enter fullscreen",
+    );
     btn.classList.toggle("is-active", active);
   }
 }
@@ -191,18 +232,20 @@ function patchFusion360Controls(embeddedViewer) {
     const origGetButton = mouseObj.GetButton.bind(mouseObj);
     mouseObj.GetButton = function () {
       const btn = origGetButton();
-      if (btn === 2) return 1;  // MMB → treated as LMB → orbit path
-      if (btn === 1) return 0;  // LMB → no navigation match
+      if (btn === 2) return 1; // MMB → treated as LMB → orbit path
+      if (btn === 1) return 0; // LMB → no navigation match
       return btn;
     };
-  } catch (_) { /* default OV controls still functional */ }
+  } catch (_) {
+    /* default OV controls still functional */
+  }
 }
 
 // ── XYZ orbit-axis gizmo settings ───────────────────────────────────────
-const AXIS_LENGTH  = 18;   // px – half-length of each axis line
-const AXIS_WIDTH   = 1.5;  // px – stroke width
-const AXIS_MARGIN  = 18;   // px – margin from bottom-left corner
-const AXIS_COLORS  = { x: "#ff3333", y: "#33cc33", z: "#3388ff" }; // X red, Y green (depth), Z blue (up)
+const AXIS_LENGTH = 18; // px – half-length of each axis line
+const AXIS_WIDTH = 1.5; // px – stroke width
+const AXIS_MARGIN = 18; // px – margin from bottom-left corner
+const AXIS_COLORS = { x: "#ff3333", y: "#33cc33", z: "#3388ff" }; // X red, Y green (depth), Z blue (up)
 
 /**
  * Draw a tiny XYZ axis indicator at the orbit centre while MMB is held.
@@ -221,11 +264,18 @@ function addPivotGizmo(embeddedViewer, hostEl) {
     function drawAxes() {
       const w = iv.canvas.clientWidth;
       const h = iv.canvas.clientHeight;
-      overlay.width  = w * (window.devicePixelRatio || 1);
+      overlay.width = w * (window.devicePixelRatio || 1);
       overlay.height = h * (window.devicePixelRatio || 1);
-      overlay.style.width  = w + "px";
+      overlay.style.width = w + "px";
       overlay.style.height = h + "px";
-      ctx.setTransform(window.devicePixelRatio || 1, 0, 0, window.devicePixelRatio || 1, 0, 0);
+      ctx.setTransform(
+        window.devicePixelRatio || 1,
+        0,
+        0,
+        window.devicePixelRatio || 1,
+        0,
+        0,
+      );
 
       const cx = AXIS_MARGIN;
       const cy = h - AXIS_MARGIN;
@@ -236,17 +286,32 @@ function addPivotGizmo(embeddedViewer, hostEl) {
 
       // X axis → right (red)
       ctx.strokeStyle = AXIS_COLORS.x;
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + AXIS_LENGTH, cy); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + AXIS_LENGTH, cy);
+      ctx.stroke();
       // Y axis → diagonal towards viewer (green)
       ctx.strokeStyle = AXIS_COLORS.y;
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx - AXIS_LENGTH * 0.6, cy + AXIS_LENGTH * 0.6); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx - AXIS_LENGTH * 0.6, cy + AXIS_LENGTH * 0.6);
+      ctx.stroke();
       // Z axis → up (blue)
       ctx.strokeStyle = AXIS_COLORS.z;
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy - AXIS_LENGTH); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx, cy - AXIS_LENGTH);
+      ctx.stroke();
     }
 
-    const show = () => { drawAxes(); overlay.classList.add("visible"); };
-    const hide = () => { overlay.classList.remove("visible"); ctx.clearRect(0, 0, overlay.width, overlay.height); };
+    const show = () => {
+      drawAxes();
+      overlay.classList.add("visible");
+    };
+    const hide = () => {
+      overlay.classList.remove("visible");
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+    };
 
     let mmbDown = false;
     let rafId = null;
@@ -258,13 +323,23 @@ function addPivotGizmo(embeddedViewer, hostEl) {
     }
 
     iv.canvas.addEventListener("mousedown", (e) => {
-      if (e.button === 1) { mmbDown = true; show(); tick(); }
+      if (e.button === 1) {
+        mmbDown = true;
+        show();
+        tick();
+      }
     });
     // Listen on document so release is caught even if cursor leaves the canvas
     document.addEventListener("mouseup", (e) => {
-      if (e.button === 1) { mmbDown = false; if (rafId) cancelAnimationFrame(rafId); hide(); }
+      if (e.button === 1) {
+        mmbDown = false;
+        if (rafId) cancelAnimationFrame(rafId);
+        hide();
+      }
     });
-  } catch (_) { /* non-critical — orbit still works without gizmo */ }
+  } catch (_) {
+    /* non-critical — orbit still works without gizmo */
+  }
 }
 
 /** Create an OV.EmbeddedViewer inside a host element. */
@@ -288,7 +363,8 @@ function initCardViewer(hostEl, modelUrls) {
 
   if (typeof OV === "undefined") {
     console.warn("Online3DViewer (OV) not loaded — falling back.");
-    hostEl.innerHTML = '<span class="model-viewer-fallback">3D PREVIEW UNAVAILABLE</span>';
+    hostEl.innerHTML =
+      '<span class="model-viewer-fallback">3D PREVIEW UNAVAILABLE</span>';
     return;
   }
 
@@ -301,15 +377,17 @@ function initCardViewer(hostEl, modelUrls) {
         addPivotGizmo(viewer, hostEl);
       },
       onModelLoadFailed: () => {
-        hostEl.innerHTML = '<span class="model-viewer-fallback">LOAD FAILED</span>';
+        hostEl.innerHTML =
+          '<span class="model-viewer-fallback">LOAD FAILED</span>';
         viewerRegistry.delete(id);
-      }
+      },
     });
     viewer.LoadModelFromUrlList(modelUrls);
     viewerRegistry.set(id, { viewer, hostEl });
   } catch (err) {
     console.warn(`Viewer init failed [${id}]:`, err);
-    hostEl.innerHTML = '<span class="model-viewer-fallback">3D PREVIEW UNAVAILABLE</span>';
+    hostEl.innerHTML =
+      '<span class="model-viewer-fallback">3D PREVIEW UNAVAILABLE</span>';
   }
 }
 
@@ -317,9 +395,14 @@ function initCardViewer(hostEl, modelUrls) {
 function disposeCardViewer(id) {
   const entry = viewerRegistry.get(id);
   if (!entry) return;
-  const fullscreenTarget = entry.hostEl.closest(".port-thumb--model") || entry.hostEl;
+  const fullscreenTarget =
+    entry.hostEl.closest(".port-thumb--model") || entry.hostEl;
   fullscreenTargets.delete(fullscreenTarget);
-  try { entry.viewer.Destroy(); } catch (_) { /* best-effort */ }
+  try {
+    entry.viewer.Destroy();
+  } catch (_) {
+    /* best-effort */
+  }
   entry.hostEl.innerHTML = "";
   viewerRegistry.delete(id);
 }
@@ -424,7 +507,7 @@ function setModelCardOpen(cardEl, isOpen) {
     toggleBtn.textContent = isOpen ? "View Render" : "View 3D";
     toggleBtn.setAttribute(
       "aria-label",
-      isOpen ? "Switch back to render" : "Open interactive 3D model"
+      isOpen ? "Switch back to render" : "Open interactive 3D model",
     );
   }
 
@@ -463,7 +546,10 @@ function toggleModelCard(cardEl) {
 }
 
 function isCardFullscreen(cardEl) {
-  return document.fullscreenElement === cardEl || cardEl.classList.contains("is-pseudo-fullscreen");
+  return (
+    document.fullscreenElement === cardEl ||
+    cardEl.classList.contains("is-pseudo-fullscreen")
+  );
 }
 
 function toggleCardFullscreen(cardEl) {
@@ -503,6 +589,9 @@ function togglePseudoFullscreen(cardEl) {
     document.body.classList.add("has-pseudo-fullscreen");
   }
   syncViewerFullscreenButtons();
+  // Bug 2 Fix: force OV canvas to recalculate its pixel buffer after layout change.
+  // 50 ms gives the browser one paint tick before the resize fires.
+  setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
 }
 
 /** Single-click focus: highlight the card with a visible outline. */
@@ -554,7 +643,9 @@ document.addEventListener("click", (event) => {
   if (openCard && !openCard.contains(event.target)) {
     closeModelCard(openCard);
   }
-  const focusedCard = document.querySelector(".port-thumb--model.is-card-focused");
+  const focusedCard = document.querySelector(
+    ".port-thumb--model.is-card-focused",
+  );
   if (focusedCard && !focusedCard.contains(event.target)) {
     focusedCard.classList.remove("is-card-focused");
   }
@@ -583,12 +674,18 @@ function portfolioItemHTML(item, cardIndex, visualAssets) {
   const desc = esc(item.description || "");
   const label = `${tag} · ${title}`;
   const coverMedia = visualAssets[0] || null;
-  const imgUrl = normalisePortfolioImageUrl(coverMedia?.url || item.image_url) || "assets/Render.png";
+  const imgUrl =
+    normalisePortfolioImageUrl(coverMedia?.url || item.image_url) ||
+    "assets/Render.png";
 
   const { modelAssets } = getCardVisualAssets(item);
-  const modelUrlJoined = modelAssets.map((asset) => asset.url).find(Boolean) || item.model_url || "";
+  const modelUrlJoined =
+    modelAssets.map((asset) => asset.url).find(Boolean) || item.model_url || "";
   const modelUrls = getModelUrlList(modelUrlJoined);
-  const embedUrl = modelUrls.length === 1 && isExternalEmbedUrl(modelUrls[0]) ? modelUrls[0] : "";
+  const embedUrl =
+    modelUrls.length === 1 && isExternalEmbedUrl(modelUrls[0])
+      ? modelUrls[0]
+      : "";
 
   const caption = `<figcaption class="port-caption">
       <span class="port-tag">${tag}</span>
@@ -679,35 +776,59 @@ async function renderPortfolioPage() {
     disposeAllCardViewers();
 
     // Reset filter bar to base state before repopulating
-    filterBar.innerHTML = '<button class="port-filter-btn active" data-filter="all">ALL</button>';
+    filterBar.innerHTML =
+      '<button class="port-filter-btn active" data-filter="all">ALL</button>';
 
-    const lightboxCardsData = items
-      .map((item) => {
-        const tag = item.tag || "RENDER";
-        const title = item.title || "Untitled";
-        const label = `${tag} · ${title}`;
-        const { visualAssets } = getCardVisualAssets(item);
-        const cardVisuals = visualAssets.length
-          ? visualAssets.map((asset) => ({
-              url: normalisePortfolioImageUrl(asset.url),
-              alt: asset.alt || title,
-            })).filter((asset) => !!asset.url)
-          : [{ url: normalisePortfolioImageUrl(item.image_url) || "assets/Render.png", alt: title }];
+    const lightboxCardsData = items.map((item) => {
+      const tag = item.tag || "RENDER";
+      const title = item.title || "Untitled";
+      const label = `${tag} · ${title}`;
+      const { visualAssets } = getCardVisualAssets(item);
+      const fallback = [
+        {
+          url:
+            normalisePortfolioImageUrl(item.image_url) || "assets/Render.png",
+          alt: title,
+        },
+      ];
 
-        return {
-          id: String(item.id || title),
-          title,
-          label,
-          visualAssets: cardVisuals,
-        };
-      })
-      .filter((card) => card.visualAssets.length);
+      let cardVisuals;
+      if (!visualAssets.length) {
+        // No media_assets visual entries — use legacy image_url or placeholder
+        cardVisuals = fallback;
+      } else {
+        const mapped = visualAssets
+          .map((asset) => ({
+            url: normalisePortfolioImageUrl(asset.url),
+            alt: asset.alt || title,
+          }))
+          .filter((asset) => !!asset.url);
+        // If every URL normalised away, fall back rather than returning an empty array
+        // (an empty array would cause the outer .filter to misalign indices with `items`)
+        cardVisuals = mapped.length ? mapped : fallback;
+      }
+
+      return {
+        id: String(item.id || title),
+        title,
+        label,
+        visualAssets: cardVisuals,
+      };
+    });
+    // Note: do NOT .filter() here — cardVisuals always has length ≥ 1 now,
+    // so the array stays index-aligned with `items` for correct lightbox targeting.
 
     setLightboxCards(lightboxCardsData);
 
     // Render all items
     grid.innerHTML = items
-      .map((item, index) => portfolioItemHTML(item, index, lightboxCardsData[index]?.visualAssets || []))
+      .map((item, index) =>
+        portfolioItemHTML(
+          item,
+          index,
+          lightboxCardsData[index]?.visualAssets || [],
+        ),
+      )
       .join("");
 
     grid.querySelectorAll(".port-thumb--model").forEach((cardEl) => {
@@ -723,7 +844,9 @@ async function renderPortfolioPage() {
         if (!btn) return;
 
         // Update active state
-        filterBar.querySelectorAll(".port-filter-btn").forEach((b) => b.classList.remove("active"));
+        filterBar
+          .querySelectorAll(".port-filter-btn")
+          .forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
 
         const filter = btn.dataset.filter;
@@ -739,7 +862,9 @@ async function renderPortfolioPage() {
     }
   } catch (err) {
     console.warn("Portfolio load failed:", err);
-    showEmptyState("Unable to retrieve CAD assets. Please contact directly for a portfolio PDF.");
+    showEmptyState(
+      "Unable to retrieve CAD assets. Please contact directly for a portfolio PDF.",
+    );
   }
 }
 
@@ -833,6 +958,11 @@ function initContactForm() {
     let photoUrl = null;
 
     try {
+      if (!sb)
+        throw new Error(
+          "Database unavailable. Check your connection or disable adblockers.",
+        );
+
       if (cfFile.files.length > 0) {
         const file = cfFile.files[0];
         const fileType = (file.type || "").toLowerCase();
@@ -853,9 +983,9 @@ function initContactForm() {
         photoUrl = urlData.publicUrl;
       }
 
-      const { error: insertErr } = await sb.from("contact_messages").insert([
-        { email, message, photo_url: photoUrl || null },
-      ]);
+      const { error: insertErr } = await sb
+        .from("contact_messages")
+        .insert([{ email, message, photo_url: photoUrl || null }]);
 
       if (insertErr) throw new Error("Submit failed: " + insertErr.message);
 
