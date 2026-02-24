@@ -259,6 +259,41 @@ const viewerRegistry = new Map();
 const fullscreenTargets = new Set();
 const orbitToastTimers = new WeakMap();
 const controlsIdleTimers = new WeakMap();
+let pseudoFsScrollY = 0;
+let pseudoFsScrollLocked = false;
+
+function lockPseudoFullscreenScroll() {
+  if (pseudoFsScrollLocked) return;
+  pseudoFsScrollY =
+    window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+
+  document.documentElement.classList.add("has-pseudo-fullscreen");
+  document.body.classList.add("has-pseudo-fullscreen");
+
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${pseudoFsScrollY}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+
+  pseudoFsScrollLocked = true;
+}
+
+function unlockPseudoFullscreenScroll() {
+  document.documentElement.classList.remove("has-pseudo-fullscreen");
+  document.body.classList.remove("has-pseudo-fullscreen");
+
+  if (!pseudoFsScrollLocked) return;
+
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+
+  window.scrollTo(0, pseudoFsScrollY);
+  pseudoFsScrollLocked = false;
+}
 
 function syncViewerFullscreenButtons() {
   for (const target of fullscreenTargets) {
@@ -642,12 +677,18 @@ function togglePseudoFullscreen(cardEl) {
   // Close any other pseudo-fullscreen card first
   document.querySelectorAll(".is-pseudo-fullscreen").forEach((el) => {
     el.classList.remove("is-pseudo-fullscreen");
+    el.closest(".port-item, .port-admin-card")?.classList.remove(
+      "has-pseudo-fullscreen-wrapper",
+    );
   });
-  document.body.classList.remove("has-pseudo-fullscreen");
+  unlockPseudoFullscreenScroll();
 
   if (!wasActive) {
     cardEl.classList.add("is-pseudo-fullscreen");
-    document.body.classList.add("has-pseudo-fullscreen");
+    cardEl
+      .closest(".port-item, .port-admin-card")
+      ?.classList.add("has-pseudo-fullscreen-wrapper");
+    lockPseudoFullscreenScroll();
   }
   syncViewerFullscreenButtons();
   // Bug 2 Fix: force OV canvas to recalculate its pixel buffer after layout change.

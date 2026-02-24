@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "bug fixes, css alignment, fullscreen mobile fix"
+  git commit -m "pedantic headerblocks"
 
   # 5) Publish to live site
   git pull origin dev --rebase

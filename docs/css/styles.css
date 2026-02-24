@@ -907,17 +907,43 @@ body {
   aspect-ratio: auto;
 }
 
+.port-thumb--model:fullscreen .model-render-curtain,
+.port-thumb--model.is-pseudo-fullscreen .model-render-curtain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.port-thumb--model:fullscreen .model-render-thumb,
+.port-thumb--model.is-pseudo-fullscreen .model-render-thumb {
+  object-fit: contain;
+}
+
 /* iOS / mobile fallback: CSS pseudo-fullscreen */
 .port-thumb--model.is-pseudo-fullscreen {
   position: fixed;
   inset: 0;
   z-index: 9999;
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100vh;
+  max-width: none;
+  max-height: none;
+  aspect-ratio: auto;
   border: none;
   border-radius: 0;
   background: var(--bg-deep);
 }
+html.has-pseudo-fullscreen,
 body.has-pseudo-fullscreen {
   overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* Fix iOS stacking context issue by elevating the parent card during pseudo-fullscreen */
+.has-pseudo-fullscreen-wrapper {
+  z-index: 9999;
+  position: relative;
 }
 
 /* Admin grid card: native fullscreen — centre and fill children */
@@ -938,6 +964,12 @@ body.has-pseudo-fullscreen {
   position: fixed;
   inset: 0;
   z-index: 9999;
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100vh;
+  max-width: none;
+  max-height: none;
+  aspect-ratio: auto;
   border: none;
   border-radius: 0;
   background: var(--bg-deep);

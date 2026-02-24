@@ -165,9 +165,43 @@ let portModalFocusCleanup = null;
 let portModalReturnFocusEl = null;
 let livePreviewImageBlobUrl = null;
 let currentMediaAssets = [];
+let pseudoFsScrollY = 0;
+let pseudoFsScrollLocked = false;
 
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 const MAX_MODEL_SIZE_BYTES = 25 * 1024 * 1024;
+
+function lockPseudoFullscreenScroll() {
+  if (pseudoFsScrollLocked) return;
+  pseudoFsScrollY =
+    window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+
+  document.documentElement.classList.add("has-pseudo-fullscreen");
+  document.body.classList.add("has-pseudo-fullscreen");
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${pseudoFsScrollY}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+
+  pseudoFsScrollLocked = true;
+}
+
+function unlockPseudoFullscreenScroll() {
+  document.documentElement.classList.remove("has-pseudo-fullscreen");
+  document.body.classList.remove("has-pseudo-fullscreen");
+
+  if (!pseudoFsScrollLocked) return;
+
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+
+  window.scrollTo(0, pseudoFsScrollY);
+  pseudoFsScrollLocked = false;
+}
 
 // trapFocus and isExternalEmbedUrl are imported from utils.js
 
@@ -589,6 +623,20 @@ function bindStaticUI() {
 
   // ── Escape to close ──
   document.addEventListener("keydown", (e) => {
+    const pseudoFs = document.querySelector(
+      ".port-admin-card-img.is-pseudo-fullscreen",
+    );
+    if (e.key === "Escape" && pseudoFs) {
+      e.preventDefault();
+      pseudoFs.classList.remove("is-pseudo-fullscreen");
+      pseudoFs
+        .closest(".port-item, .port-admin-card")
+        ?.classList.remove("has-pseudo-fullscreen-wrapper");
+      unlockPseudoFullscreenScroll();
+      setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
+      return;
+    }
+
     if (
       e.key === "Escape" &&
       document.fullscreenElement?.closest?.(".port-admin-card-img")
@@ -744,7 +792,10 @@ function renderGrid() {
               await document.exitFullscreen?.();
             } else {
               frameWrap.classList.remove("is-pseudo-fullscreen");
-              document.body.classList.remove("has-pseudo-fullscreen");
+              frameWrap
+                .closest(".port-item, .port-admin-card")
+                ?.classList.remove("has-pseudo-fullscreen-wrapper");
+              unlockPseudoFullscreenScroll();
               setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
             }
             return;
@@ -756,13 +807,19 @@ function renderGrid() {
             } catch (err) {
               // Bug 3 Fix: native threw (permission / gesture) — use CSS fallback
               frameWrap.classList.add("is-pseudo-fullscreen");
-              document.body.classList.add("has-pseudo-fullscreen");
+              frameWrap
+                .closest(".port-item, .port-admin-card")
+                ?.classList.add("has-pseudo-fullscreen-wrapper");
+              lockPseudoFullscreenScroll();
               setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
             }
           } else {
             // Bug 3 Fix: iOS Safari — requestFullscreen is undefined
             frameWrap.classList.add("is-pseudo-fullscreen");
-            document.body.classList.add("has-pseudo-fullscreen");
+            frameWrap
+              .closest(".port-item, .port-admin-card")
+              ?.classList.add("has-pseudo-fullscreen-wrapper");
+            lockPseudoFullscreenScroll();
             setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
           }
         };
