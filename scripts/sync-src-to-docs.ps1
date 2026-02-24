@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "gifs to portfolio,"
+  git commit -m "add Drive/GIF image support, harden request+auth flows, improve 3D gizmo/controls, normalize CSS tokens, and implement robust live sort-order insertion/ranking logic with gap-aware shifting and rollback,"
 
   # 5) Publish to live site
   git pull origin dev --rebase

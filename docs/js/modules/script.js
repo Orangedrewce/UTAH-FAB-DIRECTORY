@@ -162,7 +162,7 @@ function patchFusion360Controls(embeddedViewer) {
 const AXIS_LENGTH  = 18;   // px – half-length of each axis line
 const AXIS_WIDTH   = 1.5;  // px – stroke width
 const AXIS_MARGIN  = 18;   // px – margin from bottom-left corner
-const AXIS_COLORS  = { x: "#ff3333", y: "#3388ff", z: "#33cc33" }; // X red, Y blue (up), Z green (depth)
+const AXIS_COLORS  = { x: "#ff3333", y: "#33cc33", z: "#3388ff" }; // X red, Y green (depth), Z blue (up)
 
 /**
  * Draw a tiny XYZ axis indicator at the orbit centre while MMB is held.
@@ -197,12 +197,12 @@ function addPivotGizmo(embeddedViewer, hostEl) {
       // X axis → right (red)
       ctx.strokeStyle = AXIS_COLORS.x;
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + AXIS_LENGTH, cy); ctx.stroke();
-      // Y axis → up (blue)
+      // Y axis → diagonal towards viewer (green)
       ctx.strokeStyle = AXIS_COLORS.y;
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy - AXIS_LENGTH); ctx.stroke();
-      // Z axis → diagonal towards viewer (green)
-      ctx.strokeStyle = AXIS_COLORS.z;
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx - AXIS_LENGTH * 0.6, cy + AXIS_LENGTH * 0.6); ctx.stroke();
+      // Z axis → up (blue)
+      ctx.strokeStyle = AXIS_COLORS.z;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy - AXIS_LENGTH); ctx.stroke();
     }
 
     const show = () => { drawAxes(); overlay.classList.add("visible"); };

@@ -621,10 +621,13 @@ function updateLivePreview() {
   const title = pTitle?.value || "Untitled";
   const desc = pDesc?.value || "";
   const tag = pTag?.value || "RENDER";
-  const imgSrc =
-    pImage?.files?.length > 0
-      ? livePreviewImageBlobUrl || ""
-      : normalisePortfolioImageUrl(pImageUrl?.value || pExistingImageUrl?.value || "");
+  const hasImageFileSelected = (pImage?.files?.length || 0) > 0;
+  if (hasImageFileSelected && !livePreviewImageBlobUrl) {
+    console.warn("Live preview image blob URL is missing while a file is selected.");
+  }
+  const imgSrc = hasImageFileSelected
+    ? livePreviewImageBlobUrl || ""
+    : normalisePortfolioImageUrl(pImageUrl?.value || pExistingImageUrl?.value || "");
   const hasModel = !!pModelUrl?.value;
   const featured = pFeatured?.checked;
 
@@ -709,6 +712,7 @@ async function handleSave(e) {
     const id = pId?.value;
     const save = (p) => id ? updatePortfolioItem(id, p) : insertPortfolioItem(p);
     let shiftedItems = [];
+    let saveSucceeded = false;
 
     try {
       // ── START COLLISION RESOLUTION ──
@@ -755,21 +759,24 @@ async function handleSave(e) {
       // ── END COLLISION RESOLUTION ──
 
       await save(payload);
+      saveSucceeded = true;
     } catch (schemaErr) {
       // If the size columns haven't been migrated yet, retry without them
       if (schemaErr.message?.includes("image_size_bytes") || schemaErr.message?.includes("model_size_bytes") || schemaErr.message?.includes("schema cache")) {
         console.warn("Size columns not found in DB — retrying without them. Run the migration SQL to enable file size tracking.");
         const { image_size_bytes, model_size_bytes, ...fallbackPayload } = payload;
         await save(fallbackPayload);
+        saveSucceeded = true;
       } else {
-        if (shiftedItems.length) {
-          await Promise.all(
-            shiftedItems.map((item) =>
-              updatePortfolioItem(item.id, { sort_order: item.previousOrder }),
-            ),
-          );
-        }
         throw schemaErr;
+      }
+    } finally {
+      if (!saveSucceeded && shiftedItems.length) {
+        await Promise.all(
+          shiftedItems.map((item) =>
+            updatePortfolioItem(item.id, { sort_order: item.previousOrder }),
+          ),
+        );
       }
     }
 
