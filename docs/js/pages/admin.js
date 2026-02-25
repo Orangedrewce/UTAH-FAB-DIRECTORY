@@ -1,3 +1,6 @@
+// @ts-check
+// Trigger lint
+
 /**
  * ═══════════════════════════════════════════════════════════════════════
  * MODULE: admin.js — Admin Dashboard Controller (Authoritative Runtime Notes)
@@ -77,14 +80,19 @@ import {
 import { fetchShops, fetchRegions, fetchRequests } from "../services/api.js";
 
 // ── Canonical regions (loaded from DB, fallback hardcoded) ─────────────
+/** @type {Array<{ slug: string, title: string }>} */
 let REGIONS = [];
 
-// ── State ───────────────────────────────────────────────────────────────
-let allShops = []; // full dataset from fab_shops
-let filtered = []; // after search/filter applied
-let selectedIds = new Set(); // bulk-selection state
-let pendingRequests = []; // directory_requests with status='pending'
-let _dashboardLoading = false; // guard against double init
+// ── State ───────────────────────────────────────────────────────────────────
+/** @type {import('../utils/utils.js').NormalisedShop[]} */
+let allShops = [];
+/** @type {import('../utils/utils.js').NormalisedShop[]} */
+let filtered = [];
+/** @type {Set<string>} */
+let selectedIds = new Set();
+/** @type {Array<Record<string, any>>} */
+let pendingRequests = [];
+let _dashboardLoading = false;
 
 // ── DOM refs ────────────────────────────────────────────────────────────
 const $ = (sel) => document.querySelector(sel);
@@ -221,7 +229,7 @@ async function handleApproveDeepLink() {
   if (!approveId) return;
 
   // Clean the URL so a refresh doesn't re-trigger
-  const clean = new URL(window.location);
+  const clean = new URL(window.location.href);
   clean.searchParams.delete("approve_id");
   history.replaceState(null, "", clean);
 
@@ -298,7 +306,7 @@ async function loadRegions() {
   // Populate toolbar region filter (build string, assign once)
   let regionFilterHtml = '<option value="">All Regions</option>';
   REGIONS.forEach((r) => {
-    const label = r.title || r.name || r.slug;
+    const label = r.title || r.slug;
     regionFilterHtml += `<option value="${r.slug}">${esc(label)}</option>`;
   });
   adminRegionFilt.innerHTML = regionFilterHtml;
@@ -306,7 +314,7 @@ async function loadRegions() {
   // Populate modal region select (build string, assign once)
   let regionSelectHtml = "";
   REGIONS.forEach((r) => {
-    const label = r.title || r.name || r.slug;
+    const label = r.title || r.slug;
     regionSelectHtml += `<option value="${r.slug}">${esc(label)}</option>`;
   });
   fRegion.innerHTML = regionSelectHtml;
@@ -821,7 +829,7 @@ function renderRequestsList() {
           r.region === reg.slug || (!r.region && reg.slug === "other")
             ? "selected"
             : "";
-        return `<option value="${reg.slug}" ${selected}>${esc(reg.title || reg.name || reg.slug)}</option>`;
+        return `<option value="${reg.slug}" ${selected}>${esc(reg.title || reg.slug)}</option>`;
       }).join("");
 
       return `

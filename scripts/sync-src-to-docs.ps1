@@ -34,7 +34,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "might regret this"
+  git commit -m "might regret this  pt2"
 
   # 5) Publish to live site
   git pull origin dev --rebase

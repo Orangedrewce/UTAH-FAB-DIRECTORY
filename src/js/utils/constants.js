@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * ═══════════════════════════════════════════════════════════════════════
  * MODULE: constants.js — Shared Application Constants (Source of Truth)
@@ -61,6 +63,23 @@
  * ═══════════════════════════════════════════════════════════════════════
  */
 
+/**
+ * @typedef {Object} RegionBound
+ * @property {string} slug   — region identifier slug
+ * @property {string} label  — human-readable region name
+ * @property {number} latMin — southern latitude boundary
+ * @property {number} latMax — northern latitude boundary
+ * @property {number} lngMin — western longitude boundary
+ * @property {number} lngMax — eastern longitude boundary
+ */
+
+/**
+ * @typedef {Object} RegionMetaEntry
+ * @property {string} title    — display title for region section header
+ * @property {string} subtitle — city list / description shown under title
+ */
+
+/** @type {readonly string[]} Canonical tag vocabulary (machine slugs) */
 export const ALL_TAGS = [
   "3dprint",
   "aerospace",
@@ -82,6 +101,7 @@ export const ALL_TAGS = [
   "sheetmetal",
 ];
 
+/** @type {readonly string[]} Human-readable category labels for UI suggestions */
 export const CATEGORIES = [
   "Fabrication & Machining",
   "Welding & Metalwork",
@@ -97,6 +117,7 @@ export const CATEGORIES = [
   "Finishing & Community",
 ];
 
+/** @type {readonly RegionBound[]} Bounding-box heuristics for region inference from map URLs */
 export const REGION_BOUNDS = [
   {
     slug: "cache-valley",
@@ -140,6 +161,7 @@ export const REGION_BOUNDS = [
   },
 ];
 
+/** @type {Readonly<Record<string, RegionMetaEntry>>} Presentation metadata keyed by region slug */
 export const REGION_META = {
   "salt-lake": {
     title: "Salt Lake Valley",
@@ -173,6 +195,7 @@ export const REGION_META = {
   },
 };
 
+/** @type {readonly string[]} Preferred display ordering for region-grouped presentation */
 export const REGION_ORDER = [
   "salt-lake",
   "utah-county",

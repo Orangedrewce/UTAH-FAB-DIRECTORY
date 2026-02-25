@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * ═══════════════════════════════════════════════════════════════════════
  * MODULE: utils.js — Shared Utility Primitives (Cross-Module Contract)
@@ -72,9 +74,38 @@
  * ═══════════════════════════════════════════════════════════════════════
  */
 
+/**
+ * @typedef {Object} NormalisedShop
+ * @property {string}   id
+ * @property {string}   name
+ * @property {string}   city
+ * @property {string}   size
+ * @property {string}   services
+ * @property {string}   website
+ * @property {string}   maps_url
+ * @property {string[]} tags
+ * @property {string}   [region]
+ * @property {string}   regionTitle
+ * @property {string}   regionSubtitle
+ * @property {string}   category
+ * @property {boolean}  is_active
+ */
+
+/**
+ * @typedef {Object} ParsedMapsResult
+ * @property {string} city   — city name extracted from the URL, or ""
+ * @property {string} region — region slug inferred from coordinates, or "other"
+ * @property {string} label  — human-readable region label, or ""
+ */
+
 import { REGION_BOUNDS } from "./constants.js";
 
-/** Delay fn execution until after `wait` ms of no calls (reduces redundant work on rapid input) */
+/**
+ * Delay function execution until after `wait` ms of no calls.
+ * @param {Function} fn   — function to debounce
+ * @param {number}   [wait=250] — debounce interval in ms
+ * @returns {(...args: any[]) => void}
+ */
 export function debounce(fn, wait = 250) {
   let timer;
   return (...args) => {
@@ -83,7 +114,11 @@ export function debounce(fn, wait = 250) {
   };
 }
 
-/** Escape a string for safe HTML insertion */
+/**
+ * Escape a string for safe HTML insertion.
+ * @param {string} str
+ * @returns {string}
+ */
 export function esc(str) {
   if (!str) return "";
   return str
@@ -96,6 +131,11 @@ export function esc(str) {
 // ============================================
 // GOOGLE DRIVE URL HELPERS (shared)
 // ============================================
+/**
+ * Extract a Google Drive / lh3 file ID from a URL or raw ID string.
+ * @param {string} url
+ * @returns {string | null} file ID or null if unrecognised
+ */
 export function extractDriveFileId(url) {
   if (!url || typeof url !== "string") return null;
   url = url.trim();
@@ -109,14 +149,21 @@ export function extractDriveFileId(url) {
   return null;
 }
 
+/**
+ * Convert a Drive file ID to an lh3 direct-serve URL.
+ * @param {string} fileId
+ * @returns {string}
+ */
 export function toEmbedUrl(fileId) {
   return `https://lh3.googleusercontent.com/d/${fileId}`;
 }
 
 /**
  * Normalize portfolio image/media URL.
- * - Keeps normal URLs untouched
- * - Converts Google Drive share URLs (or raw IDs) into direct lh3 embed URLs
+ * Converts Google Drive share URLs (or raw IDs) into direct lh3 embed URLs;
+ * passes normal URLs through unchanged.
+ * @param {string} url
+ * @returns {string}
  */
 export function normalisePortfolioImageUrl(url) {
   if (!url || typeof url !== "string") return "";
@@ -130,8 +177,9 @@ export function normalisePortfolioImageUrl(url) {
  * Parse a Google Maps URL and try to extract city name + region.
  * Works with full URLs like:
  *   https://www.google.com/maps/place/Shop+Name,+City,+UT/@40.76,-111.89,17z/...
- * Short links (maps.app.goo.gl) can't be resolved client-side due to CORS.
- * Returns { city, region, label } - all empty strings if nothing could be parsed.
+ * Short links (maps.app.goo.gl) can’t be resolved client-side due to CORS.
+ * @param {string} url
+ * @returns {ParsedMapsResult}
  */
 export function parseMapsUrl(url) {
   const result = { city: "", region: "other", label: "" };
@@ -173,6 +221,8 @@ export function parseMapsUrl(url) {
 /**
  * Build a contact/website link (or links) for a shop card.
  * Tries email → URL → phone → Google search fallback.
+ * @param {{ name: string, city?: string, website?: string }} shop
+ * @returns {string} HTML string
  */
 export function websiteLink(shop) {
   const raw = (shop.website || "").trim();
@@ -260,7 +310,12 @@ export function websiteLink(shop) {
   );
 }
 
-/** Normalise a shop object - handles both shops.json keys and Supabase column names */
+/**
+ * Normalise a raw shop record into a stable shape for rendering.
+ * Handles both shops.json keys and Supabase column names.
+ * @param {Record<string, any>} s — raw shop object from Supabase or JSON
+ * @returns {NormalisedShop}
+ */
 export function normaliseShop(s) {
   return {
     id: s.id != null ? String(s.id) : "",
@@ -279,7 +334,11 @@ export function normaliseShop(s) {
   };
 }
 
-/** Returns a v4 UUID (RFC 4122), falling back to getRandomValues for older browsers */
+/**
+ * Returns a v4 UUID (RFC 4122).
+ * Uses `crypto.randomUUID()` when available, with `getRandomValues` fallback.
+ * @returns {string}
+ */
 export function generateUUID() {
   if (crypto.randomUUID) return crypto.randomUUID();
   // Manual RFC 4122 v4 construction — do NOT simplify to a plain hex join;
@@ -299,7 +358,8 @@ export function generateUUID() {
 /**
  * Trap keyboard focus inside a container (modal / dialog).
  * Returns a cleanup function that removes the keydown listener.
- * Shared by admin.js and portfolio-admin.js — do not duplicate locally.
+ * @param {HTMLElement} container
+ * @returns {() => void} cleanup function
  */
 export function trapFocus(container) {
   if (!container) return () => {};
@@ -336,8 +396,11 @@ export function trapFocus(container) {
   return () => container.removeEventListener("keydown", keyHandler);
 }
 
-/** Returns true if the URL is a 3dviewer.net external embed link.
- *  Shared by script.js and portfolio-admin.js — do not duplicate locally. */
+/**
+ * Returns true if the URL is a 3dviewer.net external embed link.
+ * @param {string} url
+ * @returns {boolean}
+ */
 export function isExternalEmbedUrl(url) {
   return /3dviewer\.net/i.test(url || "");
 }

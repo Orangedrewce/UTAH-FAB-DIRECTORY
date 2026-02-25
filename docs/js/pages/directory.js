@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * ═══════════════════════════════════════════════════════════════════════
  * MODULE: directory.js — Public Directory Controller (Runtime Contract)
@@ -79,25 +81,39 @@ import { fetchShops, fetchJSONShops } from "../services/api.js";
 /* ═══════════════════════════════════════════════════
    STATE
 ═══════════════════════════════════════════════════ */
+/** @type {import('../utils/utils.js').NormalisedShop[]} */
 let allShops = [];
+/** @type {string} */
 let activeFilter = "all";
 
 /* ═══════════════════════════════════════════════════
    DOM REFERENCES
 ═══════════════════════════════════════════════════ */
-const searchInput = document.getElementById("searchInput");
-const serviceFilter = document.getElementById("serviceFilter");
-const regionFilter = document.getElementById("regionFilter");
+const searchInput = /** @type {HTMLInputElement | null} */ (
+  document.getElementById("searchInput")
+);
+const serviceFilter = /** @type {HTMLSelectElement | null} */ (
+  document.getElementById("serviceFilter")
+);
+const regionFilter = /** @type {HTMLSelectElement | null} */ (
+  document.getElementById("regionFilter")
+);
 const visibleCount = document.getElementById("visibleCount");
 const noResults = document.getElementById("noResults");
-const googleFallback = document.getElementById("googleFallback");
+const googleFallback = /** @type {HTMLAnchorElement | null} */ (
+  document.getElementById("googleFallback")
+);
 const contentRoot = document.getElementById("directoryContent");
 
 /* ═══════════════════════════════════════════════════
    HELPERS
 ═══════════════════════════════════════════════════ */
 
-/** Build a Google Maps link if maps_url is present */
+/**
+ * Build a Google Maps link if maps_url is present
+ * @param {import('../utils/utils.js').NormalisedShop} shop
+ * @returns {string}
+ */
 function mapsLink(shop) {
   const url = (shop.maps_url || "").trim();
   if (!url) return "";
@@ -109,7 +125,11 @@ function mapsLink(shop) {
   );
 }
 
-/** Build a single card's HTML string */
+/**
+ * Build a single card's HTML string
+ * @param {import('../utils/utils.js').NormalisedShop} shop
+ * @returns {string}
+ */
 function renderCard(shop) {
   return `
     <div class="card" data-tags="${esc(shop.tags.join(" "))}" data-id="${shop.id}">
@@ -125,6 +145,10 @@ function renderCard(shop) {
    BUILD DOM FROM JSON
 ═══════════════════════════════════════════════════ */
 
+/**
+ * Groups and renders shops into the DOM
+ * @param {import('../utils/utils.js').NormalisedShop[]} shops
+ */
 function buildDirectory(shops) {
   // Group: region → categories (ordered Map)
   const regionMap = new Map();
@@ -174,7 +198,8 @@ function buildDirectory(shops) {
 
   // Stagger card entrance animations
   contentRoot.querySelectorAll(".card").forEach((card, i) => {
-    card.style.animationDelay = `${Math.min(i * 15, 600)}ms`;
+    /** @type {HTMLElement} */ (card).style.animationDelay =
+      `${Math.min(i * 15, 600)}ms`;
   });
 }
 
@@ -182,6 +207,9 @@ function buildDirectory(shops) {
    FILTER ENGINE  (operates on JSON array → toggles DOM)
 ═══════════════════════════════════════════════════ */
 
+/**
+ * Filters the displayed directory shops based on current search and active tags
+ */
 function applyFilters() {
   // Abort silently if any required element is missing — prevents crash on partial pages
   if (
@@ -230,36 +258,51 @@ function applyFilters() {
   }
 
   // Reflect in DOM
-  contentRoot.querySelectorAll(".card").forEach((card) => {
-    card.classList.toggle("hidden", !visibleIds.has(card.dataset.id));
-  });
+  if (contentRoot) {
+    contentRoot.querySelectorAll(".card").forEach((card) => {
+      card.classList.toggle(
+        "hidden",
+        !visibleIds.has(/** @type {HTMLElement} */ (card).dataset.id),
+      );
+    });
+  }
 
   // Hide empty category headers
-  contentRoot.querySelectorAll(".category-header").forEach((hdr) => {
-    const grid = hdr.nextElementSibling;
-    if (!grid) return;
-    hdr.style.display =
-      grid.querySelectorAll(".card:not(.hidden)").length === 0 ? "none" : "";
-  });
+  if (contentRoot) {
+    contentRoot.querySelectorAll(".category-header").forEach((hdr) => {
+      const grid = hdr.nextElementSibling;
+      if (!grid) return;
+      /** @type {HTMLElement} */ (hdr).style.display =
+        grid.querySelectorAll(".card:not(.hidden)").length === 0 ? "none" : "";
+    });
+  }
 
   // Hide empty region sections
-  contentRoot.querySelectorAll(".region").forEach((section) => {
-    section.style.display =
-      section.querySelectorAll(".card:not(.hidden)").length === 0 ? "none" : "";
-  });
+  if (contentRoot) {
+    contentRoot.querySelectorAll(".region").forEach((section) => {
+      /** @type {HTMLElement} */ (section).style.display =
+        section.querySelectorAll(".card:not(.hidden)").length === 0
+          ? "none"
+          : "";
+    });
+  }
 
-  visibleCount.textContent = count;
+  if (visibleCount) {
+    visibleCount.textContent = count.toString();
+  }
 
   // Show / hide no-results with Google fallback
   const hasNoResults = count === 0;
   noResults.classList.toggle("visible", hasNoResults);
-  if (hasNoResults && searchTerm) {
-    googleFallback.href =
-      "https://www.google.com/search?q=" +
-      encodeURIComponent(searchTerm + " fabrication machining Utah");
-    googleFallback.style.display = "inline-block";
-  } else {
-    googleFallback.style.display = "none";
+  if (googleFallback) {
+    if (hasNoResults && searchTerm) {
+      googleFallback.href =
+        "https://www.google.com/search?q=" +
+        encodeURIComponent(searchTerm + " fabrication machining Utah");
+      googleFallback.style.display = "inline-block";
+    } else {
+      googleFallback.style.display = "none";
+    }
   }
 
   // ── Shareable URL - push current filter state into the address bar ──
@@ -333,34 +376,54 @@ regionFilter?.addEventListener("change", applyFilters);
 const jTagPicker = document.getElementById("jTagPicker");
 if (jTagPicker) {
   jTagPicker.addEventListener("click", (e) => {
-    const chip = e.target.closest(".tag-chip");
+    const chip = /** @type {HTMLElement} */ (e.target).closest(".tag-chip");
     if (chip) chip.classList.toggle("selected");
   });
 }
 
-const joinForm = document.getElementById("joinForm");
-const joinSubmitBtn = document.getElementById("joinSubmitBtn");
+const joinForm = /** @type {HTMLFormElement | null} */ (
+  document.getElementById("joinForm")
+);
+const joinSubmitBtn = /** @type {HTMLButtonElement | null} */ (
+  document.getElementById("joinSubmitBtn")
+);
 const joinFeedback = document.getElementById("joinFeedback");
 
 if (joinForm) {
   joinForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    joinSubmitBtn.disabled = true;
-    joinSubmitBtn.textContent = "Sending…";
-    joinFeedback.textContent = "";
-    joinFeedback.className = "join-feedback";
+    if (joinSubmitBtn) {
+      joinSubmitBtn.disabled = true;
+      joinSubmitBtn.textContent = "Sending…";
+    }
+    if (joinFeedback) {
+      joinFeedback.textContent = "";
+      joinFeedback.className = "join-feedback";
+    }
 
     const selectedTags = [
       ...document.querySelectorAll("#jTagPicker .tag-chip.selected"),
-    ].map((el) => el.dataset.tag);
+    ].map((el) => /** @type {HTMLElement} */ (el).dataset.tag);
 
     const payload = {
-      shop_name: document.getElementById("jShopName").value.trim(),
-      city: document.getElementById("jCity").value.trim(),
-      region: document.getElementById("jRegion").value,
-      maps_url: document.getElementById("jMapsUrl").value.trim(),
-      contact: document.getElementById("jContact").value.trim(),
-      services: document.getElementById("jServices").value.trim(),
+      shop_name: /** @type {HTMLInputElement} */ (
+        document.getElementById("jShopName")
+      ).value.trim(),
+      city: /** @type {HTMLInputElement} */ (
+        document.getElementById("jCity")
+      ).value.trim(),
+      region: /** @type {HTMLSelectElement} */ (
+        document.getElementById("jRegion")
+      ).value,
+      maps_url: /** @type {HTMLInputElement} */ (
+        document.getElementById("jMapsUrl")
+      ).value.trim(),
+      contact: /** @type {HTMLInputElement} */ (
+        document.getElementById("jContact")
+      ).value.trim(),
+      services: /** @type {HTMLInputElement} */ (
+        document.getElementById("jServices")
+      ).value.trim(),
       tags: selectedTags,
     };
 

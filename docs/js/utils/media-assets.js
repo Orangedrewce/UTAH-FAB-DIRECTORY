@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * ═══════════════════════════════════════════════════════════════════════
  * MODULE: media-assets.js — Media Asset Normalization + Validation Rules
@@ -87,15 +89,55 @@
  * ═══════════════════════════════════════════════════════════════════════
  */
 
+/**
+ * @typedef {Object} MediaAsset
+ * @property {string}       id
+ * @property {"image"|"gif"|"model"} type
+ * @property {string}       url        — http(s) URL; empty string in drafts
+ * @property {string}       alt
+ * @property {number|null}  size_bytes
+ * @property {number}       position   — zero-based display order
+ * @property {boolean}      is_cover
+ */
+
+/**
+ * @typedef {Object} ValidationResult
+ * @property {boolean}  ok
+ * @property {string[]} errors
+ * @property {number}   totalBytes
+ */
+
+/**
+ * @typedef {Object} LegacyMediaFields
+ * @property {string|null}  image_url
+ * @property {number|null}  image_size_bytes
+ * @property {string|null}  model_url
+ * @property {number|null}  model_size_bytes
+ * @property {number|null}  cover_index
+ */
+
+/**
+ * @typedef {Object} CardVisualResult
+ * @property {MediaAsset[]} assets       — full normalised asset list
+ * @property {MediaAsset[]} visualAssets — image + gif subset
+ * @property {MediaAsset[]} modelAssets  — model subset
+ */
+
 const IMAGE_EXT_RE = /\.(png|jpe?g|webp|avif)(\?|#|$)/i;
 const GIF_EXT_RE = /\.gif(\?|#|$)/i;
 const MODEL_EXT_RE = /\.(glb|gltf|obj|mtl|stl|step|stp|iges|igs)(\?|#|$)/i;
 
+/** @type {Readonly<{ maxAssets: number, maxTotalBytes: number }>} */
 export const MEDIA_LIMITS = {
   maxAssets: 12,
   maxTotalBytes: 100 * 1024 * 1024,
 };
 
+/**
+ * Trim and validate a URL — returns "" for non-http(s) values.
+ * @param {any} value
+ * @returns {string}
+ */
 function toSafeUrl(value) {
   const url = String(value || "").trim();
   if (!url) return "";
@@ -103,6 +145,11 @@ function toSafeUrl(value) {
   return url;
 }
 
+/**
+ * Infer asset type from declared type or URL heuristics.
+ * @param {{ type?: string, url?: string }} [asset={}]
+ * @returns {"image"|"gif"|"model"}
+ */
 export function inferAssetType(asset = {}) {
   const declared = String(asset.type || "")
     .trim()
@@ -118,6 +165,12 @@ export function inferAssetType(asset = {}) {
   return "image";
 }
 
+/**
+ * Create a canonical asset draft from a partial seed.
+ * @param {Partial<MediaAsset>} [seed={}]
+ * @param {number} [position=0]
+ * @returns {MediaAsset}
+ */
 export function createAssetDraft(seed = {}, position = 0) {
   const url = toSafeUrl(seed.url);
   const type = inferAssetType({ ...seed, url });
@@ -150,6 +203,15 @@ function cleanIncomingArray(rawAssets, options = {}) {
   return cleaned;
 }
 
+/**
+ * Normalise raw asset data into a clean, cover-guaranteed asset list.
+ * Accepts an array, JSON string, or null; falls back to legacy fields.
+ * @param {MediaAsset[] | string | null | undefined} rawAssets
+ * @param {string} [legacyImageUrl=""]
+ * @param {string} [legacyModelUrl=""]
+ * @param {{ includeEmpty?: boolean }} [options={}]
+ * @returns {MediaAsset[]}
+ */
 export function normaliseMediaAssets(
   rawAssets,
   legacyImageUrl = "",
@@ -210,6 +272,12 @@ export function normaliseMediaAssets(
   return assets.map((asset, index) => ({ ...asset, position: index }));
 }
 
+/**
+ * Validate an asset array against size/count/cover constraints.
+ * @param {MediaAsset[]} assets
+ * @param {{ maxAssets: number, maxTotalBytes: number }} [limits=MEDIA_LIMITS]
+ * @returns {ValidationResult}
+ */
 export function validateMediaAssets(assets, limits = MEDIA_LIMITS) {
   const errors = [];
   if (!Array.isArray(assets)) {
@@ -253,6 +321,12 @@ export function validateMediaAssets(assets, limits = MEDIA_LIMITS) {
   return { ok: errors.length === 0, errors, totalBytes };
 }
 
+/**
+ * Shape an asset array into a persistence-ready payload.
+ * Filters empty URLs, recomputes types/positions, trims alt text.
+ * @param {MediaAsset[]} assets
+ * @returns {MediaAsset[]}
+ */
 export function toMediaAssetsPayload(assets) {
   if (!Array.isArray(assets) || !assets.length) return [];
   return assets
@@ -270,6 +344,11 @@ export function toMediaAssetsPayload(assets) {
     }));
 }
 
+/**
+ * Derive legacy DB columns from a canonical asset list.
+ * @param {MediaAsset[]} assets
+ * @returns {LegacyMediaFields}
+ */
 export function mediaAssetsToLegacy(assets) {
   const list = Array.isArray(assets) ? assets : [];
   if (!list.length) {
@@ -304,6 +383,11 @@ export function mediaAssetsToLegacy(assets) {
   };
 }
 
+/**
+ * Extract normalised assets plus visual/model subsets for card rendering.
+ * @param {{ media_assets?: any, image_url?: string, model_url?: string }} item
+ * @returns {CardVisualResult}
+ */
 export function getCardVisualAssets(item) {
   const assets = normaliseMediaAssets(
     item?.media_assets,

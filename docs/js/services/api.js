@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * ═══════════════════════════════════════════════════════════════════════
  * MODULE: api.js — API/Data Access Layer (Supabase + JSON Fallback)
@@ -70,6 +72,25 @@
  * ═══════════════════════════════════════════════════════════════════════
  */
 
+/**
+ * @typedef {Object} PortfolioItem
+ * @property {string}  id
+ * @property {string}  title
+ * @property {string}  [description]
+ * @property {string}  [tag]
+ * @property {string}  [tags]
+ * @property {string}  [image_url]
+ * @property {string}  [model_url]
+ * @property {number}  [image_size_bytes]
+ * @property {number}  [model_size_bytes]
+ * @property {any}     [media_assets]
+ * @property {number}  [cover_index]
+ * @property {number}  sort_order
+ * @property {boolean} is_visible
+ * @property {boolean} [is_featured]
+ * @property {string}  [created_at]
+ */
+
 import { supabase } from "./supabase.js";
 import { REGION_META, REGION_ORDER } from "../utils/constants.js";
 import { normaliseShop, generateUUID } from "../utils/utils.js";
@@ -85,6 +106,11 @@ function requireClient() {
   return supabase;
 }
 
+/**
+ * Fetch shops from Supabase, enriched with region metadata.
+ * @param {boolean} [onlyActive=true] — filter to active shops only
+ * @returns {Promise<import('../utils/utils.js').NormalisedShop[]>}
+ */
 export async function fetchShops(onlyActive = true) {
   let query = requireClient()
     .from("fab_shops")
@@ -108,6 +134,10 @@ export async function fetchShops(onlyActive = true) {
   });
 }
 
+/**
+ * Fetch region list from Supabase, with hardcoded fallback.
+ * @returns {Promise<Array<{ slug: string, title: string }>>}
+ */
 export async function fetchRegions() {
   const { data, error } = await requireClient()
     .from("regions")
@@ -128,6 +158,10 @@ export async function fetchRegions() {
   return data;
 }
 
+/**
+ * Fetch pending directory join requests (newest first).
+ * @returns {Promise<Array<Record<string, any>>>}
+ */
 export async function fetchRequests() {
   const { data, error } = await requireClient()
     .from("directory_requests")
@@ -139,6 +173,10 @@ export async function fetchRequests() {
   return data || [];
 }
 
+/**
+ * Fetch shops from static JSON fallback (no Supabase needed).
+ * @returns {Promise<import('../utils/utils.js').NormalisedShop[]>}
+ */
 export async function fetchJSONShops() {
   const res = await fetch("data/shops.json");
   if (!res.ok) throw new Error("HTTP " + res.status);
@@ -157,7 +195,8 @@ export async function fetchJSONShops() {
 
 /**
  * Fetch visible portfolio items, ordered by sort_order.
- * Pass `onlyFeatured = true` to get just homepage-featured items.
+ * @param {boolean} [onlyFeatured=false] — return only homepage-featured items
+ * @returns {Promise<PortfolioItem[]>}
  */
 export async function fetchPortfolioItems(onlyFeatured = false) {
   let query = requireClient()
@@ -178,6 +217,7 @@ export async function fetchPortfolioItems(onlyFeatured = false) {
 
 /**
  * Fetch ALL portfolio items (including hidden) for admin dashboard.
+ * @returns {Promise<PortfolioItem[]>}
  */
 export async function fetchAllPortfolioItems() {
   const { data, error } = await requireClient()
@@ -192,6 +232,8 @@ export async function fetchAllPortfolioItems() {
 
 /**
  * Insert a new portfolio item. Returns the inserted row.
+ * @param {Partial<PortfolioItem>} payload
+ * @returns {Promise<PortfolioItem>}
  */
 export async function insertPortfolioItem(payload) {
   const { data, error } = await requireClient()
@@ -206,6 +248,9 @@ export async function insertPortfolioItem(payload) {
 
 /**
  * Update an existing portfolio item by id. Returns the updated row.
+ * @param {string} id
+ * @param {Partial<PortfolioItem>} payload
+ * @returns {Promise<PortfolioItem>}
  */
 export async function updatePortfolioItem(id, payload) {
   const { data, error } = await requireClient()
@@ -221,6 +266,8 @@ export async function updatePortfolioItem(id, payload) {
 
 /**
  * Delete a portfolio item by id.
+ * @param {string} id
+ * @returns {Promise<void>}
  */
 export async function deletePortfolioItem(id) {
   const { error } = await requireClient()
@@ -233,7 +280,9 @@ export async function deletePortfolioItem(id) {
 
 /**
  * Upload a portfolio image or 3D model file to Supabase Storage.
- * Returns the public URL.
+ * Enforces extension allowlist and returns the public URL.
+ * @param {File} file
+ * @returns {Promise<string>} public URL of the uploaded asset
  */
 export async function uploadPortfolioAsset(file) {
   const ext = file.name.split(".").pop().toLowerCase();

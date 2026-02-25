@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * ═══════════════════════════════════════════════════════════════════════
  * MODULE: script.js — Public Site Runtime Orchestrator (Portfolio + Contact)
@@ -86,7 +88,9 @@ import {
 import { getCardVisualAssets } from "../utils/media-assets.js";
 
 const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightbox-img");
+const lightboxImg = /** @type {HTMLImageElement | null} */ (
+  document.getElementById("lightbox-img")
+);
 const lightboxLabel = document.getElementById("lightbox-label");
 
 // ── Lightbox two-level navigation state ─────────────────────────────────
@@ -94,16 +98,28 @@ let lightboxCards = [];
 let currentCardIndex = 0;
 let currentMediaIndex = 0;
 
+/**
+ * Set the cards for the lightbox
+ * @param {any[]} cards
+ */
 function setLightboxCards(cards) {
   lightboxCards = Array.isArray(cards) ? cards : [];
   if (currentCardIndex >= lightboxCards.length) currentCardIndex = 0;
   if (currentMediaIndex < 0) currentMediaIndex = 0;
 }
 
+/**
+ * Get current card from lightbox state
+ * @returns {any}
+ */
 function getCurrentCard() {
   return lightboxCards[currentCardIndex] || null;
 }
 
+/**
+ * Get current media for current card
+ * @returns {any}
+ */
 function getCurrentMedia() {
   const card = getCurrentCard();
   if (!card?.visualAssets?.length) return null;
@@ -111,19 +127,28 @@ function getCurrentMedia() {
   return card.visualAssets[currentMediaIndex] || null;
 }
 
+/**
+ * Render the lightbox DOM
+ */
 function renderLightboxState() {
   if (!lightbox || !lightboxImg || !lightboxLabel) return;
   const card = getCurrentCard();
   const media = getCurrentMedia();
   if (!card || !media) return;
 
-  lightboxImg.src = media.url;
-  lightboxImg.alt = media.alt || card.title || "";
+  if (lightboxImg) {
+    lightboxImg.src = media.url;
+    lightboxImg.alt = media.alt || card.title || "";
+  }
   const cardPos = currentCardIndex + 1;
   const mediaPos = currentMediaIndex + 1;
   lightboxLabel.textContent = `${card.label} · Card ${cardPos}/${lightboxCards.length} · Media ${mediaPos}/${card.visualAssets.length}`;
 }
 
+/**
+ * Open the lightbox to a specific element index
+ * @param {HTMLElement} element
+ */
 export function openLightbox(element) {
   if (!lightbox) return;
   const cardIndex = Number(element?.dataset?.cardIndex);
@@ -143,6 +168,9 @@ export function openLightbox(element) {
   document.body.style.overflow = "hidden";
 }
 
+/**
+ * Initialize lightbox for static thumbnail images
+ */
 function initStaticThumbLightbox() {
   const thumbs = [
     ...document.querySelectorAll(
@@ -158,17 +186,22 @@ function initStaticThumbLightbox() {
       if (!src) return null;
 
       const absoluteUrl = new URL(src, window.location.href).href;
-      const label = thumb.dataset.label || img.getAttribute("alt") || "Image";
-      const title = img.getAttribute("alt") || label;
+      const label =
+        /** @type {HTMLElement} */ (thumb).dataset.label ||
+        img?.getAttribute("alt") ||
+        "Image";
+      const title = img?.getAttribute("alt") || label;
 
-      thumb.dataset.cardIndex = String(index);
-      thumb.dataset.mediaIndex = "0";
+      /** @type {HTMLElement} */ (thumb).dataset.cardIndex = String(index);
+      /** @type {HTMLElement} */ (thumb).dataset.mediaIndex = "0";
 
       return {
         id: `static-${index}`,
         title,
         label,
-        visualAssets: [{ url: absoluteUrl, alt: img.getAttribute("alt") || title }],
+        visualAssets: [
+          { url: absoluteUrl, alt: img.getAttribute("alt") || title },
+        ],
       };
     })
     .filter(Boolean);
@@ -178,6 +211,10 @@ function initStaticThumbLightbox() {
   }
 }
 
+/**
+ * Navigate through media inside current card
+ * @param {number} delta
+ */
 function navigateLightbox(delta) {
   if (!lightbox?.classList.contains("open")) return;
   const card = getCurrentCard();
@@ -188,6 +225,10 @@ function navigateLightbox(delta) {
   renderLightboxState();
 }
 
+/**
+ * Navigate between cards
+ * @param {number} delta
+ */
 function navigateLightboxCards(delta) {
   if (!lightbox?.classList.contains("open") || !lightboxCards.length) return;
   currentCardIndex =
@@ -196,6 +237,9 @@ function navigateLightboxCards(delta) {
   renderLightboxState();
 }
 
+/**
+ * Close the lightbox
+ */
 export function closeLightbox() {
   if (!lightbox) return;
   lightbox.classList.remove("open");
@@ -208,10 +252,10 @@ export function closeLightbox() {
 }
 
 // Expose to window for inline HTML handlers
-window.openLightbox = openLightbox;
-window.closeLightbox = closeLightbox;
-window.navigateLightbox = navigateLightbox;
-window.navigateLightboxCards = navigateLightboxCards;
+/** @type {any} */ (window).openLightbox = openLightbox;
+/** @type {any} */ (window).closeLightbox = closeLightbox;
+/** @type {any} */ (window).navigateLightbox = navigateLightbox;
+/** @type {any} */ (window).navigateLightboxCards = navigateLightboxCards;
 
 document.addEventListener("keydown", (event) => {
   // Escape while pseudo-fullscreen → close it
@@ -244,7 +288,10 @@ document.addEventListener("keydown", (event) => {
   }
 
   const fsEl = document.fullscreenElement;
-  if (event.key === "Escape" && fsEl?.closest?.(".port-thumb--model")) {
+  if (
+    event.key === "Escape" &&
+    /** @type {HTMLElement} */ (fsEl).closest?.(".port-thumb--model")
+  ) {
     event.preventDefault();
     document.exitFullscreen?.();
     return;
@@ -297,10 +344,14 @@ const controlsIdleTimers = new WeakMap();
 let pseudoFsScrollY = 0;
 let pseudoFsScrollLocked = false;
 
+/** Lock scrolling when pseudofullscreen is on */
 function lockPseudoFullscreenScroll() {
   if (pseudoFsScrollLocked) return;
   pseudoFsScrollY =
-    window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    window.scrollY ||
+    window.pageYOffset ||
+    document.documentElement.scrollTop ||
+    0;
 
   document.documentElement.classList.add("has-pseudo-fullscreen");
   document.body.classList.add("has-pseudo-fullscreen");
@@ -314,6 +365,7 @@ function lockPseudoFullscreenScroll() {
   pseudoFsScrollLocked = true;
 }
 
+/** Unlock scrolling when pseudofullscreen is off */
 function unlockPseudoFullscreenScroll() {
   document.documentElement.classList.remove("has-pseudo-fullscreen");
   document.body.classList.remove("has-pseudo-fullscreen");
@@ -330,6 +382,7 @@ function unlockPseudoFullscreenScroll() {
   pseudoFsScrollLocked = false;
 }
 
+/** Sync fullscreen buttons across viewer */
 function syncViewerFullscreenButtons() {
   for (const target of fullscreenTargets) {
     const btn = target.querySelector(".model-fullscreen-btn");
@@ -479,7 +532,8 @@ function initCardViewer(hostEl, modelUrls) {
   if (!id || !Array.isArray(modelUrls) || !modelUrls.length) return;
   disposeCardViewer(id);
 
-  const fullscreenTarget = hostEl.closest(".port-thumb--model") || hostEl;
+  const fullscreenTarget =
+    /** @type {HTMLElement} */ (hostEl).closest(".port-thumb--model") || hostEl;
   let fullscreenBtn = fullscreenTarget.querySelector(".model-fullscreen-btn");
   fullscreenTargets.add(fullscreenTarget);
 
@@ -492,7 +546,7 @@ function initCardViewer(hostEl, modelUrls) {
 
   syncViewerFullscreenButtons();
 
-  if (typeof OV === "undefined") {
+  if (typeof (/** @type {any} */ (window).OV) === "undefined") {
     console.warn("Online3DViewer (OV) not loaded — falling back.");
     hostEl.innerHTML =
       '<span class="model-viewer-fallback">3D PREVIEW UNAVAILABLE</span>';
@@ -500,9 +554,14 @@ function initCardViewer(hostEl, modelUrls) {
   }
 
   try {
-    const viewer = new OV.EmbeddedViewer(hostEl, {
-      backgroundColor: new OV.RGBAColor(13, 17, 23, 255),
-      defaultColor: new OV.RGBColor(200, 200, 200),
+    const viewer = new /** @type {any} */ (window).OV.EmbeddedViewer(hostEl, {
+      backgroundColor: new /** @type {any} */ (window).OV.RGBAColor(
+        13,
+        17,
+        23,
+        255,
+      ),
+      defaultColor: new /** @type {any} */ (window).OV.RGBColor(200, 200, 200),
       onModelLoaded: () => {
         patchFusion360Controls(viewer);
         addPivotGizmo(viewer, hostEl);
@@ -527,7 +586,8 @@ function disposeCardViewer(id) {
   const entry = viewerRegistry.get(id);
   if (!entry) return;
   const fullscreenTarget =
-    entry.hostEl.closest(".port-thumb--model") || entry.hostEl;
+    /** @type {HTMLElement} */ (entry.hostEl).closest(".port-thumb--model") ||
+    entry.hostEl;
   fullscreenTargets.delete(fullscreenTarget);
   try {
     entry.viewer.Destroy();
@@ -712,9 +772,9 @@ function togglePseudoFullscreen(cardEl) {
   // Close any other pseudo-fullscreen card first
   document.querySelectorAll(".is-pseudo-fullscreen").forEach((el) => {
     el.classList.remove("is-pseudo-fullscreen");
-    el.closest(".port-item, .port-admin-card")?.classList.remove(
-      "has-pseudo-fullscreen-wrapper",
-    );
+    /** @type {HTMLElement} */ (el)
+      .closest(".port-item, .port-admin-card")
+      ?.classList.remove("has-pseudo-fullscreen-wrapper");
   });
   unlockPseudoFullscreenScroll();
 
@@ -744,7 +804,9 @@ function focusCard(cardEl) {
 // ── Double click on render curtain: toggle fullscreen ──
 document.addEventListener("click", (event) => {
   // Render curtain single-click → open lightbox (not fullscreen)
-  const renderWindow = event.target.closest(".model-render-curtain");
+  const renderWindow = /** @type {HTMLElement} */ (event.target).closest(
+    ".model-render-curtain",
+  );
   if (renderWindow) {
     const card = renderWindow.closest(".port-thumb--model");
     if (!card) return;
@@ -754,7 +816,9 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  const fullscreenBtn = event.target.closest(".model-fullscreen-btn");
+  const fullscreenBtn = /** @type {HTMLElement} */ (event.target).closest(
+    ".model-fullscreen-btn",
+  );
   if (fullscreenBtn) {
     const card = fullscreenBtn.closest(".port-thumb--model");
     if (!card) return;
@@ -763,13 +827,17 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  const actionBtn = event.target.closest("[data-model-action]");
+  const actionBtn = /** @type {HTMLElement} */ (event.target).closest(
+    "[data-model-action]",
+  );
   if (actionBtn) {
     const card = actionBtn.closest(".port-thumb--model");
     if (!card) return;
     event.preventDefault();
 
-    if (actionBtn.dataset.modelAction === "toggle") {
+    if (
+      /** @type {HTMLElement} */ (actionBtn).dataset.modelAction === "toggle"
+    ) {
       toggleModelCard(card);
     }
     return;
@@ -777,20 +845,25 @@ document.addEventListener("click", (event) => {
 
   // Click outside any model card → close open card + clear focus
   const openCard = document.querySelector(".port-thumb--model.is-model-open");
-  if (openCard && !openCard.contains(event.target)) {
+  if (openCard && !openCard.contains(/** @type {Node} */ (event.target))) {
     closeModelCard(openCard);
   }
   const focusedCard = document.querySelector(
     ".port-thumb--model.is-card-focused",
   );
-  if (focusedCard && !focusedCard.contains(event.target)) {
+  if (
+    focusedCard &&
+    !focusedCard.contains(/** @type {Node} */ (event.target))
+  ) {
     focusedCard.classList.remove("is-card-focused");
   }
 });
 
 // ── Double click on render curtain → fullscreen ──
 document.addEventListener("dblclick", (event) => {
-  const renderWindow = event.target.closest(".model-render-curtain");
+  const renderWindow = /** @type {HTMLElement} */ (event.target).closest(
+    ".model-render-curtain",
+  );
   if (renderWindow) {
     const card = renderWindow.closest(".port-thumb--model");
     if (!card) return;
@@ -977,7 +1050,9 @@ async function renderPortfolioPage() {
     // Filter handler
     if (!filterBar.dataset.bound) {
       filterBar.addEventListener("click", (e) => {
-        const btn = e.target.closest(".port-filter-btn");
+        const btn = /** @type {HTMLElement} */ (e.target).closest(
+          ".port-filter-btn",
+        );
         if (!btn) return;
 
         // Update active state
@@ -986,12 +1061,13 @@ async function renderPortfolioPage() {
           .forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
 
-        const filter = btn.dataset.filter;
+        const filter = /** @type {HTMLElement} */ (btn).dataset.filter;
         grid.querySelectorAll(".port-item").forEach((item) => {
-          if (filter === "all" || item.dataset.tag === filter) {
-            item.style.display = "";
+          const el = /** @type {HTMLElement} */ (item);
+          if (filter === "all" || el.dataset.tag === filter) {
+            el.style.display = "";
           } else {
-            item.style.display = "none";
+            el.style.display = "none";
           }
         });
       });
@@ -1009,15 +1085,25 @@ async function renderPortfolioPage() {
    CONTACT FORM - Supabase submission + photo upload
    ═══════════════════════════════════════════════════════════════════════ */
 function initContactForm() {
-  const form = document.getElementById("contactForm");
+  const form = /** @type {HTMLFormElement | null} */ (
+    document.getElementById("contactForm")
+  );
   if (!form) return;
 
-  const cfEmail = document.getElementById("cfEmail");
-  const cfMessage = document.getElementById("cfMessage");
-  const cfFile = document.getElementById("cfFile");
+  const cfEmail = /** @type {HTMLInputElement | null} */ (
+    document.getElementById("cfEmail")
+  );
+  const cfMessage = /** @type {HTMLTextAreaElement | null} */ (
+    document.getElementById("cfMessage")
+  );
+  const cfFile = /** @type {HTMLInputElement | null} */ (
+    document.getElementById("cfFile")
+  );
   const cfFileName = document.getElementById("cfFileName");
   const cfFileLabel = document.getElementById("cfFileLabel");
-  const submitBtn = document.getElementById("cfSubmitBtn");
+  const submitBtn = /** @type {HTMLButtonElement | null} */ (
+    document.getElementById("cfSubmitBtn")
+  );
   const feedback = document.getElementById("cfFeedback");
   const quoteConfirmation = document.getElementById("quoteConfirmation");
   const quoteResetBtn = document.getElementById("quoteResetBtn");

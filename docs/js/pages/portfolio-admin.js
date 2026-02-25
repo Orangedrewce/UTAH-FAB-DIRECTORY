@@ -1,3 +1,6 @@
+// @ts-check
+// Trigger lint
+
 /**
  * ═══════════════════════════════════════════════════════════════════════
  * MODULE: portfolio-admin.js — Portfolio Admin Controller (Runtime Contract)
@@ -101,6 +104,7 @@ import {
 } from "../utils/media-assets.js";
 
 // ── DOM refs ────────────────────────────────────────────────────────────
+/** @param {string} sel @returns {any} */
 const $ = (sel) => document.querySelector(sel);
 
 // Tab system
@@ -157,13 +161,19 @@ const pAssetAddModelBtn = $("#pAssetAddModelBtn");
 const pAssetSummary = $("#pAssetSummary");
 
 // ── State ───────────────────────────────────────────────────────────────
+/** @type {import('../services/api.js').PortfolioItem[]} */
 let allItems = [];
+/** @type {import('../services/api.js').PortfolioItem[]} */
 let filtered = [];
 let _ready = false;
 let _adminFsBound = false;
+/** @type {(() => void) | null} */
 let portModalFocusCleanup = null;
+/** @type {HTMLElement | null} */
 let portModalReturnFocusEl = null;
+/** @type {string | null} */
 let livePreviewImageBlobUrl = null;
+/** @type {import('../utils/media-assets.js').MediaAsset[]} */
 let currentMediaAssets = [];
 let pseudoFsScrollY = 0;
 let pseudoFsScrollLocked = false;
@@ -174,7 +184,10 @@ const MAX_MODEL_SIZE_BYTES = 25 * 1024 * 1024;
 function lockPseudoFullscreenScroll() {
   if (pseudoFsScrollLocked) return;
   pseudoFsScrollY =
-    window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    window.scrollY ||
+    window.pageYOffset ||
+    document.documentElement.scrollTop ||
+    0;
 
   document.documentElement.classList.add("has-pseudo-fullscreen");
   document.body.classList.add("has-pseudo-fullscreen");
@@ -227,6 +240,7 @@ function updateModelSourceUI() {
 }
 
 // ── HELPERS ─────────────────────────────────────────────────────────────
+/** @param {number} bytes @returns {string | null} */
 function formatBytes(bytes) {
   if (!bytes || bytes <= 0) return null;
   if (bytes < 1024) return bytes + " B";
@@ -238,7 +252,7 @@ function getNextSortOrder(editingId = null) {
   const used = new Set(
     allItems
       .filter((item) => String(item.id) !== String(editingId || ""))
-      .map((item) => Number.parseInt(item.sort_order, 10))
+      .map((item) => item.sort_order)
       .filter((value) => Number.isInteger(value) && value > 0),
   );
 
@@ -249,6 +263,7 @@ function getNextSortOrder(editingId = null) {
   return candidate;
 }
 
+/** @param {string} url */
 function looksLikeImageUrl(url) {
   if (!url) return false;
   const value = String(url).trim();
@@ -257,6 +272,10 @@ function looksLikeImageUrl(url) {
   return /drive\.google\.com|lh3\.googleusercontent\.com/i.test(value);
 }
 
+/**
+ * @param {import('../utils/media-assets.js').MediaAsset[]} assets
+ * @returns {number}
+ */
 function getAssetsTotalBytes(assets) {
   return (assets || []).reduce(
     (sum, asset) => sum + (Number(asset.size_bytes) || 0),
@@ -264,6 +283,10 @@ function getAssetsTotalBytes(assets) {
   );
 }
 
+/**
+ * @param {Partial<import('../utils/media-assets.js').MediaAsset>} seed
+ * @param {{ render?: boolean }} [options={}]
+ */
 function upsertMediaAssetFromLegacy(seed, options = {}) {
   const url = String(seed?.url || "").trim();
   if (!url) return;
@@ -350,6 +373,7 @@ function focusAndHighlightLastAssetRow() {
   }, 900);
 }
 
+/** @param {string} message */
 function setAssetSummaryMessage(message) {
   if (!pAssetSummary || !message) return;
   const prev = pAssetSummary.textContent;
@@ -407,7 +431,7 @@ async function ensurePortfolioReadyFromSession() {
   try {
     const {
       data: { session },
-    } = await _supabase.auth.getSession();
+    } = await /** @type {any} */ (_supabase).auth.getSession();
     if (session && tabPortfolio?.classList.contains("active")) {
       await initPortfolio();
     }
@@ -695,8 +719,8 @@ function applyFilters() {
       return true;
     })
     .sort((a, b) => {
-      const orderA = Number.parseInt(a.sort_order, 10) || 9999;
-      const orderB = Number.parseInt(b.sort_order, 10) || 9999;
+      const orderA = a.sort_order || 9999;
+      const orderB = b.sort_order || 9999;
       return orderA - orderB;
     });
 
@@ -705,6 +729,7 @@ function applyFilters() {
 }
 
 // ── RENDERING ───────────────────────────────────────────────────────────
+/** @param {string} modelUrl @returns {string} */
 function buildEmbedSrc(modelUrl) {
   if (!modelUrl) return "";
   // Already a 3dviewer.net embed — use as-is
@@ -855,10 +880,15 @@ function renderGrid() {
 }
 
 // ── MODAL ───────────────────────────────────────────────────────────────
+/**
+ * @param {import('../services/api.js').PortfolioItem | null} [item=null]
+ */
 function openModal(item = null) {
   if (!portModalBackdrop || !portForm) return;
 
-  portModalReturnFocusEl = document.activeElement;
+  portModalReturnFocusEl = /** @type {HTMLElement | null} */ (
+    document.activeElement
+  );
   portForm.reset();
   if (pExistingImageUrl) pExistingImageUrl.value = "";
 
@@ -1231,7 +1261,7 @@ async function handleSave(e, { keepOpen = false } = {}) {
       const usedOrders = new Set(
         allItems
           .filter((item) => String(item.id) !== String(id))
-          .map((item) => Number.parseInt(item.sort_order, 10))
+          .map((item) => item.sort_order)
           .filter((num) => Number.isInteger(num) && num > 0),
       );
 
@@ -1246,7 +1276,7 @@ async function handleSave(e, { keepOpen = false } = {}) {
 
         const itemsToShift = allItems
           .filter((item) => {
-            const itemOrder = Number.parseInt(item.sort_order, 10);
+            const itemOrder = item.sort_order;
             return (
               Number.isInteger(itemOrder) &&
               itemOrder >= sortOrder &&
@@ -1254,21 +1284,17 @@ async function handleSave(e, { keepOpen = false } = {}) {
               String(item.id) !== String(id)
             );
           })
-          .sort(
-            (a, b) =>
-              Number.parseInt(b.sort_order, 10) -
-              Number.parseInt(a.sort_order, 10),
-          );
+          .sort((a, b) => b.sort_order - a.sort_order);
 
         shiftedItems = itemsToShift.map((item) => ({
           id: item.id,
-          previousOrder: Number.parseInt(item.sort_order, 10),
+          previousOrder: item.sort_order,
         }));
 
         await Promise.all(
           itemsToShift.map((item) =>
             updatePortfolioItem(item.id, {
-              sort_order: Number.parseInt(item.sort_order, 10) + 1,
+              sort_order: item.sort_order + 1,
             }),
           ),
         );
