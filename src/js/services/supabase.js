@@ -49,19 +49,21 @@
  * ═══════════════════════════════════════════════════════════════════════
  */
 
+
 const SUPABASE_URL = "https://dntcmvspcwwdwnmyqfiw.supabase.co";
 const SUPABASE_ANON =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudGNtdnNwY3d3ZHdubXlxZml3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3MDA5MDksImV4cCI6MjA4NzI3NjkwOX0.cgiLMn6YH0BnLshl_458nGwdjnAJaN3MZz8jT4lwfkc";
 
-/** @type {object | null} Initialized Supabase client, or null if SDK was unavailable */
+/** @type {object | null} */
 let _client = null;
 try {
-  if (typeof window.supabase === "undefined") {
+  const globalWindow = /** @type {any} */ (window);
+  if (typeof globalWindow.supabase === "undefined") {
     throw new Error(
       "Supabase SDK not loaded. Ensure the CDN <script> appears before this module in the HTML.",
     );
   }
-  _client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  _client = globalWindow.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 } catch (err) {
   console.error(
     "[supabase.js] Client could not be initialised — Supabase features will be unavailable.",
@@ -69,5 +71,4 @@ try {
   );
 }
 
-/** @type {object | null} Shared Supabase client — consumers must tolerate null */
 export const supabase = _client;

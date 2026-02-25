@@ -102,11 +102,12 @@ import { REGION_BOUNDS } from "./constants.js";
 
 /**
  * Delay function execution until after `wait` ms of no calls.
- * @param {Function} fn   — function to debounce
- * @param {number}   [wait=250] — debounce interval in ms
+ * @param {Function} fn   - function to debounce
+ * @param {number}   [wait=250] - debounce interval in ms
  * @returns {(...args: any[]) => void}
  */
 export function debounce(fn, wait = 250) {
+  /** @type {number | undefined} */
   let timer;
   return (...args) => {
     clearTimeout(timer);
@@ -369,15 +370,18 @@ export function trapFocus(container) {
       ...container.querySelectorAll(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       ),
-    ].filter((el) => !el.disabled && el.offsetParent !== null);
+    ].filter((el) => {
+      const htmlEl = /** @type {HTMLElement & { disabled?: boolean }} */ (el);
+      return !htmlEl.disabled && htmlEl.offsetParent !== null;
+    });
 
   const keyHandler = (e) => {
     if (e.key !== "Tab") return;
     const focusable = getFocusable();
     if (!focusable.length) return;
 
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
+    const first = /** @type {HTMLElement} */ (focusable[0]);
+    const last = /** @type {HTMLElement} */ (focusable[focusable.length - 1]);
     const active = document.activeElement;
 
     if (e.shiftKey && active === first) {
@@ -391,7 +395,7 @@ export function trapFocus(container) {
 
   container.addEventListener("keydown", keyHandler);
   const focusable = getFocusable();
-  (focusable[0] || container).focus();
+  /** @type {HTMLElement} */ (focusable[0] || container).focus();
 
   return () => container.removeEventListener("keydown", keyHandler);
 }

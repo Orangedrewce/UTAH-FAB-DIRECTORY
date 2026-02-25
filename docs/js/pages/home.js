@@ -290,7 +290,7 @@ document.addEventListener("keydown", (event) => {
   const fsEl = document.fullscreenElement;
   if (
     event.key === "Escape" &&
-    /** @type {HTMLElement} */ (fsEl).closest?.(".port-thumb--model")
+    /** @type {HTMLElement} */ (fsEl)?.closest?.(".port-thumb--model")
   ) {
     event.preventDefault();
     document.exitFullscreen?.();
@@ -1108,7 +1108,7 @@ function initContactForm() {
   const quoteConfirmation = document.getElementById("quoteConfirmation");
   const quoteResetBtn = document.getElementById("quoteResetBtn");
 
-  if (!cfFile || !cfFileName || !cfFileLabel || !feedback || !submitBtn) return;
+  if (!cfEmail || !cfMessage || !cfFile || !cfFileName || !cfFileLabel || !feedback || !submitBtn) return;
 
   if (quoteResetBtn) {
     quoteResetBtn.addEventListener("click", () => {
@@ -1133,7 +1133,7 @@ function initContactForm() {
   }
 
   cfFile.addEventListener("change", () => {
-    if (cfFile.files.length > 0) {
+    if (cfFile.files && cfFile.files.length > 0) {
       cfFileName.textContent = cfFile.files[0].name;
       cfFileLabel.classList.add("has-file");
     } else {
@@ -1161,7 +1161,7 @@ function initContactForm() {
       return;
     }
 
-    if (cfFile.files.length > 0) {
+    if (cfFile.files && cfFile.files.length > 0) {
       const file = cfFile.files[0];
       if (file.size > MAX_FILE_SIZE) {
         showFeedback("FILE TOO LARGE (MAX 5 MB)", "error");

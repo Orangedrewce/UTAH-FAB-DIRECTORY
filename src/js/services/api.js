@@ -155,7 +155,7 @@ export async function fetchRegions() {
     }));
   }
 
-  return data;
+  return data || [];
 }
 
 /**
@@ -285,7 +285,7 @@ export async function deletePortfolioItem(id) {
  * @returns {Promise<string>} public URL of the uploaded asset
  */
 export async function uploadPortfolioAsset(file) {
-  const ext = file.name.split(".").pop().toLowerCase();
+  const ext = (file.name.split(".").pop() || "").toLowerCase();
 
   const ALLOWED_EXTENSIONS = new Set([
     "glb",

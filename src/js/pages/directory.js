@@ -403,7 +403,9 @@ if (joinForm) {
 
     const selectedTags = [
       ...document.querySelectorAll("#jTagPicker .tag-chip.selected"),
-    ].map((el) => /** @type {HTMLElement} */ (el).dataset.tag);
+    ]
+      .map((el) => /** @type {HTMLElement} */ (el).dataset.tag || "")
+      .filter((tag) => tag !== "");
 
     const payload = {
       shop_name: /** @type {HTMLInputElement} */ (

@@ -41,6 +41,8 @@
   git pull origin main --rebase
   git push origin dev (DO THIS FIRST)
   git push origin dev:main (THEN THIS)
+
+  
 #>
 
 $ErrorActionPreference = 'Stop'

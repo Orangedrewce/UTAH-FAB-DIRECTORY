@@ -189,6 +189,11 @@ export function createAssetDraft(seed = {}, position = 0) {
   };
 }
 
+/**
+ * @param {any} rawAssets
+ * @param {{ includeEmpty?: boolean }} [options={}]
+ * @returns {MediaAsset[]}
+ */
 function cleanIncomingArray(rawAssets, options = {}) {
   const includeEmpty = !!options.includeEmpty;
   if (!Array.isArray(rawAssets)) return [];
@@ -335,7 +340,7 @@ export function toMediaAssetsPayload(assets) {
       id: asset.id,
       type: inferAssetType(asset),
       url: toSafeUrl(asset.url),
-      alt: String(asset.alt || "").trim() || null,
+      alt: String(asset.alt || "").trim(),
       size_bytes: Number.isFinite(Number(asset.size_bytes))
         ? Math.max(0, Number(asset.size_bytes))
         : null,
