@@ -26,7 +26,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "description changes"
+  git commit -m "Dark mode"
 
   # 5) Publish to live site
   git pull origin dev --rebase

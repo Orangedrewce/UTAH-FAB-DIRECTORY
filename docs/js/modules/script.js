@@ -813,7 +813,7 @@ function portfolioItemHTML(item, cardIndex, visualAssets) {
   const coverMedia = visualAssets[0] || null;
   const imgUrl =
     normalisePortfolioImageUrl(coverMedia?.url || item.image_url) ||
-    "assets/Render.png";
+    "/assets/Render.png";
 
   const { modelAssets } = getCardVisualAssets(item);
   const modelUrlJoined =
@@ -924,7 +924,7 @@ async function renderPortfolioPage() {
       const fallback = [
         {
           url:
-            normalisePortfolioImageUrl(item.image_url) || "assets/Render.png",
+            normalisePortfolioImageUrl(item.image_url) || "/assets/Render.png",
           alt: title,
         },
       ];

@@ -1,95 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- SEO -->
-  <title>Portfolio | Andrew Losee - CAD Design, Salt Lake City UT</title>
-  <meta name="description" content="Technical CAD portfolio website for Andrew Losee (Salt Lake City, UT) featuring filterable project cards, process-stage tags (INTAKE/MODEL/OUTPUT/RENDER/ASSEMBLY), high-resolution renders, interactive 3D model viewing, fullscreen controls, and detailed fabrication-focused design documentation.">
-
-  <!-- Crosshair favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230d1117'/><circle cx='16' cy='16' r='10' fill='none' stroke='%23ff6b2b' stroke-width='1.5'/><line x1='16' y1='2' x2='16' y2='30' stroke='%23ff6b2b' stroke-width='1'/><line x1='2' y1='16' x2='30' y2='16' stroke='%23ff6b2b' stroke-width='1'/><circle cx='16' cy='16' r='2' fill='%23ff6b2b'/></svg>">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
-
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-
-  <!-- ── LIGHTBOX ── -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-label="Portfolio image viewer" aria-modal="true">
-    <button class="lightbox-close" onclick="closeLightbox()">[ CLOSE ]</button>
-    <button class="lightbox-card-nav lightbox-card-prev" onclick="navigateLightboxCards(-1)" aria-label="Previous card">[ PREV CARD ]</button>
-    <div class="lightbox-stage">
-      <button class="lightbox-arrow lightbox-prev" onclick="navigateLightbox(-1)" aria-label="Previous image">&#8249;</button>
-      <img id="lightbox-img" src="" alt="">
-      <button class="lightbox-arrow lightbox-next" onclick="navigateLightbox(1)" aria-label="Next image">&#8250;</button>
-    </div>
-    <button class="lightbox-card-nav lightbox-card-next" onclick="navigateLightboxCards(1)" aria-label="Next card">[ NEXT CARD ]</button>
-    <div class="lightbox-label" id="lightbox-label"></div>
-  </div>
-
-  <!-- ── PAGE WRAPPER ── -->
-  <div class="page-wrap">
-    <div class="flyer">
-      <!-- Background decoration -->
-      <div class="bg-grid"></div>
-      <div class="accent-bar"></div>
-      <div class="corner tl"></div>
-      <div class="corner tr"></div>
-      <div class="corner bl"></div>
-      <div class="corner br"></div>
-
-      <!-- ── NAV ── -->
-      <nav class="pricing-page-nav">
-        <a href="index.html" class="pricing-back-btn">&#8592; Back</a>
-        <span class="pricing-page-title">Portfolio</span>
-        <a href="direct.html" class="pricing-back-btn">Utah Fab Directory &#8594;</a>
-      </nav>
-
-      <!-- ── FILTER BAR (shown by JS only when 2+ tags exist) ── -->
-      <div class="port-filter-bar" id="portFilterBar" style="display:none;">
-        <button class="port-filter-btn active" data-filter="all">ALL</button>
-      </div>
-
-      <!-- ── GALLERY ── -->
-      <section class="port-section">
-        <div class="section-label">Showroom</div>
-
-        <div class="port-loading" id="portLoading">
-          <span class="port-loading-text">Retrieving models and drawings...</span>
-        </div>
-
-        <div class="port-grid port-grid--full" id="portfolioGrid">
-          <!-- Populated from Supabase by script.js -->
-        </div>
-
-        <div class="port-empty hidden" id="portEmpty">
-          <span class="port-empty-label">Unable to retrieve CAD assets.</span>
-          <div class="port-empty-actions">
-            <button type="button" class="port-empty-btn" id="portRetryBtn">Retry</button>
-            <a href="index.html#contactForm" class="port-empty-link" id="portContactLink">Contact Directly</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- ── BOTTOM NAV ── -->
-      <div class="pricing-back-footer">
-        <a href="index.html" class="pricing-back-btn">&#8592; Back to Home</a>
-      </div>
-
-    </div><!-- end .flyer -->
-  </div><!-- end .page-wrap -->
-
-  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/online-3d-viewer@0.18.0/build/engine/o3dv.min.js"></script>
-  <script type="module" src="js/modules/script.js"></script>
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting…</title>
+    <link rel="canonical" href="/portfolio/" />
+    <meta http-equiv="refresh" content="0; url=/portfolio/" />
+    <script>
+      const destination = "/portfolio/" + window.location.search + window.location.hash;
+      window.location.replace(destination);
+    </script>
+  </head>
+  <body>
+    Redirecting to <a href="/portfolio/">/portfolio/</a>…
+  </body>
 </html>
