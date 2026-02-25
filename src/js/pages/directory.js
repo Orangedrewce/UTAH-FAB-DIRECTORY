@@ -103,6 +103,9 @@ const noResults = document.getElementById("noResults");
 const googleFallback = /** @type {HTMLAnchorElement | null} */ (
   document.getElementById("googleFallback")
 );
+const conciergeCtaLink = /** @type {HTMLAnchorElement | null} */ (
+  document.getElementById("conciergeCtaLink")
+);
 const contentRoot = document.getElementById("directoryContent");
 
 /* ═══════════════════════════════════════════════════
@@ -291,7 +294,7 @@ function applyFilters() {
     visibleCount.textContent = count.toString();
   }
 
-  // Show / hide no-results with Google fallback
+  // Show / hide no-results with Google fallback + concierge CTA
   const hasNoResults = count === 0;
   noResults.classList.toggle("visible", hasNoResults);
   if (googleFallback) {
@@ -303,6 +306,13 @@ function applyFilters() {
     } else {
       googleFallback.style.display = "none";
     }
+  }
+  // Concierge CTA — always visible when no results, link carries search context
+  if (conciergeCtaLink) {
+    const ctaParams = new URLSearchParams();
+    ctaParams.set("ref", "directory");
+    if (searchTerm) ctaParams.set("q", searchTerm);
+    conciergeCtaLink.href = `../index.html?${ctaParams.toString()}#contactForm`;
   }
 
   // ── Shareable URL - push current filter state into the address bar ──

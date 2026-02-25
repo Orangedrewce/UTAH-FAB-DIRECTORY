@@ -34,7 +34,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "bug fixes for type checking"
+  git commit -m "Concierge CTA, Contact form pre-fill, Portfolio deep-links"
 
   # 5) Publish to live site
   git pull origin dev --rebase
