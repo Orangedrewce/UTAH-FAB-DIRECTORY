@@ -1,19 +1,27 @@
 <#
 .SYNOPSIS
-  ask TO SYNC, Syncs src/ to docs/ for GitHub Pages deployment.
+  Syncs src/ to docs/ for GitHub Pages deployment.
 
 .DESCRIPTION
-  Cleans docs/, then copies everything from src/ EXCEPT the db/ folder
-  (SQL schemas and migration scripts are dev-only).
+  Cleans docs/, then mirrors everything from src/ into docs/.
+  (db/ now lives at the project root, outside src/, so no exclusion needed.)
 
-  JS file layout (all entry points and modules live under src/js/modules/):
-    src/js/modules/admin.js       — admin dashboard entry point
-    src/js/modules/directory.js   — public directory entry point
-    src/js/modules/script.js      — index/lightbox/contact entry point
-    src/js/modules/supabase.js    — shared Supabase client
-    src/js/modules/constants.js   — shared constants (regions, tags, categories)
-    src/js/modules/utils.js       — shared utility functions
-    src/js/modules/api.js         — shared data-fetching functions
+  JS file layout (organised by architectural role):
+    src/js/pages/admin.js              — admin dashboard entry point
+    src/js/pages/directory.js          — public directory entry point
+    src/js/pages/home.js               — homepage + portfolio gallery entry point
+    src/js/pages/portfolio-admin.js    — portfolio admin tab entry point
+    src/js/services/api.js             — shared data-fetching / Supabase queries
+    src/js/services/supabase.js        — shared Supabase client bootstrap
+    src/js/utils/constants.js          — shared constants (regions, tags, categories)
+    src/js/utils/utils.js              — shared utility functions
+    src/js/utils/media-assets.js       — media asset normalisation + validation
+
+  CSS files:
+    src/css/base.css       — design tokens, reset, global styles (loaded everywhere)
+    src/css/site.css       — homepage, portfolio, pricing styles
+    src/css/directory.css  — public directory styles
+    src/css/admin.css      — admin dashboard styles
 
   Workflow:
   # 1) Work in dev
@@ -26,7 +34,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "Dark mode"
+  git commit -m "might regret this"
 
   # 5) Publish to live site
   git pull origin dev --rebase
@@ -56,15 +64,14 @@ if (Test-Path $docs) {
     New-Item -ItemType Directory -Path $docs | Out-Null
 }
 
-# ── 3. Copy src/ -> docs/ (excluding db/) ───────────────────────────────
-Write-Host "[sync] Copying src/ -> docs/ (excluding db/) ..." -ForegroundColor Cyan
+# ── 3. Copy src/ -> docs/ ────────────────────────────────────────────
+Write-Host "[sync] Copying src/ -> docs/ ..." -ForegroundColor Cyan
 
-# robocopy is the most reliable way on Windows: mirror mode, exclude db/
+# robocopy is the most reliable way on Windows: mirror mode
 $roboArgs = @(
     $src,
     $docs,
     '/MIR',          # Mirror directory tree
-    '/XD', (Join-Path $src 'db'),   # Exclude db/
     '/NFL', '/NDL',  # No file/directory logging (cleaner output)
     '/NJH', '/NJS',  # No job header/summary
     '/R:1', '/W:1'   # Minimal retries

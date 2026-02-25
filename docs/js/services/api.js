@@ -71,8 +71,8 @@
  */
 
 import { supabase } from "./supabase.js";
-import { REGION_META, REGION_ORDER } from "./constants.js";
-import { normaliseShop, generateUUID } from "./utils.js";
+import { REGION_META, REGION_ORDER } from "../utils/constants.js";
+import { normaliseShop, generateUUID } from "../utils/utils.js";
 
 /** Throws a descriptive error if the Supabase client failed to initialise. */
 function requireClient() {

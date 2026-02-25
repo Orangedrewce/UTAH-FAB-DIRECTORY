@@ -76,20 +76,20 @@
  * ═══════════════════════════════════════════════════════════════════════
  */
 
-import { supabase as _supabase } from "./supabase.js";
+import { supabase as _supabase } from "../services/supabase.js";
 import {
   fetchAllPortfolioItems,
   insertPortfolioItem,
   updatePortfolioItem,
   deletePortfolioItem,
   uploadPortfolioAsset,
-} from "./api.js";
+} from "../services/api.js";
 import {
   esc,
   normalisePortfolioImageUrl,
   trapFocus,
   isExternalEmbedUrl,
-} from "./utils.js";
+} from "../utils/utils.js";
 import {
   MEDIA_LIMITS,
   createAssetDraft,
@@ -98,7 +98,7 @@ import {
   validateMediaAssets,
   mediaAssetsToLegacy,
   getCardVisualAssets,
-} from "./media-assets.js";
+} from "../utils/media-assets.js";
 
 // ── DOM refs ────────────────────────────────────────────────────────────
 const $ = (sel) => document.querySelector(sel);

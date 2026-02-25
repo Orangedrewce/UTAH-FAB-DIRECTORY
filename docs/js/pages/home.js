@@ -75,15 +75,15 @@
  * ═══════════════════════════════════════════════════════════════════════
  */
 
-import { supabase as sb } from "./supabase.js";
-import { fetchPortfolioItems } from "./api.js";
+import { supabase as sb } from "../services/supabase.js";
+import { fetchPortfolioItems } from "../services/api.js";
 import {
   esc,
   generateUUID,
   normalisePortfolioImageUrl,
   isExternalEmbedUrl,
-} from "./utils.js";
-import { getCardVisualAssets } from "./media-assets.js";
+} from "../utils/utils.js";
+import { getCardVisualAssets } from "../utils/media-assets.js";
 
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");

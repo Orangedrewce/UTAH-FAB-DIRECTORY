@@ -65,16 +65,16 @@
  * ═══════════════════════════════════════════════════════════════════════
  */
 
-import { supabase as _supabase } from "./supabase.js";
-import { ALL_TAGS, CATEGORIES, REGION_BOUNDS } from "./constants.js";
+import { supabase as _supabase } from "../services/supabase.js";
+import { ALL_TAGS, CATEGORIES, REGION_BOUNDS } from "../utils/constants.js";
 import {
   esc,
   parseMapsUrl,
   websiteLink,
   debounce,
   trapFocus,
-} from "./utils.js";
-import { fetchShops, fetchRegions, fetchRequests } from "./api.js";
+} from "../utils/utils.js";
+import { fetchShops, fetchRegions, fetchRequests } from "../services/api.js";
 
 // ── Canonical regions (loaded from DB, fallback hardcoded) ─────────────
 let REGIONS = [];

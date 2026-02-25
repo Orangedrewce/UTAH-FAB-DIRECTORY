@@ -71,10 +71,10 @@
  * ═══════════════════════════════════════════════════════════════════════
  */
 
-import { supabase as _sb } from "./supabase.js";
-import { REGION_ORDER } from "./constants.js";
-import { esc, websiteLink, debounce } from "./utils.js";
-import { fetchShops, fetchJSONShops } from "./api.js";
+import { supabase as _sb } from "../services/supabase.js";
+import { REGION_ORDER } from "../utils/constants.js";
+import { esc, websiteLink, debounce } from "../utils/utils.js";
+import { fetchShops, fetchJSONShops } from "../services/api.js";
 
 /* ═══════════════════════════════════════════════════
    STATE
