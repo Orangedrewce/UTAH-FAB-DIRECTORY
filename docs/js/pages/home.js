@@ -143,6 +143,12 @@ function renderLightboxState() {
   const cardPos = currentCardIndex + 1;
   const mediaPos = currentMediaIndex + 1;
   lightboxLabel.textContent = `${card.label} · Card ${cardPos}/${lightboxCards.length} · Media ${mediaPos}/${card.visualAssets.length}`;
+
+  // Hide media arrows when card has only one media item
+  const hasMultipleMedia = (card.visualAssets?.length || 0) > 1;
+  lightbox.querySelectorAll(".lightbox-arrow").forEach((btn) => {
+    /** @type {HTMLElement} */ (btn).style.display = hasMultipleMedia ? "" : "none";
+  });
 }
 
 /**
@@ -704,6 +710,9 @@ function setModelCardOpen(cardEl, isOpen) {
 
   if (!isOpen) {
     cardEl.classList.remove("model-controls-idle");
+    // Free WebGL context when closing — prevents GPU memory accumulation
+    const hostEl2 = cardEl.querySelector(".model-viewer-host");
+    if (hostEl2?.dataset?.itemId) disposeCardViewer(hostEl2.dataset.itemId);
   }
 }
 
@@ -908,7 +917,7 @@ function portfolioItemHTML(item, cardIndex, visualAssets) {
     <div class="port-thumb port-thumb--model">
       <div class="model-viewer-host" data-item-id="${esc(String(item.id || title))}" data-model-urls="${esc(modelUrls.join(","))}" data-embed-url="${esc(embedUrl)}" aria-hidden="true"></div>
       <div class="model-render-curtain" aria-hidden="false">
-        <img class="model-render-thumb" src="${esc(imgUrl)}" alt="${title}" loading="lazy" data-card-index="${cardIndex}" data-media-index="0" onclick="openLightbox(this)">
+        <img class="model-render-thumb" src="${esc(imgUrl)}" alt="${title}" loading="lazy" decoding="async" data-card-index="${cardIndex}" data-media-index="0" onclick="openLightbox(this)">
       </div>
       <button type="button" class="model-fullscreen-btn" aria-label="Enter fullscreen">FULL</button>
       <button type="button" class="model-toggle-btn" data-model-action="toggle" aria-label="Open interactive 3D model">View 3D</button>
@@ -920,7 +929,7 @@ function portfolioItemHTML(item, cardIndex, visualAssets) {
 
   return `<figure class="port-item" data-tag="${tag}">
     <div class="port-thumb thumb" onclick="openLightbox(this)" data-label="${esc(label)}" data-card-index="${cardIndex}" data-media-index="0">
-      <img src="${esc(imgUrl)}" alt="${title}" loading="lazy">
+      <img src="${esc(imgUrl)}" alt="${title}" loading="lazy" decoding="async">
       <div class="thumb-overlay">[ VIEW ]</div>
     </div>
     ${caption}
