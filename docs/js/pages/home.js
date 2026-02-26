@@ -147,7 +147,9 @@ function renderLightboxState() {
   // Hide media arrows when card has only one media item
   const hasMultipleMedia = (card.visualAssets?.length || 0) > 1;
   lightbox.querySelectorAll(".lightbox-arrow").forEach((btn) => {
-    /** @type {HTMLElement} */ (btn).style.display = hasMultipleMedia ? "" : "none";
+    /** @type {HTMLElement} */ (btn).style.display = hasMultipleMedia
+      ? ""
+      : "none";
   });
 }
 
@@ -172,6 +174,11 @@ export function openLightbox(element) {
   renderLightboxState();
   lightbox.classList.add("open");
   document.body.style.overflow = "hidden";
+  // Deep-link: write current card ID into URL hash
+  const card = getCurrentCard();
+  if (card?.id) {
+    history.replaceState(null, "", `#item-${card.id}`);
+  }
 }
 
 /**
@@ -241,6 +248,11 @@ function navigateLightboxCards(delta) {
     (currentCardIndex + delta + lightboxCards.length) % lightboxCards.length;
   currentMediaIndex = 0;
   renderLightboxState();
+  // Deep-link: update hash to new card
+  const card = getCurrentCard();
+  if (card?.id) {
+    history.replaceState(null, "", `#item-${card.id}`);
+  }
 }
 
 /**
@@ -255,6 +267,14 @@ export function closeLightbox() {
   }
   if (lightboxLabel) lightboxLabel.textContent = "";
   document.body.style.overflow = "";
+  // Deep-link: clear hash on close
+  if (window.location.hash.startsWith("#item-")) {
+    history.replaceState(
+      null,
+      "",
+      window.location.pathname + window.location.search,
+    );
+  }
 }
 
 // Expose to window for inline HTML handlers
@@ -1056,6 +1076,9 @@ async function renderPortfolioPage() {
 
     showGridState();
 
+    // ── Deep-link: open lightbox if URL hash matches a card ID ──
+    openLightboxFromHash();
+
     // Filter handler
     if (!filterBar.dataset.bound) {
       filterBar.addEventListener("click", (e) => {
@@ -1099,6 +1122,20 @@ function initContactForm() {
   );
   if (!form) return;
 
+  // ── Directory referral: pre-fill message when arriving from concierge CTA ──
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("ref") === "directory") {
+    const cfMsg = /** @type {HTMLTextAreaElement | null} */ (
+      document.getElementById("cfMessage")
+    );
+    const query = urlParams.get("q") || "";
+    if (cfMsg && !cfMsg.value.trim()) {
+      cfMsg.value = query
+        ? `I'm looking for a shop that can handle: ${query}`
+        : "I need help sourcing a fabrication shop for my project.";
+    }
+  }
+
   const cfEmail = /** @type {HTMLInputElement | null} */ (
     document.getElementById("cfEmail")
   );
@@ -1117,7 +1154,16 @@ function initContactForm() {
   const quoteConfirmation = document.getElementById("quoteConfirmation");
   const quoteResetBtn = document.getElementById("quoteResetBtn");
 
-  if (!cfEmail || !cfMessage || !cfFile || !cfFileName || !cfFileLabel || !feedback || !submitBtn) return;
+  if (
+    !cfEmail ||
+    !cfMessage ||
+    !cfFile ||
+    !cfFileName ||
+    !cfFileLabel ||
+    !feedback ||
+    !submitBtn
+  )
+    return;
 
   if (quoteResetBtn) {
     quoteResetBtn.addEventListener("click", () => {
@@ -1256,6 +1302,38 @@ function initCollapsible() {
    ═════════════════════════════════════════════════════════════════════ */
 window.addEventListener("pagehide", disposeAllCardViewers);
 window.addEventListener("beforeunload", disposeAllCardViewers);
+
+/* ═════════════════════════════════════════════════════════════════════
+   DEEP-LINK HELPER — open lightbox from URL hash
+   ═════════════════════════════════════════════════════════════════════ */
+
+/**
+ * If the URL contains #item-{id}, find the matching card and open the lightbox.
+ */
+function openLightboxFromHash() {
+  const hash = window.location.hash;
+  if (!hash.startsWith("#item-")) return;
+  const targetId = hash.slice(6); // strip "#item-"
+  if (!targetId || !lightboxCards.length) return;
+
+  const cardIndex = lightboxCards.findIndex((c) => c.id === targetId);
+  if (cardIndex < 0) return;
+
+  // Build a synthetic element with the right dataset for openLightbox
+  const synth = document.createElement("span");
+  synth.dataset.cardIndex = String(cardIndex);
+  synth.dataset.mediaIndex = "0";
+  openLightbox(synth);
+}
+
+// Respond to browser back/forward changing the hash
+window.addEventListener("hashchange", () => {
+  if (window.location.hash.startsWith("#item-")) {
+    openLightboxFromHash();
+  } else if (lightbox?.classList.contains("open")) {
+    closeLightbox();
+  }
+});
 
 /* ═════════════════════════════════════════════════════════════════════
    INITIALISE
