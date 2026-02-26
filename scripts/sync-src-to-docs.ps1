@@ -34,7 +34,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "wrench"
+  git commit -m "spam 3d view fix"
 
   # 5) Publish to live site
   git pull origin dev --rebase

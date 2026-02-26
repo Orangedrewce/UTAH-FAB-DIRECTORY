@@ -1543,22 +1543,43 @@ body.has-pseudo-fullscreen {
   margin-top: 28px;
 }
 
-/* ── PRICING NAV LINK (header entry point) ── */
+/* ── HEADER NAV LINK GROUP (homepage) ── */
+.header-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* ── PRICING NAV LINK (header entry point + inner-page nav) ── */
 .pricing-nav-link {
-  display: inline-block;
-  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--text-muted);
   text-decoration: none;
-  opacity: 0.55;
-  transition: opacity 0.2s, color 0.2s;
+  border: 1px solid var(--border-neutral);
+  padding: 6px 14px;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  white-space: nowrap;
 }
 .pricing-nav-link:hover {
-  opacity: 1;
-  color: var(--orange);
+  color: var(--brand-orange);
+  border-color: var(--brand-orange);
+}
+
+/* Featured variant — directory CTA stands out */
+.pricing-nav-link--featured {
+  color: var(--brand-orange);
+  border-color: var(--brand-orange-dim);
+}
+.pricing-nav-link--featured:hover {
+  background: rgba(var(--brand-orange-rgb), 0.1);
+  border-color: var(--brand-orange);
 }
 
 /* ── PRICING SUBTEXT ── */
