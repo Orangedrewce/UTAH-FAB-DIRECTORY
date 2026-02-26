@@ -108,7 +108,7 @@ function requireClient() {
 
 /**
  * Fetch shops from Supabase, enriched with region metadata.
- * @param {boolean} [onlyActive=true] — filter to active shops only
+ * @param {boolean} [onlyActive=true] - filter to active shops only
  * @returns {Promise<import('../utils/utils.js').NormalisedShop[]>}
  */
 export async function fetchShops(onlyActive = true) {
