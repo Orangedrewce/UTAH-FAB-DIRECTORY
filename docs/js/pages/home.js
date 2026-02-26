@@ -621,6 +621,7 @@ function disposeCardViewer(id) {
     /* best-effort */
   }
   entry.hostEl.innerHTML = "";
+  delete entry.hostEl.dataset.viewerReady;
   viewerRegistry.delete(id);
 }
 
@@ -736,16 +737,22 @@ function setModelCardOpen(cardEl, isOpen) {
   }
 }
 
-function openModelCard(cardEl) {
-  const openCard = document.querySelector(".port-thumb--model.is-model-open");
-  if (openCard && openCard !== cardEl) {
-    setModelCardOpen(openCard, false);
-  }
+/** @type {number | undefined} */
+let _openModelDebounce;
 
-  ensureCardViewer(cardEl);
-  setModelCardOpen(cardEl, true);
-  showModelOrbitToast(cardEl);
-  showCardControls(cardEl);
+function openModelCard(cardEl) {
+  clearTimeout(_openModelDebounce);
+  _openModelDebounce = setTimeout(() => {
+    const openCard = document.querySelector(".port-thumb--model.is-model-open");
+    if (openCard && openCard !== cardEl) {
+      setModelCardOpen(openCard, false);
+    }
+
+    ensureCardViewer(cardEl);
+    setModelCardOpen(cardEl, true);
+    showModelOrbitToast(cardEl);
+    showCardControls(cardEl);
+  }, 120);
 }
 
 function closeModelCard(cardEl) {
