@@ -133,7 +133,7 @@ body {
   font-size: var(--fs-base);
   color: var(--orange);
   letter-spacing: 4px;
-  margin-top: 10px;
+  margin-top: 50px;
 }
 
 .badge {
@@ -143,7 +143,7 @@ body {
   font-size: var(--fs-lg);
   letter-spacing: 2px;
   padding: 6px 14px;
-  border-radius: var(--radius);
+  bo21rder-radius: var(--radius);
   white-space: nowrap;
   flex-shrink: 0;
 }

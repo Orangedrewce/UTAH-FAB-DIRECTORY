@@ -6,6 +6,8 @@ dist/
 build/
 *.log
 .py
+Fusion360_Logo.svg
+UtahfabdirectorywebsiteQR.png
 # Ignore files containing secrets
 discord-webhooks.sql
 *webhook*.sql

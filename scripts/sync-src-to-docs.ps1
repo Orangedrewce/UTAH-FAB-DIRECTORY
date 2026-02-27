@@ -34,7 +34,7 @@
 
   # 4) Save changes
   git add -A
-  git commit -m "spam 3d view fix"
+  git commit -m "death to em dashes"
 
   # 5) Publish to live site
   git pull origin dev --rebase
